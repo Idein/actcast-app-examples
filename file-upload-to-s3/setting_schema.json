@@ -1,0 +1,53 @@
+{
+  "$schema": "https://actcast.io/schema/v7/setting_schema_schema.json",
+  "type": "object",
+  "properties": {
+    "region_name": {
+      "title": "AWS region",
+      "description": "AWS region code",
+      "type": "string",
+      "default": "ap-northeast-1",
+      "enum": [
+        "ap-northeast-1",
+        "ap-northeast-2",
+        "ap-southeast-1",
+        "ap-southeast-2",
+        "us-east-1",
+        "us-east-2",
+        "us-west-1",
+        "us-west-2",
+        "eu-central-1",
+        "eu-west-1",
+        "eu-west-2",
+        "ap-south-1"
+      ]
+    },
+    "aws_access_key_id": {
+      "title": "AWS access key id",
+      "description": "The AWS access key id to access S3 bucket",
+      "type": "string"
+    },
+    "aws_secret_access_key": {
+      "title": "AWS secret access key",
+      "description": "The AWS secret access key to access S3 bucket",
+      "type": "string"
+    },
+    "bucket_name": {
+      "title": "bucket name",
+      "description": "S3 bucket name",
+      "type": "string"
+    }
+  },
+  "propertyOrder": [
+    "bucket_name",
+    "region_name",
+    "aws_access_key_id",
+    "aws_secret_access_key"
+  ],
+  "required": [
+    "bucket_name",
+    "region_name",
+    "aws_access_key_id",
+    "aws_secret_access_key"
+  ]
+}

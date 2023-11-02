@@ -1,0 +1,239 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "capture_scale": {
+      "title": "[Capture] capture scale",
+      "description": "scale of capture image size: (320x240)*scale",
+      "descriptions": {
+        "ja": "キャプチャ画像のサイズ: (320x240)*capture scale"
+      },
+      "type": "number",
+      "default": 2,
+      "minimum": 1,
+      "maximum": 6
+    },
+    "exposure_time": {
+      "title": "[Capture] exposure time",
+      "description": "exposure time in ms (0 means auto)",
+      "descriptions": {
+        "ja": "カメラの露出時間（0で自動設定）"
+      },
+      "type": "integer",
+      "default": 0,
+      "minimum": 0
+    },
+    "camera_rotation": {
+      "title": "[Capture] camera rotation",
+      "description": "Rotate camera capture image",
+      "descriptions": {
+        "ja": "撮影画像の回転(0, 180 のどれか)"
+      },
+      "type": "string",
+      "default": "0",
+      "enum": [
+        "0",
+        "180"
+      ]
+    },
+    "hflip": {
+      "title": "[Capture] horizontal flip camera",
+      "description": "flip camera capture",
+      "descriptions": {
+        "ja": "撮影画像の左右反転"
+      },
+      "type": "boolean",
+      "default": false
+    },
+    "resize_method": {
+      "title": "[Capture] resizing method",
+      "description": "Captured image resizing method",
+      "descriptions": {
+        "ja": "撮影画像のリサイズ方法"
+      },
+      "type": "string",
+      "enum": [
+        "crop",
+        "resize",
+        "padding",
+        "resize(maximum)",
+        "padding(maximum)"
+      ],
+      "default": "crop"
+    },
+    "capture_cropping_size": {
+      "title": "[Crop] detection area ratio",
+      "description": "percentage to be cropped from the captured image (from 0.0 to 1.0, 0.1 means 10%)",
+      "descriptions": {
+        "ja": "キャプチャ画像に対する検知領域の割合（0.0 ~ 1.0の間、0.1は10%を意味します)"
+      },
+      "type": "number",
+      "default": 1,
+      "minimum": 0.2,
+      "maximum": 1
+    },
+    "move_cropping_point": {
+      "title": "[Crop] detection area offset ratio",
+      "description": "offset percentage of cropping: format `x,y`, 0.0<x,y<1.0",
+      "descriptions": {
+        "ja": "「Detection Area」のオフセット率: フォーマット `x,y`, 0.0<x,y<1.0"
+      },
+      "type": "string",
+      "default": "0,0"
+    },
+    "notification_direction":{
+      "title" : "[Face] notification direction",
+      "description": "This setting item determines which direction Act Log transmission performs when passing through the detection line.",
+      "descriptions": {
+        "ja": "どの方向に検出線を通過すると Act Log の送信が行われるか"
+      },
+      "type":"string",
+      "enum": [
+        "top_to_bottom",
+        "left_to_right",
+        "right_to_left"
+      ],
+      "default": "top_to_bottom"
+    },
+    "detect_line_margin": {
+      "title": "[Area] entrance line",
+      "description": "position of \"Detection Line\" for visitors detect",
+      "descriptions": {
+        "ja": "検出ラインの位置"
+      },
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 2
+    },
+    "detect_x_limit": {
+      "title": "[Area] limit ratio of Detection Area",
+      "description": "limitation of face detection (ratio): format `min,max`, 0.0<min,max<1.0",
+      "descriptions": {
+        "ja": "顔検出範囲の制限（比率で設定）: フォーマット `min,max`, 0.0<min, max<1.0"
+      },
+      "type": "string",
+      "default": "0.0,1.0"
+    },
+    "detection_area_margin": {
+      "title": "[Face] detection area margin",
+      "description": "ratio of non-detection area (see long description)",
+      "descriptions": {
+        "ja": "顔検出領域のマージン(アプリ説明文を参照)"
+      },
+      "type": "number",
+      "default": 0.01,
+      "minimum": 0,
+      "maximum": 0.5
+    },
+    "face_line_margin": {
+      "title": "[Face] face line",
+      "description": "position of \"Face Line\"",
+      "descriptions": {
+        "ja": "「face line(顔検出基準線)」の位置"
+      },
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 2
+    },
+    "threshold": {
+      "title": "[Face] probability threshold",
+      "description": "notifies when the probability of a detected face is over this threshold",
+      "descriptions": {
+        "ja": "検出された顔の確度がこの閾値を越えた場合にデータがActcastに送信される"
+      },
+      "type": "number",
+      "default": 0.5,
+      "minimum": 0.1,
+      "maximum": 0.9
+    },
+    "gender_threshold": {
+      "title": "[Face] gender classification threshold",
+      "description": "classifies females if an inference gender score overs this threshold",
+      "descriptions": {
+        "ja": "性別スコアがこの閾値を超えた場合、その顔は女性として分類されます"
+      },
+      "type": "number",
+      "default": 0.0,
+      "minimum": -1.0,
+      "maximum": 1.0
+    },
+    "display": {
+      "title": "[Display] display",
+      "description": "output video to HDMI display",
+      "descriptions": {
+        "ja": "HDMIディスプレイへの描画を行う"
+      },
+      "type": "boolean",
+      "default": false
+    },
+    "image_brightness_correction": {
+      "title": "[Face] Image Brightness Correction",
+      "description": "Gamma correction of images",
+      "descriptions": {
+        "ja": "画像のガンマ補正"
+      },
+      "type": "boolean",
+      "default": false
+    },
+    "exclude_age": {
+      "title": "[Face] exclude age",
+      "description": "exclude under X years old",
+      "descriptions": {
+        "ja": "X歳未満を除外"
+      },
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 70
+    },
+    "capture_framerate": {
+      "title": "capture framerate",
+      "description": "capture framerate",
+      "descriptions": {
+        "ja": "キャプチャフレームレート"
+      },
+      "type": "integer",
+      "default": 8,
+      "minimum": 1
+    }
+  },
+  "propertyOrder": [
+    "capture_scale",
+    "exposure_time",
+    "camera_rotation",
+    "hflip",
+    "resize_method",
+    "capture_cropping_size",
+    "move_cropping_point",
+    "notification_direction",
+    "detect_line_margin",
+    "detect_x_limit",
+    "detection_area_margin",
+    "face_line_margin",
+    "threshold",
+    "gender_threshold",
+    "display",
+    "image_brightness_correction",
+    "exclude_age",
+    "capture_framerate"
+  ],
+  "required": [
+    "capture_cropping_size",
+    "capture_scale",
+    "notification_direction",
+    "detect_line_margin",
+    "detect_x_limit",
+    "detection_area_margin",
+    "display",
+    "exposure_time",
+    "face_line_margin",
+    "hflip",
+    "move_cropping_point",
+    "resize_method",
+    "threshold",
+    "gender_threshold",
+    "capture_framerate"
+  ]
+}

@@ -1,0 +1,692 @@
+#!/usr/bin/python3
+import ctypes as ct
+from ctypes import cdll
+import argparse
+import subprocess
+import time
+import base64
+import io
+import math
+import os
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+import actfw_core
+from actfw_core.task import Pipe, Consumer
+from actfw_core.capture import V4LCameraCapture
+import actfw_raspberrypi
+from actfw_raspberrypi.vc4 import Display
+import numpy as np
+from model import Model
+from ssd import UltraLightFastGenericFaceDetector1MB_QDNN
+from tracking import Tracker, COLOR_MAP
+from configuration import *
+
+
+(SSD_WIDTH, SSD_HEIGHT) = (320, 240)
+CAPTURE_SCALE = 6
+(CAPTURE_WIDTH, CAPTURE_HEIGHT) = (int(SSD_WIDTH * CAPTURE_SCALE),
+                                   int(SSD_HEIGHT * CAPTURE_SCALE))  # capture image size
+(DISPLAY_WIDTH, DISPLAY_HEIGHT) = (640, 480)  # display area size
+(UPDATE_AREA_WIDTH, UPDATE_AREA_HEIGHT) = (DISPLAY_WIDTH, DISPLAY_HEIGHT)
+(AGE_GENDER_WIDTH, AGE_GENDER_HEIGHT) = (128, 128)
+AGE_POSTPROCESS_COEFFS = [
+    5.072785734064758e-06,
+    -0.0010050659803154032,
+    0.05966051159356731,
+    0.01906625806370291,
+    1.8611163819923322
+]
+
+
+def window_position(actual_display_size, virtual_display_size, expected_area):
+    actual_display_width, actual_display_height = actual_display_size
+    actual_display_aspect_ratio = float(
+        actual_display_width) / actual_display_height
+    virtual_display_width, virtual_display_height = virtual_display_size
+    virtual_display_aspect_ratio = float(
+        virtual_display_width) / virtual_display_height
+    if actual_display_aspect_ratio > virtual_display_aspect_ratio:
+        # actual display area is more in a landscape orientation than expected display area
+        valid_display_width = int(
+            actual_display_height * virtual_display_aspect_ratio)
+        valid_display_height = actual_display_height
+        valid_display_left = (actual_display_width - valid_display_width) // 2
+        valid_display_upper = 0
+    else:
+        # actual display area is more in a portrait orientation than expected display area
+        valid_display_width = actual_display_width
+        valid_display_height = int(
+            actual_display_width / virtual_display_aspect_ratio)
+        valid_display_left = 0
+        valid_display_upper = (actual_display_height -
+                               valid_display_height) // 2
+    # Where is the actual window position inside the expected display area?
+    expected_left, expected_upper, expected_width, expected_height = expected_area
+    scale = min(float(valid_display_width) / virtual_display_width,
+                float(valid_display_height) / virtual_display_height)
+    actual_left = int(scale * expected_left) + valid_display_left
+    actual_upper = int(scale * expected_upper) + valid_display_upper
+    actual_width = int(scale * expected_width)
+    actual_height = int(scale * expected_height)
+    return (actual_left, actual_upper, actual_width, actual_height)
+
+
+_lib = cdll.LoadLibrary('./libbilinear.so')
+bilinear = _lib.bilinear_HWC_u8
+
+bilinear.argtypes = [
+    ct.c_int32,  # channel
+    ct.c_int32,  # src_h
+    ct.c_int32,  # src_w
+    ct.c_int32,  # area_x
+    ct.c_int32,  # area_y
+    ct.c_int32,  # area_h
+    ct.c_int32,  # area_w
+    ct.c_int32,  # dst_h
+    ct.c_int32,  # dst_w
+    ct.POINTER(ct.c_uint8),  # src
+    ct.POINTER(ct.c_uint8),  # dst
+]
+bilinear.restype = None
+
+
+def extract_patch(image, size, xmin, ymin, xmax, ymax):
+    width = xmax - xmin
+    height = ymax - ymin
+
+    if width < height:
+        pad = (height - width) / 2
+        x0, y0, x1, y1 = xmin - pad, ymin, xmax + pad, ymax
+    else:
+        pad = (width - height) / 2
+        x0, y0, x1, y1 = xmin, ymin - pad, xmax, ymax + pad
+
+    new_width = x1 - x0
+    new_height = y1 - y0
+    x_m = (new_width * 0.15 / 2)
+    x0 = x0 - x_m
+    x1 = x1 + x_m
+    y_m = (new_height * 0.15 / 2)
+    y0 = y0 - y_m
+    y1 = y1 + y_m
+
+    new_width = x1 - x0
+    new_height = y1 - y0
+    effective_bbox_ratio = 1
+
+    if (y0 < 0):
+        return None
+    if (x0 < 0):
+        effective_bbox_ratio = (new_width - abs(x0)) / new_width
+    elif (y1 > image.shape[0]):
+        effective_bbox_ratio = (new_height - (y1 - image.shape[0])) / new_height
+    elif (x1 > image.shape[1]):
+        effective_bbox_ratio = (new_width - (x1 - image.shape[1])) / new_width
+
+    if effective_bbox_ratio <= 0.7:
+        return None
+
+    result = np.empty((size[1], size[0], 3), dtype=np.uint8)
+    bilinear(image.shape[2],
+             image.shape[0], image.shape[1],
+             int(x0), int(y0),
+             int(y1) - int(y0), int(x1) - int(x0),
+             size[1], size[0],
+             image.ctypes.data_as(ct.POINTER(ct.c_uint8)), result.ctypes.data_as(ct.POINTER(ct.c_uint8)))
+    return result
+
+
+class FPS(object):
+
+    """FPS Counter"""
+
+    def __init__(self, moving_average=30):
+        """
+
+        Args:
+            moving_average (int): recent N frames moving average
+
+        """
+        self.moving_average = moving_average
+        self.prev_time = time.time()
+        self.dtimes = []
+
+    def update(self):
+        """
+
+        Update FPS.
+
+        Returns:
+            fps: current fps
+
+        """
+        cur_time = time.time()
+        dtime = cur_time - self.prev_time
+        self.prev_time = cur_time
+        self.dtimes.append(dtime)
+        if len(self.dtimes) > self.moving_average:
+            self.dtimes.pop(0)
+        return self.get()
+
+    def get(self):
+        """
+
+        Get FPS.
+
+        Returns:
+            fps: current fps
+
+        """
+        if len(self.dtimes) == 0:
+            return None
+        else:
+            return len(self.dtimes) / sum(self.dtimes)
+
+
+class Preprocess(Pipe):
+    def __init__(self, settings, capture_size):
+        super(Preprocess, self).__init__()
+        self.capture_size = capture_size
+        self.settings = settings
+        self.gamma_cvt = np.zeros(256, dtype=np.uint8)
+        for i in range(256):
+            self.gamma_cvt[i] = 255 * (float(i) / 255)**0.5
+        try:
+            movepoint = [float(x)
+                         for x in settings['move_cropping_point'].split(',')]
+            movepoint = [max(0.0, min(p, 1.0)) for p in movepoint]
+            movepoint[0] = int((CAPTURE_WIDTH - int(CAPTURE_WIDTH
+                                                    * settings['capture_cropping_size'])) * movepoint[0])
+            movepoint[1] = int((CAPTURE_HEIGHT - int(CAPTURE_HEIGHT
+                                                     * settings['capture_cropping_size'])) * movepoint[1])
+        except:
+            movepoint = [0.0, 0.0]
+        self.move = movepoint
+        self.crop_area = (self.move[0],
+                          self.move[1],
+                          int(CAPTURE_WIDTH *
+                              settings['capture_cropping_size']) + self.move[0],
+                          int(CAPTURE_HEIGHT * settings['capture_cropping_size']) + self.move[1])
+        self.crop_size = (self.crop_area[2] - self.crop_area[0],
+                          self.crop_area[3] - self.crop_area[1])
+
+    def proc(self, frame):
+        captured_image = np.frombuffer(frame.getvalue(), dtype=np.uint8).reshape(
+            self.capture_size[1], self.capture_size[0], 3)
+        resized_image = np.empty(
+            (DISPLAY_HEIGHT, DISPLAY_WIDTH, 3), dtype=np.uint8)
+        input_image = np.empty((SSD_HEIGHT, SSD_WIDTH, 3), dtype=np.uint8)
+        if self.capture_size != (CAPTURE_WIDTH, CAPTURE_HEIGHT):
+            if self.settings['resize_method'] == 'crop':
+                w, h = self.capture_size
+                xmin = w // 2 - CAPTURE_WIDTH // 2
+                ymin = h // 2 - CAPTURE_HEIGHT // 2
+                xmax = w // 2 + CAPTURE_WIDTH // 2
+                ymax = h // 2 + CAPTURE_HEIGHT // 2
+                captured_image = np.ascontiguousarray(
+                    captured_image[ymin:ymax, xmin:xmax, :])
+            elif self.settings['resize_method'].startswith('resize'):
+                w, h = self.capture_size
+                capture_aspect = w / h
+                require_aspect = CAPTURE_WIDTH / CAPTURE_HEIGHT
+                if capture_aspect > require_aspect:
+                    sz = int(require_aspect * h)
+                    xmin = w // 2 - sz // 2
+                    ymin = 0
+                    xmax = w // 2 + sz // 2
+                    ymax = h
+                else:
+                    sz = int(w / require_aspect)
+                    xmin = 0
+                    ymin = h // 2 - sz // 2
+                    xmax = w
+                    ymax = h // 2 + sz // 2
+                captured_image = np.ascontiguousarray(
+                    captured_image[ymin:ymax, xmin:xmax, :])
+            elif self.settings['resize_method'].startswith('padding'):
+                w, h = self.capture_size
+                capture_aspect = w / h
+                require_aspect = CAPTURE_WIDTH / CAPTURE_HEIGHT
+                if capture_aspect > require_aspect:
+                    sz = int(w / require_aspect)
+                    background = np.zeros((sz, w, 3), dtype=np.uint8)
+                    background[(sz - h) // 2:(sz - h) //
+                               2 + h, :, :] = captured_image
+                else:
+                    sz = int(require_aspect * h)
+                    background = np.zeros((h, sz, 3), dtype=np.uint8)
+                    background[:, (sz - w) // 2:(sz - w) //
+                               2 + w, :] = captured_image
+                captured_image = np.empty(
+                    (CAPTURE_HEIGHT, CAPTURE_WIDTH, 3), dtype=np.uint8)
+                bg_h, bg_w = background.shape[:2]
+                bilinear(3,
+                         bg_h, bg_w,
+                         0, 0,
+                         bg_h, bg_w,
+                         CAPTURE_HEIGHT, CAPTURE_WIDTH,
+                         background.ctypes.data_as(ct.POINTER(ct.c_uint8)), captured_image.ctypes.data_as(ct.POINTER(ct.c_uint8)))
+            else:
+                pass
+        if (self.crop_size[0], self.crop_size[1]) != (CAPTURE_WIDTH, CAPTURE_HEIGHT):
+            captured_image = np.ascontiguousarray(
+                captured_image[self.crop_area[1]:self.crop_area[3], self.crop_area[0]:self.crop_area[2], :])
+        bilinear(3,
+                 captured_image.shape[0], captured_image.shape[1],
+                 0, 0,
+                 captured_image.shape[0], captured_image.shape[1],
+                 DISPLAY_HEIGHT, DISPLAY_WIDTH,
+                 captured_image.ctypes.data_as(ct.POINTER(ct.c_uint8)), resized_image.ctypes.data_as(ct.POINTER(ct.c_uint8)))
+        bilinear(3,
+                 DISPLAY_HEIGHT, DISPLAY_WIDTH,
+                 0, 0,
+                 DISPLAY_HEIGHT, DISPLAY_WIDTH,
+                 SSD_HEIGHT, SSD_WIDTH,
+                 resized_image.ctypes.data_as(ct.POINTER(ct.c_uint8)), input_image.ctypes.data_as(ct.POINTER(ct.c_uint8)))
+        resized_image = Image.fromarray(resized_image)
+
+        if self.settings['image_brightness_correction']:
+            input_image = self.gamma_cvt[input_image]
+
+        input_image = np.ascontiguousarray(np.transpose(np.asarray(input_image).astype(
+            np.float32), (2, 0, 1)).reshape((1, 3, SSD_HEIGHT, SSD_WIDTH))) / 255.
+        return (captured_image, resized_image, input_image)
+
+
+class Predict(Pipe):
+
+    def __init__(self, settings, model, detector, detection_area_margin):
+        super(Predict, self).__init__()
+        self.model = model
+        self.detector = detector
+        self.image_height = int(
+            CAPTURE_HEIGHT * settings['capture_cropping_size'])
+        self.image_width = int(
+            CAPTURE_WIDTH * settings['capture_cropping_size'])
+        self.tracker = Tracker(
+            self.image_width,
+            self.image_height,
+            detection_area_margin,
+            max_misscount=30)
+        self.centerline = (self.image_height *
+                           settings['detect_line_margin']) // 2
+        self.face_line_margin = settings['face_line_margin']
+        x_limit_percent = [float(x)
+                           for x in settings['detect_x_limit'].split(',')]
+
+        if settings["notification_direction"] == "top_to_bottom":
+            self.x_limit = (int(self.image_width * x_limit_percent[0]),
+                            int(self.image_width * x_limit_percent[1]))
+        elif settings["notification_direction"] in ["left_to_right", "right_to_left"]:
+            self.y_limit = (int(self.image_height * x_limit_percent[0]),
+                            int(self.image_height * x_limit_percent[1]))
+        self.age_post_process = np.poly1d(AGE_POSTPROCESS_COEFFS)
+        self.settings = settings
+
+    def _get_age_gender(self, face_image):
+        face_image = (np.ascontiguousarray(np.transpose(np.asarray(face_image).astype(
+            np.float32), (2, 0, 1))) / np.float32(127.5) - 1.0)[np.newaxis, :]
+        age_gender, = self.model.AgeGenderNetMiniXception(face_image)
+        age_low, age_high = self.age_post_process(
+            116 / (1 + np.exp(-age_gender[0, :-1])))
+        gender = 2 * int(age_gender[0, -1] > 0.5) - 1
+
+        return age_low, age_high, gender
+
+    def proc(self, frame):
+
+        captured_image, resized_image, input_image = frame
+
+        box_scores = self.detector.run(input_image)
+
+        objects = self.detector.detect(box_scores)
+        objects = [
+            (conf, [x_min * self.image_width, y_min * self.image_height,
+                    x_max * self.image_width, y_max * self.image_height], v)
+            for conf, [x_min, y_min, x_max, y_max], v in objects
+        ]
+        faces = self.tracker.update(objects)
+
+        faces_with_age_gender = []
+        for face in faces:
+
+            prob, xmin, ymin, xmax, ymax, detected, id = face
+
+            width = xmax - xmin
+            height = ymax - ymin
+
+            position = False
+
+            if self.settings["notification_direction"] == "top_to_bottom":
+                # face_line_margin : face line(顔検出基準線)」の位置(高さ)
+                if (ymin + (height * self.face_line_margin) // 2) > self.centerline:
+                    position = True
+            elif self.settings["notification_direction"] == "left_to_right":
+                if (xmin + (width * self.face_line_margin) // 2) > self.centerline:
+                    position = True
+            elif self.settings["notification_direction"] == "right_to_left":
+                if (xmin + (width * self.face_line_margin) // 2) < self.centerline:
+                    position = True
+
+            x_center = xmin + width // 2
+            y_center = ymin + height // 2
+
+            if self.settings["notification_direction"] == "top_to_bottom" and ((x_center < self.x_limit[0]) or (x_center > self.x_limit[1])):
+                continue
+            elif self.settings["notification_direction"] in ["left_to_right", "right_to_left"] and ((y_center < self.y_limit[0]) or (y_center > self.y_limit[1])):
+                continue
+
+            face_image_age_gender = extract_patch(
+                captured_image, (AGE_GENDER_WIDTH, AGE_GENDER_HEIGHT),
+                xmin, ymin, xmax, ymax)
+
+            if face_image_age_gender is None:
+                continue
+
+            age_low, age_high, gender = self._get_age_gender(
+                face_image_age_gender)
+            age = (age_high + age_low) / 2
+
+            if self.settings['exclude_age'] > age:
+                continue
+
+            faces_with_age_gender.append(
+                face + (age, gender, position))
+
+        return (captured_image, resized_image, faces_with_age_gender)
+
+
+class Presenter(Consumer):
+
+    def __init__(self, settings, preview_window, cmd):
+        super(Presenter, self).__init__()
+        self.settings = settings
+        self.preview_window = preview_window
+        self.cmd = cmd
+        self.font = ImageFont.truetype(
+            font='/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf', size=int(20))
+        self.smallfont = ImageFont.truetype(
+            font='/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf', size=int(10))
+        self.font_height = self.font.getsize('99.9%')[1]
+        self.smallfont_height = self.smallfont.getsize('99.9%')[1]
+        self.fps = FPS()
+        self.faces = {}
+        if self.settings["notification_direction"] == "top_to_bottom":
+            self.centerline = ((DISPLAY_HEIGHT * settings['capture_cropping_size']) *
+                               settings['detect_line_margin']) // 2
+        elif self.settings["notification_direction"] == "left_to_right" or self.settings["notification_direction"] == "right_to_left":
+            self.centerline = ((DISPLAY_WIDTH * settings['capture_cropping_size'])
+                               * settings['detect_line_margin']) // 2
+        self.face_line_margin = settings['face_line_margin']
+
+        self.CAPTURE_SCALE = CAPTURE_SCALE * settings['capture_cropping_size']
+
+        x_limit_percent = [float(x)
+                           for x in settings['detect_x_limit'].split(',')]
+
+        if self.settings["notification_direction"] == "top_to_bottom":
+            self.x_limit = (int(DISPLAY_WIDTH * x_limit_percent[0]),
+                            int(DISPLAY_WIDTH * x_limit_percent[1]))
+        else:
+            self.y_limit = (int(DISPLAY_HEIGHT * x_limit_percent[0]),
+                            int(DISPLAY_HEIGHT * x_limit_percent[1]))
+
+        self.image_height = int(
+            CAPTURE_HEIGHT * settings['capture_cropping_size'])
+        self.image_width = int(
+            CAPTURE_WIDTH * settings['capture_cropping_size'])
+
+    def proc(self, images):
+        current_time = time.time()
+        image, resized_image, faces = images
+        result_image = resized_image.copy()
+        actfw_core.heartbeat()
+
+        new_faces = []
+        found_faces = {id: (age, gender, xmin, ymin, xmax, ymax, position)
+                       for prob, xmin, ymin, xmax, ymax, detected, id, age, gender, position in faces}
+        for id, (age, gender, position, miss, reported) in self.faces.items():
+            if id in found_faces:
+                new_age, new_gender, new_xmin, new_ymin, new_xmax, new_ymax, new_position = found_faces[
+                    id]
+                age.append(new_age)
+                gender.append(new_gender)
+                found_frame = len(age)
+                if found_frame > 60:
+                    age.pop(0)
+                    gender.pop(0)
+                found_frame = len(age)
+
+                if not reported and new_position and not (position):
+                    gender_score = sum(gender) / len(gender)
+                    new_faces.append({
+                        "timestamp": current_time,
+                        "age": round(sum(age) / found_frame, 1),
+                        "gender": ["Male", "Female"][gender_score > self.settings['gender_threshold']],
+                        "gender_score": gender_score
+                    })
+                    if FACE_ACT:
+                        face_image = extract_patch(image, (self.settings['face_resolution'], self.settings['face_resolution']),
+                                                   new_xmin, new_ymin, new_xmax, new_ymax)
+                        face_pngimage = io.BytesIO()
+                        face_image.save(face_pngimage, format='PNG')
+                        b64img = base64.b64encode(
+                            face_pngimage.getbuffer()).decode('utf-8')
+                        new_faces[-1]["face"] = b64img
+                    self.faces[id] = (age, gender, position, 0, True)
+                else:
+                    self.faces[id] = (age, gender, position, 0, reported)
+            else:
+                self.faces[id] = (age, gender, position, miss + 1, reported)
+        self.faces = {id: (age, gender, position, miss, reported) for id, (
+            age, gender, position, miss, reported) in self.faces.items() if miss < 10}
+        for id, (age, gender, _, _, _, _, position) in found_faces.items():
+            if id not in self.faces:
+                self.faces[id] = ([age], [gender], position, 0, False)
+        if ACT_NOTIFY and len(new_faces) > 0:
+            actfw_core.notify(new_faces)
+
+        draw = ImageDraw.Draw(result_image)
+        for prob, xmin, ymin, xmax, ymax, detected, id, _, _, _ in faces:
+            age, gender, _, _, _ = self.faces[id]
+            age = sum(age) / len(age)
+            gender_score = sum(gender) / len(gender)
+            xmin = max(int(xmin / self.image_width * DISPLAY_WIDTH), 0)
+            ymin = max(int(ymin / self.image_height * DISPLAY_HEIGHT), 0)
+            xmax = min(
+                int(xmax / self.image_width * DISPLAY_WIDTH), DISPLAY_WIDTH - 1)
+            ymax = min(
+                int(ymax / self.image_height * DISPLAY_HEIGHT), DISPLAY_HEIGHT - 1)
+
+            color = COLOR_MAP[id % len(COLOR_MAP)]
+            draw.rectangle((xmin, ymin, xmax, ymax), outline=color)
+
+            # Add a black box below the info
+            draw.rectangle((xmin, ymin - self.smallfont_height, xmin + 2 +
+                           self.smallfont_height * 6, ymin), fill=(0, 0, 0), outline=(0, 0, 0))
+
+            draw.text([xmin, ymin - self.smallfont_height],
+                      "{}: {:.0f}".format(
+                          ["Male", "Female"][gender_score >
+                                             self.settings['gender_threshold']],
+                          age), fill='white', font=self.smallfont)
+            if self.settings["notification_direction"] == "top_to_bottom":
+                faceline = ymin + ((ymax - ymin) * self.face_line_margin) // 2
+                draw.line((xmin, faceline, xmax, faceline),
+                          fill=color, width=2)
+            elif self.settings["notification_direction"] in ["left_to_right", "right_to_left"]:
+                faceline = xmin + ((xmax - xmin) * self.face_line_margin) // 2
+                draw.line((faceline, ymin, faceline, ymax),
+                          fill=color, width=2)
+
+        if self.settings["notification_direction"] == "top_to_bottom":
+            draw.line((self.x_limit[0], self.centerline, self.x_limit[1], self.centerline),
+                      fill='lightgreen', width=2)
+            draw.line((self.x_limit[0], 0, self.x_limit[0], DISPLAY_HEIGHT),
+                      fill='lightgreen', width=1)
+            draw.line((self.x_limit[1], 0, self.x_limit[1], DISPLAY_HEIGHT),
+                      fill='lightgreen', width=1)
+        else:
+            draw.line((self.centerline, self.y_limit[0], self.centerline, self.y_limit[1]),
+                      fill='lightgreen', width=2)
+            draw.line((0, self.y_limit[0], DISPLAY_WIDTH, self.y_limit[0]), fill='lightgreen', width=1)
+            draw.line((0, self.y_limit[1], DISPLAY_WIDTH, self.y_limit[1]), fill='lightgreen', width=1)
+
+            if self.settings["notification_direction"] == "left_to_right":
+                draw.text([self.centerline, 0], "left to right", font=self.font, fill='lightgreen')
+            elif self.settings["notification_direction"] == "right_to_left":
+                draw.text([self.centerline, 0], "right to left", font=self.font, fill='lightgreen')
+
+        # draw.line((0, SSD_HEIGHT/2, SSD_WIDTH, SSD_HEIGHT/2),
+        #           fill='lightgreen', width=2)
+
+        # Add a black box below FPS
+        draw.rectangle((0, 2, self.font_height * 8, self.font_height), fill=(0, 0, 0), outline=(0, 0, 0))
+
+        fps = 'FPS: {:>6.3f}'.format(self.fps.update())
+        draw.text((0, 0), fps, font=self.font, fill=(255, 255, 255))
+
+        self.cmd.update_image(result_image)
+
+        if self.preview_window is not None:
+            self.preview_window.blit(np.asarray(result_image).tobytes())
+            self.preview_window.update()
+
+
+class ActSettingsError(Exception):
+    def __init__(self, msg: str) -> None:
+        self.msg = msg
+
+    def __str__(self) -> str:
+        err_msg =\
+            "This error may be due to poor camera performance or a connection problem. "\
+            "Please review the camera you are using or the act settings of the camera, "\
+            "for example, camera resolution, and capture frame rate."
+
+        return f'{self.msg}. {err_msg}'
+
+
+def main(args):
+
+    # ATTENTION:
+    # bcm_host_is_model_pi4 should be used, but for
+    # old firmware versions (e.g. not updated device), it may not exist yet.
+    vc = [4, 6][os.path.exists('/dev/dri/card0')]
+
+    # Framebuffer setting affects the performance. Fix setting.
+    if vc == 4:
+        subprocess.run(
+            '/bin/fbset -fb /dev/fb0 -xres 640 -yres 480 -vxres 640 -vyres 480 -depth 24'.split())
+
+    # Actcast application
+    app = actfw_core.Application()
+
+    # Load act setting
+    settings = app.get_settings({
+        'camera_rotation': '0',
+        'hflip': False,
+        'display': True,
+        'resize_method': 'crop',
+        'threshold': 0.5,
+        'notification_direction': 'top_to_bottom',
+        'detect_line_margin': 1.0,
+        'face_line_margin': 1.0,
+        'capture_cropping_size': 1.0,
+        'move_cropping_point': '0,0',
+        'detect_x_limit': '0.0,1.0',
+        'capture_scale': 2.0,
+        'detection_area_margin': 0.01,
+        'face_resolution': 128,
+        'exposure_time': 0,
+        'gender_threshold': 0.5,
+        'image_brightness_correction': False,
+        'exclude_age': 0,
+        'capture_framerate': 8
+    })
+    if settings['exposure_time'] <= 0:
+        settings['exposure_time'] = None
+
+    # CommandServer (for `Take Photo` command)
+    cmd = actfw_core.CommandServer()
+    app.register_task(cmd)
+
+    global CAPTURE_SCALE, CAPTURE_WIDTH, CAPTURE_HEIGHT
+    CAPTURE_SCALE = settings['capture_scale']
+    (CAPTURE_WIDTH, CAPTURE_HEIGHT) = (int(SSD_WIDTH * CAPTURE_SCALE),
+                                       int(SSD_HEIGHT * CAPTURE_SCALE))  # capture image size
+
+    # Capture task
+    if settings['resize_method'] == 'crop':
+        format_selector = V4LCameraCapture.FormatSelector.DEFAULT
+    elif settings['resize_method'].endswith('(maximum)'):
+        format_selector = V4LCameraCapture.FormatSelector.MAXIMUM
+    else:
+        format_selector = V4LCameraCapture.FormatSelector.PROPER
+
+    try:
+        cap = V4LCameraCapture('/dev/video0', (CAPTURE_WIDTH, CAPTURE_HEIGHT),
+                               settings['capture_framerate'],
+                               format_selector=format_selector)
+    except RuntimeError as e:
+        raise ActSettingsError(str(e))
+    except OSError as e:
+        if e.errno == 16:
+            raise ActSettingsError(str(e))
+        else:
+            raise
+
+    capture_size = cap.capture_size()
+
+    def config(video):
+        # ignore result (requires camera capability)
+        video.set_rotation(int(settings['camera_rotation']))
+        # ignore result (requires camera capability)
+        video.set_horizontal_flip(settings['hflip'])
+        video.set_exposure_time(settings['exposure_time'])
+    cap.configure(config)
+    app.register_task(cap)
+
+    # Preprocess task
+    pre = Preprocess(settings, capture_size)
+    app.register_task(pre)
+
+    # Detection task
+    model = Model('./libmodel.so')
+    # area_min = (AGE_GENDER_WIDTH * 1.2 / CAPTURE_WIDTH) * (AGE_GENDER_HEIGHT * 1.2 / CAPTURE_HEIGHT)
+    area_min = 0.0
+    area_max = 1 * 1
+    detector = UltraLightFastGenericFaceDetector1MB_QDNN(
+        model, area_min, area_max, settings['threshold'])
+    pred = Predict(settings, model, detector,
+                   settings['detection_area_margin'])
+    app.register_task(pred)
+
+    def run(preview_window=None):
+        # Presenter task
+        pres = Presenter(settings, preview_window, cmd)
+        app.register_task(pres)
+
+        # Make task connection
+        cap.connect(pre)    # from `cap` to `pre`
+        pre.connect(pred)   # from `pre` to `pred`
+        pred.connect(pres)  # from `pred` to `pres`
+
+        # Start application
+        app.run()
+
+    if settings['display']:
+        with Display() as display:
+            actual_display_size = display.size()
+            width, height = actual_display_size
+            virtual_display_size = (DISPLAY_WIDTH, DISPLAY_HEIGHT)
+            with display.open_window((0, 0, width, height), (32, 1), 1000) as background:
+                preview_area = window_position(
+                    actual_display_size, virtual_display_size, (0, 0, UPDATE_AREA_WIDTH, UPDATE_AREA_HEIGHT))
+                with display.open_window(preview_area, (UPDATE_AREA_WIDTH, UPDATE_AREA_HEIGHT), 2000) as preview_window:
+                    run(preview_window)
+    else:
+        run()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Face Tracking')
+    main(parser.parse_args())

@@ -1,0 +1,8 @@
+{
+  "app_id": "uma-visitors-attr",
+  "app_server_id": 61,
+  "short_description": "Capture visitor's attributes",
+  "short_descriptions": {
+    "ja": "来場者の属性を収集します"
+  }
+}

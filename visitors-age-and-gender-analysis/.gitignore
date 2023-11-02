@@ -1,0 +1,7 @@
+.actdk/cache/*
+
+app/model.py
+app/*.so
+
+include/*
+!include/.gitkeep

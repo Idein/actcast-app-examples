@@ -1,0 +1,317 @@
+#!/usr/bin/python3
+import argparse
+import time
+from PIL import Image, ImageDraw, ImageFont
+import actfw_core
+from actfw_core.task import Pipe, Consumer
+from actfw_core.capture import V4LCameraCapture
+from actfw_raspberrypi.vc4 import Display
+import numpy as np
+from model import Model
+from configuration import ACT_NOTIFY_LIMIT
+
+(CAPTURE_WIDTH, CAPTURE_HEIGHT) = (224, 224)  # capture image size
+(DISPLAY_WIDTH, DISPLAY_HEIGHT) = (640, 480)  # display area size
+
+def window_position(actual_display_size, virtual_display_size, expected_area):
+    actual_display_width, actual_display_height = actual_display_size
+    actual_display_aspect_ratio = float(actual_display_width) / actual_display_height
+    virtual_display_width, virtual_display_height = virtual_display_size
+    virtual_display_aspect_ratio = float(virtual_display_width) / virtual_display_height
+    if actual_display_aspect_ratio > virtual_display_aspect_ratio:
+        # actual display area is more in a landscape orientation than expected display area
+        valid_display_width = int(actual_display_height * virtual_display_aspect_ratio)
+        valid_display_height = actual_display_height
+        valid_display_left = (actual_display_width - valid_display_width) // 2
+        valid_display_upper = 0
+    else:
+        # actual display area is more in a portrait orientation than expected display area
+        valid_display_width = actual_display_width
+        valid_display_height = int(actual_display_width / virtual_display_aspect_ratio)
+        valid_display_left = 0
+        valid_display_upper = (actual_display_height - valid_display_height) // 2
+    # Where is the actual window position inside the expected display area?
+    expected_left, expected_upper, expected_width, expected_height = expected_area
+    scale = min(
+        float(valid_display_width) / virtual_display_width,
+        float(valid_display_height) / virtual_display_height,
+    )
+    actual_left = int(scale * expected_left) + valid_display_left
+    actual_upper = int(scale * expected_upper) + valid_display_upper
+    actual_width = int(scale * expected_width)
+    actual_height = int(scale * expected_height)
+    return (actual_left, actual_upper, actual_width, actual_height)
+
+
+class Classifier(Pipe):
+    def __init__(self, settings, capture_size):
+        super(Classifier, self).__init__()
+        self.model = Model()
+        self.settings = settings
+        self.capture_size = capture_size
+
+    def proc(self, frame):
+        captured_image = Image.frombuffer(
+            "RGB", self.capture_size, frame.getvalue(), "raw", "RGB"
+        )
+        if self.settings["resize_method"] == "crop":
+            if self.capture_size != (CAPTURE_WIDTH, CAPTURE_HEIGHT):
+                w, h = self.capture_size
+                captured_image = captured_image.crop(
+                    (
+                        w // 2 - CAPTURE_WIDTH // 2,
+                        h // 2 - CAPTURE_HEIGHT // 2,
+                        w // 2 + CAPTURE_WIDTH // 2,
+                        h // 2 + CAPTURE_HEIGHT // 2,
+                    )
+                )
+        else:
+            w, h = self.capture_size
+            l = min(w, h)
+            captured_image = captured_image.crop(
+                (w // 2 - l // 2, h // 2 - l // 2, w // 2 + l // 2, h // 2 + l // 2)
+            )
+            captured_image = captured_image.resize((CAPTURE_WIDTH, CAPTURE_HEIGHT))
+        input_image = np.asarray(captured_image)
+        (probs,) = self.model.infer(input_image)
+        return (captured_image, probs)
+
+
+class Presenter(Consumer):
+    def __init__(self, settings, preview_window, result_window, title_window, cmd):
+        super(Presenter, self).__init__()
+        self.settings = settings
+        self.preview_window = preview_window
+        self.result_window = result_window
+        self.cmd = cmd
+        self.font = ImageFont.truetype(
+            font="/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", size=18
+        )
+        self.font_height = self.font.getsize("99.9%")[1]
+        self.prev_top1 = -1
+        self.count_top1 = 0
+        self.prev_time = None
+        self.frames = []
+        self.last_notification = 0
+        self.notification_window = 60.0
+        self.buffered = False  # for limited logging only
+        with open("labels.txt") as f:
+            self.labels = f.read().splitlines()
+        if title_window is not None:
+            title = [
+                "ResNet18 v1 224x224",
+                "1000 Class Classification",
+                "Raspberry Pi + Hailo8",
+            ]
+            image = Image.new("RGB", (320, 100), "black")
+            draw = ImageDraw.Draw(image)
+            h = 0
+            for t in title:
+                draw.text((0, h), t, font=self.font, fill=(255, 255, 255))
+                h += self.font_height + 5
+            title_window.blit(image.tobytes())
+            title_window.update()
+
+    def proc(self, images):
+        rgb_image, probs = images
+
+        self.cmd.update_image(rgb_image)  # update `Take Photo` image
+        actfw_core.heartbeat()
+
+        top1 = probs.argsort()[-1]
+        if self.prev_top1 == top1:
+            if probs[top1] > self.settings["threshold"]:
+                self.count_top1 += 1
+                if self.count_top1 == 5 and top1 in self.settings["target"]:
+                    if ACT_NOTIFY_LIMIT:
+                        self.buffered = True
+                    else:
+                        actfw_core.notify(
+                            [{"prob": float(probs[top1]), "label": self.labels[top1]}]
+                        )
+                if self.buffered:
+                    _current_time = time.time()
+                    if (
+                        _current_time - self.last_notification
+                        < self.notification_window
+                    ):
+                        pass
+                    else:
+                        actfw_core.notify(
+                            [{"prob": float(probs[top1]), "label": self.labels[top1]}]
+                        )
+                        self.last_notification = _current_time
+                        self.buffered = False
+        else:
+            self.count_top1 = 0
+            self.prev_top1 = top1
+            self.buffered = False
+
+        if self.preview_window is not None:
+            self.preview_window.blit(rgb_image.tobytes())
+            self.preview_window.update()
+
+        if self.result_window is not None:
+            result_image = Image.new("RGB", (320, 300), "black")
+            draw = ImageDraw.Draw(result_image)
+            h = 0
+            for ix in probs.argsort()[:-11:-1]:
+                topN = "{:>6.2f}% {}".format(probs[ix] * 100, self.labels[ix])
+                draw.text((0, h), topN, font=self.font, fill=(255, 255, 255))
+                h += self.font_height + 5
+            if len(self.frames) > 20:
+                h += self.font_height + 5
+                fps = "FPS: {:>6.3f}".format(len(self.frames) / sum(self.frames))
+                draw.text((0, h), fps, font=self.font, fill=(255, 255, 255))
+                h += self.font_height + 5
+            else:
+                h += self.font_height + 5
+                fps = "FPS: N/A"
+                draw.text((0, h), fps, font=self.font, fill=(255, 255, 255))
+                h += self.font_height + 5
+            self.result_window.blit(result_image.tobytes())
+            self.result_window.update()
+
+        end_time = time.time()
+        if self.prev_time is not None:
+            self.frames.insert(0, end_time - self.prev_time)
+        self.frames = self.frames[:30]
+        self.prev_time = end_time
+
+
+def main(args):
+    # Actcast application
+    app = actfw_core.Application()
+
+    # Load act setting
+    settings = app.get_settings(
+        {
+            "rotation": 0,
+            "hflip": False,
+            "display": True,
+            "target": [],
+            "threshold": 0.9,
+            "resize_method": "crop",
+        }
+    )
+    if isinstance(settings["target"], str):
+        def to_int(s):
+            try:
+                return int(s)
+            except ValueError:
+                return None
+
+        def is_class_id(n):
+            return isinstance(n, int) and n >= 0 and n < 1000
+
+        settings["target"] = list(
+            set(filter(is_class_id, map(to_int, settings["target"].split(","))))
+        )
+    if settings["target"] == []:
+        settings["target"] = range(1000)
+
+    # CommandServer (for `Take Photo` command)
+    cmd = actfw_core.CommandServer()
+    app.register_task(cmd)
+
+    # Capture task
+    if settings["resize_method"] == "crop":
+        cap = V4LCameraCapture("/dev/video0", (CAPTURE_WIDTH, CAPTURE_HEIGHT), 30)
+    else:
+        cap = V4LCameraCapture(
+            "/dev/video0",
+            (CAPTURE_WIDTH, CAPTURE_HEIGHT),
+            30,
+            format_selector=V4LCameraCapture.FormatSelector.PROPER,
+        )
+    capture_size = cap.capture_size()
+
+    def config(video):
+        video.set_rotation(
+            settings["rotation"]
+        )  # ignore result (requires camera capability)
+        video.set_horizontal_flip(
+            settings["hflip"]
+        )  # ignore result (requires camera capability)
+
+    cap.configure(config)
+    app.register_task(cap)
+
+    # Classifier task
+    conv = Classifier(settings, capture_size)
+    app.register_task(conv)
+
+    def run(preview_window=None, result_window=None, title_window=None):
+        # Presenter task
+        pres = Presenter(settings, preview_window, result_window, title_window, cmd)
+        app.register_task(pres)
+
+        # Make task connection
+        cap.connect(conv)  # from `cap` to `conv`
+        conv.connect(pres)  # from `conv` to `pres`
+
+        # Start application
+        app.run()
+
+    if settings["display"]:
+        with Display() as display:
+            actual_display_size = display.size()
+            width, height = actual_display_size
+            virtual_display_size = (DISPLAY_WIDTH, DISPLAY_HEIGHT)
+            with display.open_window(
+                (0, 0, width, height), (32, 1), 1000
+            ):
+                title_window_size = (320, 100)
+                title_area = window_position(
+                    actual_display_size,
+                    virtual_display_size,
+                    (320, 16, *title_window_size),
+                )
+                with display.open_window(
+                    title_area, title_window_size, 2000
+                ) as title_window:
+                    logo_window_size = (320, 44)
+                    logo_area = window_position(
+                        actual_display_size,
+                        virtual_display_size,
+                        ((640 - 320) // 2, 480 - 44, *logo_window_size),
+                    )
+                    with display.open_window(
+                        logo_area, logo_window_size, 2000
+                    ) as logo_window:
+                        logo_bg = Image.new("RGBA", logo_window_size, "white")
+                        logo = Image.open("IdeinLogoStoke.svg.png")
+                        logo = logo.resize(logo_window_size)
+                        logo = Image.alpha_composite(logo_bg, logo)
+                        logo = logo.convert("RGB")
+                        logo_window.blit(logo.tobytes())
+                        logo_window.update()
+
+                        preview_size = min(width // 2, height) - 48 * 2
+                        preview_window_size = (preview_size, preview_size)
+                        preview_area = window_position(
+                            actual_display_size,
+                            actual_display_size,
+                            (48, 48, *preview_window_size),
+                        )
+                        with display.open_window(
+                            preview_area, (CAPTURE_WIDTH, CAPTURE_HEIGHT), 3000
+                        ) as preview_window:
+                            result_window_size = (320, 300)
+                            result_area = window_position(
+                                actual_display_size,
+                                virtual_display_size,
+                                (320, 120, *result_window_size),
+                            )
+                            with display.open_window(
+                                result_area, result_window_size, 3000
+                            ) as result_window:
+                                run(preview_window, result_window, title_window)
+
+    else:
+        run()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="example: capture from UVC camera")
+    main(parser.parse_args())

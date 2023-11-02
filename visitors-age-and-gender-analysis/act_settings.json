@@ -1,0 +1,20 @@
+{
+  "capture_scale": 2,
+  "exposure_time": 0,
+  "camera_rotation": "0",
+  "hflip": false,
+  "resize_method": "crop",
+  "capture_cropping_size": 1,
+  "move_cropping_point": "0,0",
+  "notification_direction": "top_to_bottom",
+  "detect_line_margin": 1,
+  "detect_x_limit": "0.0,1.0",
+  "detection_area_margin": 0.01,
+  "face_line_margin": 1,
+  "threshold": 0.5,
+  "gender_threshold": 0.0,
+  "display": false,
+  "image_brightness_correction": false,
+  "exclude_age": 0,
+  "capture_framerate": 8
+}

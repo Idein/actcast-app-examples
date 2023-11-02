@@ -1,0 +1,58 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "title": "timestamp",
+                "description": "timestamp",
+                "descriptions": {
+                  "ja": "タイムスタンプ"
+                },
+                "type": "number"
+            },
+            "prob": {
+                "title": "probability",
+                "description": "matching score",
+                "descriptions": {
+                  "ja": "マッチングスコア"
+                },
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0
+            },
+            "age": {
+                "title": "age",
+                "description": "age of detected person",
+                "descriptions": {
+                  "ja": "年齢"
+                },
+                "type": "number",
+                "minimum": 0,
+                "maximum": 116
+            },
+            "gender": {
+                "title": "gender",
+                "description": "Male or Female",
+                "descriptions": {
+                  "ja": "男性か女性か"
+                },
+                "type": "string"
+            },
+            "gender_score": {
+                "title": "gender score",
+                "description": "0 means looks like male, 1 means female",
+                "descriptions": {
+                  "ja": "-1.0に近いほど男性、1.0に近い場合女性"
+                },
+                "type": "number",
+                "minimum": -1.0,
+                "maximum": 1.0
+            }
+        },
+        "required": [
+            "timestamp"
+        ]
+    }
+}

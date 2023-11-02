@@ -1,0 +1,74 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "display": {
+            "title": "display",
+            "description": "output video to HDMI display",
+            "descriptions": {
+                "ja": "HDMIディスプレイへの描画を行う"
+            },
+            "type": "boolean",
+            "default": false
+        },
+        "rotation": {
+            "title": "camera rotation",
+            "description": "rotate camera capture (0 or 90 or -90 or 180)",
+            "descriptions": {
+                "ja": "撮影画像の回転(0, 90, -90, 180 のどれか)"
+            },
+            "type": "integer",
+            "default": 0
+        },
+        "hflip": {
+            "title": "horizontal flip camera",
+            "description": "flip camera capture",
+            "descriptions": {
+                "ja": "撮影画像の左右反転"
+            },
+            "type": "boolean",
+            "default": false
+        },
+        "target": {
+            "title": "target class IDs",
+            "description": "comma separated IDs like \"1,2,3,..,999\", \"\" means all IDs",
+            "descriptions": {
+                "ja": "\"1,2,3,..,999\"のようにカンマ区切りされた対象クラスのID(\"\"ならば全ID)"
+            },
+            "type": "string",
+            "default": ""
+        },
+        "threshold": {
+            "title": "probability threshold",
+            "description": "notify when over this threshold",
+            "descriptions": {
+                "ja": "通知を実施する確度の閾値"
+            },
+            "type": "number",
+            "default": 0.9,
+            "minimum": 0,
+            "maximum": 1
+        },
+        "resize_method": {
+            "title": "crop or resize",
+            "description": "Captured image resizing method",
+            "descriptions": {
+                "ja": "撮影画像のリサイズ方法"
+            },
+            "type": "string",
+            "enum": [
+                "crop",
+                "resize"
+            ],
+            "default": "crop"
+        }
+    },
+    "required": [
+        "display",
+        "hflip",
+        "resize_method",
+        "rotation",
+        "target",
+        "threshold"
+    ]
+}

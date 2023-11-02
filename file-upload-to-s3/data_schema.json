@@ -1,0 +1,14 @@
+{
+  "$schema": "https://actcast.io/schema/v7/data_schema_schema.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "message": {
+        "type": "string",
+        "description": "The message to display to the user"
+      }
+    },
+    "required": ["message"]
+  }
+}

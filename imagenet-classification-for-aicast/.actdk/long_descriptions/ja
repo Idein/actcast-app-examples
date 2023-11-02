@@ -1,0 +1,85 @@
+# ImageNet Classification
+
+本アプリケーションは撮影画像を[1000クラス](http://image-net.org/challenges/LSVRC/2012/browse-synsets)に分類する。
+連続5フレーム以上top-1クラスの確度が閾値を越えた場合、そのクラスのラベルと確度をActcastに通知する。
+
+![スクリーンショット画像](https://actcast-app-readme-static.s3-ap-northeast-1.amazonaws.com/imagenet-classification/screen_capture.png?versionId=.Wop1ui9P_WD0nq.6kp3JDP5pDwQydmf "スクリーンショット")
+
+## ユースケース
+
+### 撮影物の通知
+
+本アプリケーションはカメラ前に来た物の情報を収集に利用できる。
+
+![ユースケース画像](https://actcast-app-readme-static.s3-ap-northeast-1.amazonaws.com/imagenet-classification/UseCase1.svg?versionId=D.ROAHp70_l2sTpviXjdXHiIgB4ZWyVf "ユースケース")
+
+## データ送信タイミング
+
+データは以下のタイミングで通知される。
+
+- [x] 即時
+- [ ] N秒毎:
+- [ ] ユーザ指定秒数毎 (関連設定: ``)
+- [ ] その他:
+
+## クラス
+
+[1000クラスのIDとラベル](https://actcast-app-readme-static.s3-ap-northeast-1.amazonaws.com/imagenet-classification/labels.txt?versionId=q1b9Qt8GbXsokuXdYf4xC7a6qfIqCIWr)
+
+## 詳細
+### デバイス要件
+
+- Raspberry Pi Compute Module 4
+    - カメラ
+        - Raspberry Pi カメラ もしくは USBカメラ
+        - 撮影解像度 \>= 300x300
+        - 撮影フレームレート
+            - \>= 15fps ( <  Pi4)
+            - \>= 20fps (\>= Pi4)
+        - 撮影フォーマット `RGB24` か `YUYV` か `MJPEG`
+    - Hailo8 AI Processor
+    - (任意) HDMIディスプレイ
+
+### 準備
+
+### 出力データ形式
+
+本アプリケーションは、連続5フレーム以上top-1クラスの確度が閾値を越えた場合、Actcastへ以下のような形式のデータを通知する。
+
+~~~~json
+{
+    "label": "Egyptian cat",
+    "prob": 0.6
+}
+~~~~
+
+* `label`: Top-1 クラスのラベル
+* `prob`: 確度
+
+### 設定項目
+
+* `display`: HDMIディスプレイへ撮影画像と分類結果top-10の描画を行う。
+* `camera rotation`: 撮影画像を回転する (0 or 90 or -90 or 180)。ただし、カメラが回転に対応している必要がある。もし対応していなければ。本設定は無視される。
+* `horizontal flip camera`: 撮影画像を左右反転する。ただし、カメラが回転に対応している必要がある。もし対応していなければ。本設定は無視される。
+* `target class IDs`: `1,30,2,52,999`のようなカンマ区切りの対象クラスID(空は全クラス指定を意味する)。この一覧に含まれているクラスのみがActcastへの通知対象となる。
+    * 例: `954,673` は "banana" と "mouse" を通知対象とする設定
+* `probability threshold`: 確度がこの閾値を越えたら通知を行う。
+* `crop or resize`: 撮影画像を必要なサイズへリサイズする際の方法
+    * `crop` モードでは、撮影画像中心から必要なサイズ分を切り抜く
+      ![cropモード画像](https://actcast-app-readme-static.s3-ap-northeast-1.amazonaws.com/common/resizing_method/resizing_method-crop.svg?versionId=11frKZkF.1KGGzYBJWhg4TdqeUTEIw0i "cropモード")
+    * `resize` モードでは、撮影画像中心から必要なサイズと同一アスペクトの最大サイズを切り抜いた後に必要なサイズへ縮小を行う。
+      ![resizeモード画像](https://actcast-app-readme-static.s3-ap-northeast-1.amazonaws.com/common/resizing_method/resizing_method-resize.svg?versionId=YxE5ZC5YHJOeEY2D8l2ospJhDArrKo2y "resizeモード")
+
+
+### ネットワーク接続制限
+
+本アプリはアプリ自身が他のサーバ等と直接通信を行うことはない。
+
+## 免責事項
+
+本アプリの機械学習による挙動は100%の精度を保証するものではない。
+
+## 連絡先
+
+本アプリケーションはIdein Incが開発・保守を行っている。
+連絡は contact@actcast.io へ

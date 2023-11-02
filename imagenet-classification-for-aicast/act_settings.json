@@ -1,0 +1,8 @@
+{
+  "display": false,
+  "rotation": 0,
+  "hflip": false,
+  "target": "",
+  "threshold": 0.1,
+  "resize_method": "crop"
+}

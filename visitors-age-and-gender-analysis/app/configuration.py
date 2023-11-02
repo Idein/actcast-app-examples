@@ -1,0 +1,2 @@
+ACT_NOTIFY = True
+FACE_ACT = False
