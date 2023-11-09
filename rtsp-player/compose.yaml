@@ -1,0 +1,13 @@
+services:
+  # RTSP server
+  mediamtx:
+    image: bluenviron/mediamtx:1.2.1
+    ports:
+      - "8554:8554"
+
+  # RTSP publisher
+  gstreamer:
+    build: ./test
+    command: gst-launch-1.0 videotestsrc ! capsfilter caps="video/x-raw" ! queue ! x264enc ! rtspclientsink protocols=tcp location=rtsp://mediamtx:8554/test
+    links:
+      - mediamtx

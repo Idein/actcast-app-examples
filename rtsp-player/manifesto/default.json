@@ -1,0 +1,31 @@
+{
+  "boards": [
+    "RSPi2B",
+    "RSPi3B",
+    "RSPiCM3",
+    "RSPi3BPlus",
+    "RSPi3APlus",
+    "RSPiCM3Plus",
+    "RSPiZero2W"
+  ],
+  "devices": [
+    {
+      "type": "videocore",
+      "device": [
+        "/dev/vcsm",
+        "/dev/vcio",
+        "/dev/vc-mem",
+        "/dev/vchiq",
+        "/dev/gpiomem"
+      ]
+    },
+    {
+      "type": "framebuffer",
+      "device": ["/dev/fb0"]
+    }
+  ],
+  "networks": [
+    { "local_addr": true, "protocol": "tcp", "port": 554 },
+    { "local_addr": true, "protocol": "tcp", "port": 8554 }
+  ]
+}

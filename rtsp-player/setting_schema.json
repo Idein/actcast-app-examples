@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "display": {
+      "title": "display",
+      "description": "output video to HDMI display",
+      "type": "boolean",
+      "default": true
+    },
+    "rtsp_url": {
+      "title": "RTSP URL",
+      "description": "URL of the RTSP to read like: `rtsp://[<username>:<password>@]<ip>:<port>/<path>`",
+      "type": "string",
+      "default": "rtsp://[<username>:<password>@]<ip>:<port>/<path>"
+    },
+    "fps": {
+      "title": "FPS",
+      "description": "Framerate of captures",
+      "type": "number",
+      "default": 5,
+      "minimum": 1,
+      "maximum": 15
+    }
+  },
+  "required": ["display", "rtsp_url", "fps"]
+}
