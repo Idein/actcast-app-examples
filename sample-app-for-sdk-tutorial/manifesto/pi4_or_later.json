@@ -1,0 +1,24 @@
+{
+  "boards": [
+    "RSPi4B"
+  ],
+  "devices": [
+    {
+      "device": [
+        "/dev/video0"
+      ],
+      "type": "camera"
+    },
+    {
+      "device": [
+        "/dev/vcsm",
+        "/dev/vcio",
+        "/dev/vc-mem",
+        "/dev/vchiq",
+        "/dev/gpiomem",
+        "/dev/dri/card0"
+      ],
+      "type": "videocore"
+    }
+  ]
+}
