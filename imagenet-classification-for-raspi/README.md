@@ -1,4 +1,4 @@
-# Sample app for SDK Tutorial
+# ImageNet Classification for Raspberry Pi
 
 ## 概要
 
