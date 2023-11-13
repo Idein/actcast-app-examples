@@ -1,0 +1,28 @@
+{
+  "$schema": "https://actcast.io/schema/v7/setting_schema_schema.json",
+  "type": "object",
+  "properties": {
+    "display": {
+      "title": "display",
+      "description": "output video to HDMI display",
+      "type": "boolean",
+      "default": true
+    },
+    "rtsp_url": {
+      "title": "RTSP URL",
+      "description": "URL of the RTSP to read like: `rtsp://[<username>:<password>@]<ip>:<port>/<path>`",
+      "type": "string",
+      "default": "rtsp://[<username>:<password>@]<ip>:<port>/<path>"
+    },
+    "fps": {
+      "title": "FPS",
+      "description": "Framerate of captures",
+      "type": "number",
+      "default": 5,
+      "minimum": 1,
+      "maximum": 15
+    }
+  },
+  "required": ["display", "rtsp_url", "fps"],
+  "propertyOrder": ["display", "rtsp_url", "fps"]
+}

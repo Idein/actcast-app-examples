@@ -1,0 +1,14 @@
+{
+  "$schema": "https://actcast.io/schema/v7/data_schema_schema.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "fps": {
+        "type": "number",
+        "description": "FPS"
+      }
+    },
+    "required": ["fps"]
+  }
+}

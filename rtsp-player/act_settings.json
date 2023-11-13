@@ -1,0 +1,5 @@
+{
+  "display": true,
+  "rtsp_url": "rtsp://[<username>:<password>@]<ip>:<port>/<path>",
+  "fps": 5
+}
