@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://actcast.io/schema/v7/setting_schema_schema.json",
   "type": "object",
   "properties": {
     "display": {
@@ -23,5 +23,6 @@
       "maximum": 15
     }
   },
-  "required": ["display", "rtsp_url", "fps"]
+  "required": ["display", "rtsp_url", "fps"],
+  "propertyOrder": ["display", "rtsp_url", "fps"]
 }
