@@ -14,7 +14,7 @@
   ],
   "pip": [
     "PySocks == 1.7.1",
-    "actfw-core == 2.2.1"
+    "actfw-core == 2.3.0"
   ],
   "raspberrypi": {
     "apt": [
@@ -22,7 +22,7 @@
       "libraspberrypi-bin"
     ],
     "pip": [
-      "actfw-raspberrypi == 2.0.0"
+      "actfw-raspberrypi == 3.0.0"
     ]
   }
 }

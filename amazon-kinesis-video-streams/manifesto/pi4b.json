@@ -23,11 +23,6 @@
   ],
   "networks": [
     {
-      "domain": "*.execute-api.*.amazonaws.com",
-      "port": 443,
-      "protocol": "tcp"
-    },
-    {
       "domain": "kinesisvideo.*.amazonaws.com",
       "port": 443,
       "protocol": "tcp"
