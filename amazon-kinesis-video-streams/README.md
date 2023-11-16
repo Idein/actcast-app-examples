@@ -25,7 +25,7 @@ gstreamer 経由で kinesis video stream を使うためには `app/*` に以下
 
 次の Dockerfile を使って docker イメージを作成します
 
-```
+```Dockerfile
 FROM idein/actcast-rpi-app-base:buster-1
 ENV DEBIAN_FRONTEND "noninteractive"
 ENV DEBCONF_NOWARNINGS "yes"
@@ -53,13 +53,14 @@ RUN cp /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build/libKinesisVideoP
 ```
 
 actsim に ssh でログインして docker image を作成します
+`<REMOTE>` actsim がインストールされた Raspberry Pi の IP アドレスです
 password は raspberry です
 
-```
+```bash
 ssh pi@<REMOTE>
 ```
 
-```
+```bash
 cd ~/
 mkdir workspace
 chmod 777 workspace
@@ -70,13 +71,13 @@ sudo docker build --tag kvssink:buster-1 .
 
 docker image のビルドが終わったらコンテナを起動して shared object をコピーします
 
-```
+```bash
 sudo docker run -ti -u 0:0 -v /home/pi/workspace:/workspace kvssink:buster-1 /bin/bash
 ```
 
 コピーしたらコンテナを終了します
 
-```
+```bash
 cp /opt/libKinesisVideoProducer.so /workspace
 cp /opt/libgstkvssink.so /workspace
 cp /opt/libcproducer.so /workspace
@@ -85,13 +86,19 @@ exit
 
 コンテナの外に .so がコピーされていることを確認します
 
-```
+```bash
 ls /home/pi/workspace
+```
+
+actsim からログアウトします
+
+```bash
+exit
 ```
 
 actsim にできたこの 3 つの shared object を `rsync` 等でホストマシンの `app/*` へコピーします
 
-```
+```bash
 rsync -e ssh pi@<REMOTE>:/home/pi/workspace/libKinesisVideoProducer.so ./app
 rsync -e ssh pi@<REMOTE>:/home/pi/workspace/libgstkvssink.so ./app
 rsync -e ssh pi@<REMOTE>:/home/pi/workspace/libcproducer.so ./app
