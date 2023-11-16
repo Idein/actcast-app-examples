@@ -72,7 +72,7 @@ sudo docker build --tag kvssink:buster-1 .
 docker image のビルドが終わったらコンテナを起動して shared object をコピーします
 
 ```bash
-sudo docker run -ti -u 0:0 -v /home/pi/workspace:/workspace kvssink:buster-1 /bin/bash
+sudo docker run -u 0:0 -v /home/pi/workspace:/workspace --rm -ti kvssink:buster-1 /bin/bash
 ```
 
 コピーしたらコンテナを終了します
@@ -90,9 +90,10 @@ exit
 ls /home/pi/workspace
 ```
 
-actsim からログアウトします
+コピーを確認したら docker image を削除して actsim からログアウトします
 
 ```bash
+sudo docker rmi kvssink:buster-1
 exit
 ```
 
