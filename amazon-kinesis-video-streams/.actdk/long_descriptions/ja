@@ -1,0 +1,39 @@
+# Video capture example
+
+## ユースケース
+
+## 詳細
+### デバイス要件
+
+- Raspberry Pi シリーズ
+    - カメラ
+        - Raspberry Pi カメラ もしくは USBカメラ
+        - 撮影解像度 \>= (320 \* `[Capture] capture scale`) x (240 \* `[Capture] capture scale`)
+          - 設定項目 `[Capture] capture scale` で要求キャプチャサイズを設定できます。
+          - 解像度を高く設定すると精度が向上しますが、検出速度は低下します。
+        - 撮影フレームレート \>= 10fps
+        - 撮影フォーマット `RGB24` か `YUYV` か `MJPEG`
+    - (任意) HDMIディスプレイ
+
+### 設定項目
+
+このアプリケーションには多くの設定項目がありますが、
+初回使用時には変更する必要はありません。
+
+* `[Capture]` カテゴリ  
+    * `capture scale`: キャプチャ画像のサイズ。キャプチャサイズを決定する次の式で使用される (320 \* `capture scale`) x (240 \* `capture scale`)  
+    例) `capture scale`が4の場合、1280x960@10fps以上で画像をキャプチャしようとします。接続されたカメラに十分な能力がない場合、エラーで終了します。エラー発生時はデバイスログにActSettingsErrorとして記録されます。
+    * `exposure time`: カメラの露出時間。（0で自動設定）カメラが対応していない場合この設定項目は無視されます。
+    * `horizontal flip camera`: カメラが対応している場合は画像を反転して撮影します。 対応していない場合この設定項目は無視されます。
+    * `camera rotation`: カメラが対応している場合はカメラを回転させて撮影します。 (0, 180 のどれか) 対応していない場合この設定項目は無視されます。
+    * `capture framerate`: カメラのフレームレートを設定します。接続されたカメラに十分な能力がない場合、エラーで終了します。エラー発生時はデバイスログにActSettingsErrorとして記録されます。
+* `[Display]` カテゴリ
+    * `display`: アプリケーションの動作を確認するために HDMIディスプレイへ表示させるかどうか。
+* `[Amazon Kinesis Video Streams]` カテゴリ
+  本アプリケーションは以下の設定項目を入力することで Kinesis Video Streams にストリーミングを行うことが可能です。
+   * `stream name`: 送信先 Kinesis Kinesis Video Streams のストリーム名
+   * `region name`: 送信先 Kinesis Kinesis Video Streams のリージョン名
+   * `aws access key id`: Kinesis Video Streams にアクセスするために使用する AWS アクセスキー id
+   * `aws secret access key`: Kinesis Video Streams にアクセスするために使用する AWS シークレットアクセスキー id
+
+

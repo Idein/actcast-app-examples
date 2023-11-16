@@ -1,0 +1,6 @@
+act_settings.json
+.actdk/setting.json
+.actdk/cache
+app/libKinesisVideoProducer.so
+app/libgstkvssink.so
+app/libcproducer.so

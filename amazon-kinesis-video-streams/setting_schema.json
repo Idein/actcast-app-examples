@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "exposure_time": {
+      "title": "[Capture] exposure time",
+      "description": "exposure time in ms (0 means auto)",
+      "descriptions": {
+        "ja": "カメラの露出時間（0で自動設定）"
+      },
+      "type": "integer",
+      "default": 0,
+      "minimum": 0
+    },
+    "camera_rotation": {
+      "title": "[Capture] camera rotation",
+      "description": "Rotate camera capture image",
+      "descriptions": {
+        "ja": "撮影画像の回転(0, 180 のどれか)"
+      },
+      "type": "string",
+      "default": "0",
+      "enum": [
+        "0",
+        "180"
+      ]
+    },
+    "hflip": {
+      "title": "[Capture] horizontal flip camera",
+      "description": "flip camera capture",
+      "descriptions": {
+        "ja": "撮影画像の左右反転"
+      },
+      "type": "boolean",
+      "default": false
+    },
+    "display": {
+      "title": "[Display] display",
+      "description": "output video to HDMI display",
+      "descriptions": {
+        "ja": "HDMIディスプレイへの描画を行う"
+      },
+      "type": "boolean",
+      "default": false
+    },
+    "capture_framerate": {
+      "title": "capture framerate",
+      "description": "capture framerate",
+      "descriptions": {
+        "ja": "キャプチャフレームレート"
+      },
+      "type": "integer",
+      "default": 8,
+      "minimum": 1
+    },
+    "stream_name": {
+      "title": "stream name",
+      "description": "The name of the destination Kinesis video stream.",
+      "descriptions": {
+        "ja": "送信先 Kinesis Kinesis Video Streams のストリーム名"
+      },
+      "type": "string",
+      "default": ""
+    },
+    "region_name": {
+      "title": "region name",
+      "description": "The region name of the destination Kinesis video stream.",
+      "descriptions": {
+        "ja": "送信先 Kinesis Kinesis Video Streams のリージョン名"
+      },
+      "type": "string",
+      "default": ""
+    },
+    "aws_access_key_id": {
+      "title": "aws access key id",
+      "description": "The AWS access key that is used to access Kinesis Video Streams.",
+      "descriptions": {
+        "ja": "Kinesis Video Streams にアクセスするために使用する AWS アクセスキー id"
+      },
+      "type": "string",
+      "default": ""
+    },
+    "aws_secret_access_key": {
+      "title": "aws secret access key",
+      "description": "The AWS secret key that is used to access Kinesis Video Streams.",
+      "descriptions": {
+        "ja": "Kinesis Video Streams にアクセスするために使用する AWS シークレットアクセスキー id"
+      },
+      "type": "string",
+      "default": ""
+    }
+  },
+  "propertyOrder": [
+    "exposure_time",
+    "camera_rotation",
+    "hflip",
+    "display",
+    "capture_framerate",
+    "stream_name",
+    "region_name",
+    "aws_access_key_id",
+    "aws_secret_access_key"
+  ],
+  "required": [
+    "display",
+    "exposure_time",
+    "hflip",
+    "capture_framerate"
+  ]
+}
