@@ -13,6 +13,7 @@
     ],
     "pip": [
       "actfw-raspberrypi"
-    ]
+    ],
+    "base_image": "idein/actcast-rpi-app-base:bullseye-1"
   }
 }
