@@ -4,6 +4,21 @@
     "libv4lconvert0",
     "python3-pil",
     "python3-numpy",
+    "build-essential",
+    "python-dev-is-python3",
+    "libtiff-dev",
+    "libjpeg-dev",
+    "libopenjp2-7-dev",
+    "zlib1g-dev",
+    "libfreetype6-dev",
+    "liblcms2-dev",
+    "libwebp-dev",
+    "tcl8.6-dev",
+    "tk8.6-dev",
+    "python3-tk",
+    "libharfbuzz-dev",
+    "libfribidi-dev",
+    "libxcb1-dev",
     "fonts-dejavu-core"
   ],
   "pip": [],
@@ -14,6 +29,6 @@
     "pip": [
       "actfw-raspberrypi"
     ],
-    "base_image": "idein/actcast-rpi-app-base:bullseye-1"
+    "base_image": "idein/actcast-rpi-app-base:20231207-bookworm"
   }
 }
