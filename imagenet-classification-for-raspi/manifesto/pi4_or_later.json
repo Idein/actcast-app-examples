@@ -1,6 +1,7 @@
 {
   "boards": [
-    "RSPi4B"
+    "RSPi4B",
+    "RSPiCM4"
   ],
   "devices": [
     {

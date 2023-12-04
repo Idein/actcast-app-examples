@@ -6,17 +6,13 @@
     "python3-pil",
     "python3-numpy",
     "fbset",
-    "fonts-dejavu-core"
+    "fonts-dejavu-core",
+    "libopenjp2-7-dev"
   ],
-  "pip": [
-    "actfw-core == 2.0.0"
-  ],
+  "pip": ["actfw-core==2.0.0"],
   "raspberrypi": {
-    "apt": [
-      "libraspberrypi0"
-    ],
-    "pip": [
-      "actfw-raspberrypi == 2.0.0"
-    ]
+    "apt": ["libraspberrypi0"],
+    "pip": ["actfw-raspberrypi==2.0.0"],
+    "base_image": "idein/actcast-rpi-app-base:bullseye"
   }
 }
