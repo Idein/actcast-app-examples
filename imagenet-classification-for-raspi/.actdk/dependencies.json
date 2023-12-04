@@ -24,7 +24,7 @@
   "pip": [],
   "raspberrypi": {
     "apt": [
-      "libraspberrypi0"
+      "libraspberrypi-dev"
     ],
     "pip": [
       "actfw-raspberrypi"
