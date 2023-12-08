@@ -1,0 +1,9 @@
+{
+  "app_id": "convert-camera-image-to-grayscale",
+  "app_server_id": 1,
+  "short_description": "convert camera image to grayscale",
+  "short_descriptions": {},
+  "target_types": [
+    "raspberrypi"
+  ]
+}

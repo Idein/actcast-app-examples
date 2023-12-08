@@ -50,5 +50,5 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 
 ### 設定項目
 
-* `display`: HDMIディスプレイへ撮影画像と分類結果top-10の描画を行う。
-* `threshold`: 確度がこの閾値を越えたら通知を行う。
+- `display`: HDMIディスプレイへ撮影画像と分類結果top-10の描画を行う。
+- `threshold`: 確度がこの閾値を越えたら通知を行う。

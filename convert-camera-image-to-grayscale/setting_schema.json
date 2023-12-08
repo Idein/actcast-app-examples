@@ -1,0 +1,16 @@
+{
+  "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
+  "type": "object",
+  "properties": {
+    "display": {
+      "title": "display",
+      "description": "display grayscale image",
+      "descriptions": {
+        "ja": "ディスプレイにグレースケール画像を表示する"
+      },
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": []
+}
