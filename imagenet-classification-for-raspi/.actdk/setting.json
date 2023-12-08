@@ -1,5 +1,8 @@
 {
-  "app_id": "sample",
-  "app_server_id": 68,
-  "short_description": "sample application"
+  "app_id": "imagenet-classification-for-raspi",
+  "app_server_id": 1,
+  "short_description": "1000 class ImageNet classification demo for raspi",
+  "short_descriptions": {
+    "ja": "ImageNet1000クラス分類デモ(for raspi)"
+  }
 }
