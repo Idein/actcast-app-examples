@@ -2,7 +2,7 @@
 
 ## 概要
 このアプリはデバイスのカメラで読み込んだ画像を、グレースケール画像に変換するサンプルアプリです。  
-変換結果は、デバイスに接続したディスプレイや Actcast の [TakePhoto](https://actcast.io/docs/ja/ActManagement/TakePhoto/) 機能を使って確認できます。
+変換結果は、デバイスに接続したディスプレイや Actcast の [Take Photo](https://actcast.io/docs/ja/ActManagement/TakePhoto/) 機能を使って確認できます。
 
 ## 前提
 - 対象機種
@@ -49,7 +49,7 @@ actdk photo
 
 [アプリケーションをアップロードし、実機にインストール](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/GettingStarted/TestViaActcast/)します。
 
-接続したディスプレイや Actcast の [TakePhoto](https://actcast.io/docs/ja/ActManagement/TakePhoto/) 機能を使って変換されたグレースケール画像を確認できます。
+接続したディスプレイや Actcast の [Take Photo](https://actcast.io/docs/ja/ActManagement/TakePhoto/) 機能を使って変換されたグレースケール画像を確認できます。
 
 ### 設定項目
 
