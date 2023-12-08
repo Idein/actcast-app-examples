@@ -6,6 +6,7 @@ Actcast アプリケーションの開発時に参考となるサンプルアプ
 
 - [ImageNet Classification アプリ](imagenet-classification-for-raspi/)
 - [ai cast 上で動作する ImageNet Classification アプリ](imagenet-classification-for-aicast/)
+- [デバイスのカメラで読み込んだ画像をグレースケール画像に変換するアプリ](convert-camera-images-to-grayscale/)
 - [S3 にファイルをアップロードするアプリ](file-upload-to-s3/)
 - [年齢・性別推定アプリ](visitors-age-and-gender-analysis/)
 - [RTSP の映像を再生するアプリ](rtsp-player/)
