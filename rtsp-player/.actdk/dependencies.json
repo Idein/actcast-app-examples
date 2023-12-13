@@ -15,9 +15,9 @@
     "gstreamer1.0-omx",
     "gstreamer1.0-omx-rpi"
   ],
-  "pip": ["actfw-core == 2.3.0", "actfw-gstreamer == 0.1.1", "result == 0.6.0"],
+  "pip": ["actfw-core==2.3.0", "actfw-gstreamer==0.1.1", "result==0.6.0"],
   "raspberrypi": {
     "apt": ["libraspberrypi0"],
-    "pip": ["actfw-raspberrypi == 3.0.0"]
+    "pip": ["actfw-raspberrypi==3.0.0"]
   }
 }

@@ -128,11 +128,7 @@ actdk remote add <IDENTIFIER_YOU_LIKE>@<REMOTE>
 1. AmazonKinesisVideoStreamsFullAccess を持つ IAM User を作ります
 2. アクセスキーを生成します
 3. Kinesis Video Stream を作成します
-4. 2, 3 で作った アクセスキーとストリーム名を入れた act_settings.json を作ります
-
-### act_settings.json を生成
-
-[.actdk/long_descriptions/ja](.actdk/long_descriptions/ja) を確認してください
+4. 2, 3 で作った アクセスキーとストリーム名を入れた `act_settings.json` を作ります
 
 ### actdk run で actsin 上での動作確認
 

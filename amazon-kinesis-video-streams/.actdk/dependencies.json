@@ -13,8 +13,8 @@
     "liblog4cplus-1.1-9"
   ],
   "pip": [
-    "PySocks == 1.7.1",
-    "actfw-core == 2.3.0"
+    "PySocks==1.7.1",
+    "actfw-core==2.3.0"
   ],
   "raspberrypi": {
     "apt": [
@@ -22,7 +22,7 @@
       "libraspberrypi-bin"
     ],
     "pip": [
-      "actfw-raspberrypi == 3.0.0"
+      "actfw-raspberrypi==3.0.0"
     ]
   }
 }

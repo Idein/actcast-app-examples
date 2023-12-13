@@ -1,0 +1,106 @@
+#!/usr/bin/python3
+import numpy as np
+import actfw_core
+from PIL import Image
+from actfw_core.task import Pipe, Consumer
+from actfw_core.capture import V4LCameraCapture
+from actfw_raspberrypi.vc4 import Display
+
+
+# capture image size
+(CAPTURE_WIDTH, CAPTURE_HEIGHT) = (320, 240)
+
+# display area size
+(DISPLAY_WIDTH, DISPLAY_HEIGHT) = (640, 480)
+
+
+class Converter(Pipe):
+    """Convert RGB camera image to grayscale image"""
+
+    def __init__(self, capture_size):
+        super(Converter, self).__init__()
+        self.capture_size = capture_size
+
+    def proc(self, frame):
+        rgb_image = Image.frombuffer(
+            "RGB", self.capture_size, frame.getvalue(), "raw", "RGB"
+        )
+        gray_image = rgb_image.convert("L")
+        return gray_image
+
+
+class Presenter(Consumer):
+    """Display grayscale image on preview window and take photo view"""
+
+    def __init__(self, preview_window, cmd):
+        super(Presenter, self).__init__()
+        self.preview_window = preview_window
+        self.cmd = cmd
+
+    def proc(self, gray_image):
+        # update `Take Photo` image
+        self.cmd.update_image(gray_image)
+
+        # if preview window is available, display grayscale image
+        if self.preview_window is not None:
+            # convert grayscale image to RGB image for display in preview window
+            gray_image = gray_image.convert("RGB")
+            self.preview_window.blit(np.asarray(gray_image).tobytes())
+            self.preview_window.update()
+
+        actfw_core.heartbeat()
+
+
+def run(app, preview_window=None):
+    # CommandServer (for `Take Photo` command)
+    cmd = actfw_core.CommandServer()
+    app.register_task(cmd)
+
+    # register capture task
+    capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
+    framerate = 30
+    cap = V4LCameraCapture(
+        size=capture_size,
+        framerate=framerate,
+        format_selector=V4LCameraCapture.FormatSelector.PROPER,
+    )
+    app.register_task(cap)
+
+    # register converter task
+    conv = Converter(cap.capture_size())
+    app.register_task(conv)
+
+    # register presenter task
+    pres = Presenter(preview_window, cmd)
+    app.register_task(pres)
+
+    # Make task connection
+    cap.connect(conv)  # from `cap` to `conv`
+    conv.connect(pres)  # from `conv` to `pres`
+
+    # Start application
+    app.run()
+
+
+def main():
+    # Actcast application
+    app = actfw_core.Application()
+
+    # Load act setting
+    settings = app.get_settings({"display": False})
+
+    if settings["display"]:
+        with Display() as display:
+            preview_area = (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
+            capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
+            layer = 2000
+            with display.open_window(
+                preview_area, capture_size, layer
+            ) as preview_window:
+                run(app, preview_window)
+    else:
+        run(app)
+
+
+if __name__ == "__main__":
+    main()
