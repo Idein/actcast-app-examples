@@ -1,0 +1,15 @@
+{
+  "apt": [
+    "python3",
+    "python3-pil"
+  ],
+  "pip": [],
+  "raspberrypi": {
+    "apt": [
+      "libraspberrypi0"
+    ],
+    "pip": [
+      "actfw-raspberrypi"
+    ]
+  }
+}
