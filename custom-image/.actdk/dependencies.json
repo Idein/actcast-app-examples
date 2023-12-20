@@ -2,6 +2,8 @@
   "apt": [],
   "pip": ["actfw-core"],
   "raspberrypi-buster": {
-    "base_image": "ghcr.io/Idein/actcast-app-examples:custom-image-example"
+    "apt": [],
+    "pip": [],
+    "base_image": "ghcr.io/idein/custom-image-example:latest"
   }
 }
