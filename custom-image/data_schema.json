@@ -1,11 +1,14 @@
-
 {
   "$schema": "https://actcast.io/schema/v8/data_schema_schema.json",
   "type": "array",
   "items": {
     "type": "object",
     "properties": {
+      "python_version": {
+        "type": "string",
+        "description": "Python version used to run the script"
+      }
     },
-    "required": []
+    "required": ["python_version"]
   }
 }
