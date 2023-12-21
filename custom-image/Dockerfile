@@ -17,7 +17,9 @@ RUN python -m pip wheel --wheel-dir=/root/wheels 'pillow<9.0.0,>=8.0.0'
 RUN python -m pip install --no-index --find-links=/root/wheels numpy pillow
 
 # 他のパッケージをインストールしたいときは以降に追記してください。
+# インストールしたパッケージに実行時の依存がある場合は Stage 2 で依存パッケージをインストールしてください。
 # 例: scipy の場合
+# RUN apt install -y pkg-config gfortran libopenblas-dev
 # RUN python -m pip wheel --wheel-dir=/root/wheels scipy
 # RUN python -m pip install --no-index --find-links=/root/wheels scipy
 
@@ -36,7 +38,10 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin/
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     libexpat1 \
+    # pillow
     libfreetype6 libjpeg62-turbo \
+    # 例: scipy をインストールする場合は以下を追加
+    # libopenblas-base \
     && apt-get clean \
     && apt-get autoclean \
     && apt-get autoremove -y \
