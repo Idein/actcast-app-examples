@@ -1,5 +1,6 @@
-
 {
+  "version": 2,
+  "target_type": "raspberrypi-buster",
   "boards": [
     "RSPi1A",
     "RSPi1B",
@@ -19,20 +20,10 @@
   ],
   "devices": [
     {
-      "type": "camera",
-      "device": [
-        "/dev/video0"
-      ]
+      "type": "camera"
     },
     {
-      "type": "videocore",
-      "device": [
-        "/dev/vcsm",
-        "/dev/vcio",
-        "/dev/vc-mem",
-        "/dev/vchiq",
-        "/dev/gpiomem"
-      ]
+      "type": "videocore"
     },
     {
       "type": "framebuffer",
