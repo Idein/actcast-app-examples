@@ -4,7 +4,7 @@ FROM --platform=linux/arm/v7 python:3.12.0-slim-bullseye as builder
 RUN python -m pip install --upgrade pip
 
 # numpy と pillow のインストール
-# この例では numpy と pillow は使いませんが、典型的なアプリではこの2つが必要になります。
+# 典型的なアプリではこの2つが必要になります。
 RUN apt update
 RUN apt install -y build-essential cmake ninja-build
 # Build numpy as a wheel
