@@ -17,9 +17,9 @@ RUN python -m pip wheel --wheel-dir=/root/wheels 'pillow<9.0.0,>=8.0.0'
 RUN python -m pip install --no-index --find-links=/root/wheels numpy pillow
 
 # 他のパッケージをインストールしたいときは以降に追記してください。
-# 例: opencv の場合
-# RUN python -m pip wheel --wheel-dir=/root/wheels opencv
-# RUN python -m pip install --no-index --find-links=/root/wheels opencv
+# 例: scipy の場合
+# RUN python -m pip wheel --wheel-dir=/root/wheels scipy
+# RUN python -m pip install --no-index --find-links=/root/wheels scipy
 
 # Stage 2: Final image
 FROM idein/actcast-rpi-app-base:bullseye-1
