@@ -13,10 +13,10 @@ Python 3.12 をインストールしたイメージをビルドし、そのイ�
   - バージョン: 1.17.0 以降
 - [Docker](https://www.docker.com/), [buildx extension](https://github.com/docker/buildx)
 
-## カスタムイメージのビルド方法
+## ベースイメージのビルド方法
 
 > [!NOTE] 
-> `ghcr.io/idein/custom-image-example` は予め公開されているため、動作確認のためにビルドする必要はありません。
+> ベースイメージ `ghcr.io/idein/custom-image-example` は予め公開されているため、動作確認のために改めてビルドする必要はありません。
 
 ```bash
 cd custom-image
@@ -25,8 +25,6 @@ docker buildx build --platform linux/amd64 -t ghcr.io/idein/custom-image-example
 ```
 
 `.actdk/dependencies.json` に `base_image` として `ghcr.io/idein/custom-image-example` が指定されており、`actdk build --release` や `actdk upload` ではここでビルドしたイメージが使われます。
-
-actsim での動作確認時には、イメージはレジストリに登録され公開されている必要があります。
 
 ## Actsim での動作確認
 
@@ -51,6 +49,16 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 ```json
 [{"python_version": "3.12.0 (main, Nov 29 2023, 03:48:30) [GCC 10.2.1 20210110]"}]
 ```
+
+ベースイメージを変更・再ビルドした場合は、以下のコマンドにより動作確認が可能です。
+
+```bash
+actdk build --release
+actdk deploy <IDENTIFIER_YOU_LIKE>
+actdk run -a --release <IDENTIFIER_YOU_LIKE>
+```
+
+詳細は [ActDK のコマンドリファレンス](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/Reference/Actdk/)を参照してください。
 
 ## Actcast Agent での動作確認
 
