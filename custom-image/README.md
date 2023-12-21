@@ -15,13 +15,18 @@ Python 3.12 をインストールしたイメージをビルドし、そのイ�
 
 ## カスタムイメージのビルド方法
 
+> [!NOTE] 
+> `ghcr.io/idein/custom-image-example` は予め公開されているため、動作確認のためにビルドする必要はありません。
+
 ```bash
 cd custom-image
 # イメージのビルド (時間がかかります)
 docker buildx build --platform linux/amd64 -t ghcr.io/idein/custom-image-example --load .
 ```
 
-`.actdk/dependencies.json` に `base_image` として `ghcr.io/idein/custom-image-example` が指定されており、ここでビルドしたイメージが使われます。
+`.actdk/dependencies.json` に `base_image` として `ghcr.io/idein/custom-image-example` が指定されており、`actdk build --release` や `actdk upload` ではここでビルドしたイメージが使われます。
+
+actsim での動作確認時には、イメージはレジストリに登録され公開されている必要があります。
 
 ## Actsim での動作確認
 
@@ -41,6 +46,12 @@ actdk remote add <IDENTIFIER_YOU_LIKE>@<REMOTE>
 actdk run -a <IDENTIFIER_YOU_LIKE>
 ```
 
+以下のようなログが出力されます。
+
+```json
+[{"python_version": "3.12.0 (main, Nov 29 2023, 03:48:30) [GCC 10.2.1 20210110]"}]
+```
+
 ## Actcast Agent での動作確認
 
 まず[Actcast に新規アプリケーションを作成](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/GettingStarted/CreateProject/)します。
@@ -49,7 +60,8 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 
 [アプリケーションをアップロードし、実機にインストール](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/GettingStarted/TestViaActcast/)します。
 
-### 設定項目
+Act Log で以下のようなログを確認できます。
 
-- `display`: HDMI ディスプレイへ撮影画像と分類結果 top-10 の描画を行う。
-- `threshold`: 確度がこの閾値を越えたら通知を行う。
+```json
+[{"python_version": "3.12.0 (main, Nov 29 2023, 03:48:30) [GCC 10.2.1 20210110]"}]
+```
