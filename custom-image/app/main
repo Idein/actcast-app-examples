@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+import actfw_core
+import sys
+
+
+def main():
+    # Actcast application
+    app = actfw_core.Application()
+
+    actfw_core.notify([{"python_version": sys.version}])
+
+    app.run()
+
+
+if __name__ == "__main__":
+    main()
