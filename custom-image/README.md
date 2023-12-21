@@ -39,6 +39,7 @@ actdk remote add <IDENTIFIER_YOU_LIKE>@<REMOTE>
 ### actdk run
 
 `actdk run` により Actsim 上でアプリケーションの動作確認をすることができます。停止させるには `Ctrl + C` を押します。
+このコマンドでは、ベースイメージは[公開されているもの](https://github.com/Idein/actcast-app-examples/pkgs/container/custom-image-example)が使われます。
 
 ```bash
 actdk run -a <IDENTIFIER_YOU_LIKE>
