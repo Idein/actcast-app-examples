@@ -1,4 +1,6 @@
-FROM --platform=linux/arm/v7 python:3.12.0-slim-bullseye as builder
+ARG PYTHON_VERSION=3.12.0
+
+FROM --platform=linux/arm/v7 python:${PYTHON_VERSION}-slim-bullseye as builder
 
 # Upgrade pip
 RUN python -m pip install --upgrade pip
