@@ -21,10 +21,12 @@ Python 3.12 をインストールしたイメージをビルドし、そのイ�
 ```bash
 cd custom-image
 # イメージのビルド (時間がかかります)
-docker buildx build --platform linux/amd64 -t ghcr.io/idein/custom-image-example --load .
+docker buildx build --platform linux/amd64 --build-arg PYTHON_VERSION=3.12.0 -t ghcr.io/idein/custom-image-example --load .
 ```
 
 `.actdk/dependencies.json` に `base_image` として `ghcr.io/idein/custom-image-example` が指定されており、`actdk build --release` や `actdk upload` ではここでビルドしたイメージが使われます。
+
+`--build-arg PYTHON_VERSION=3.12.0` を変更することで、インストールする Python のバージョンを変更することができます。
 
 ## Actsim での動作確認
 
