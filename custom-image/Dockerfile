@@ -107,7 +107,7 @@ RUN set -eux; \
     cd /; \
     rm -rf /usr/src/python; \
     \
-    find /usr/local -depth \
+    find /root/workspace -depth \
     \( \
     \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
     -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
@@ -118,8 +118,8 @@ RUN set -eux; \
     \
     apt-mark auto '.*' > /dev/null; \
     apt-mark manual $savedAptMark; \
-    find /usr/local -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
-    | awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); printf "*%s\n", so }' \
+    find /root/workspace -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
+    | awk '/=>/ { so = $(NF-1); if (index(so, "/root/workspace/") == 1) { next }; gsub("^/(root/)?", "", so); printf "*%s\n", so }' \
     | sort -u \
     | xargs -r dpkg-query --search \
     | cut -d: -f1 \
@@ -131,13 +131,13 @@ RUN set -eux; \
     \
     python3 --version
 
-# make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)
+# make some useful symlinks that are expected to exist ("/root/workspace/bin/python" and friends)
 RUN set -eux; \
     for src in idle3 pydoc3 python3 python3-config; do \
     dst="$(echo "$src" | tr -d 3)"; \
-    [ -s "/usr/local/bin/$src" ]; \
-    [ ! -e "/usr/local/bin/$dst" ]; \
-    ln -svT "$src" "/usr/local/bin/$dst"; \
+    [ -s "/root/workspace/bin/$src" ]; \
+    [ ! -e "/root/workspace/bin/$dst" ]; \
+    ln -svT "$src" "/root/workspace/bin/$dst"; \
     done
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
