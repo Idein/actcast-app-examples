@@ -4,15 +4,11 @@ FROM idein/actcast-rpi-app-base:bullseye-1 as base
 # https://github.com/docker-library/python/blob/master/3.12/slim-bullseye/Dockerfile
 # からコピーしてきたものに対して、以下の変更を加えています。
 # - prefix 指定してインストール先を /root/workspace に変更
-# - make 時にテストの実行をスキップ
 
 RUN mkdir /root/workspace
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:/root/workspace/bin:$PATH
-# テストの実行をスキップ https://github.com/docker-library/python/issues/160#issuecomment-509426916
-# メモ: この指定ではテストが走ってだめだった
-ENV PROFILE_TASK="-m test.regrtest --pgo test_array test_base64 test_binascii test_binhex test_binop test_c_locale_coercion test_csv test_json test_hashlib test_unicode test_codecs test_traceback test_decimal test_math test_compile test_threading test_time test_fstring test_re test_float test_class test_cmath test_complex test_iter test_struct test_slice test_set test_dict test_long test_bytes test_memoryview test_io test_pickle"
 
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
