@@ -8,7 +8,7 @@ FROM idein/actcast-rpi-app-base:bullseye-1 as base
 RUN mkdir /root/workspace
 
 # ensure local python is preferred over distribution python
-ENV PATH /usr/local/bin:/root/workspace/bin:$PATH
+ENV PATH /root/workspace/bin:/usr/local/bin:$PATH
 
 # http://bugs.python.org/issue19846
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
@@ -103,6 +103,7 @@ RUN set -eux; \
     cd /; \
     rm -rf /usr/src/python; \
     \
+    # /root/workspace に変更
     find /root/workspace -depth \
     \( \
     \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
@@ -115,6 +116,7 @@ RUN set -eux; \
     apt-mark auto '.*' > /dev/null; \
     apt-mark manual $savedAptMark; \
     find /root/workspace -type f -executable -not \( -name '*tkinter*' \) -exec ldd '{}' ';' \
+    # /root/workspace に変更
     | awk '/=>/ { so = $(NF-1); if (index(so, "/root/workspace/") == 1) { next }; gsub("^/(root/)?", "", so); printf "*%s\n", so }' \
     | sort -u \
     | xargs -r dpkg-query --search \
@@ -127,6 +129,7 @@ RUN set -eux; \
     \
     python3 --version
 
+# /root/workspace に変更
 # make some useful symlinks that are expected to exist ("/root/workspace/bin/python" and friends)
 RUN set -eux; \
     for src in idle3 pydoc3 python3 python3-config; do \
