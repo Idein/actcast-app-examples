@@ -182,7 +182,7 @@ RUN apt update && apt install -y --no-install-recommends \
     # pip のアップグレード
     python -m pip install --upgrade pip && \
     # numpy と pillow のインストール
-    python -m pip install numpy 'pillow>=10.1.0' && \
+    python -m pip install numpy 'pillow<11.0.0,>=10.1.0' && \
     # 実行時に不要なパッケージを削除
     apt purge -y --auto-remove build-essential cmake ninja-build && \
     # キャッシュを削除
