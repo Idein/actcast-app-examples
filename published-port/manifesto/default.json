@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-buster",
+  "boards": [
+    "RSPi3B",
+    "RSPi3BPlus",
+    "RSPiZero2W",
+    "RSPi2B",
+    "RSPi3APlus",
+    "RSPiCM3",
+    "RSPiCM3Plus"
+  ],
+  "devices": [],
+  "allow_all_networks": true,
+  "published_ports": [
+    {
+      "protocol": "tcp",
+      "container_port": 8080,
+      "host_port": 8080
+    }
+  ]
+}

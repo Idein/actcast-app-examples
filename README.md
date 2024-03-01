@@ -11,3 +11,4 @@ Actcast アプリケーションの開発時に参考となるサンプルアプ
 - [年齢・性別推定アプリ](visitors-age-and-gender-analysis/)
 - [RTSP の映像を再生するアプリ](rtsp-player/)
 - [カスタムイメージ機能を利用して Python 3.12 を使うアプリ](custom-image/)
+- [サーバーとして通信を待ち受けるアプリ](published-port/)

@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+import argparse
+import actfw_core
+from actfw_core.task.task import Task
+import actfw_raspberrypi
+import http.server
+import socketserver
+import json
+
+
+
+(CAPTURE_WIDTH, CAPTURE_HEIGHT) = (320, 240)  # capture image size
+(DISPLAY_WIDTH, DISPLAY_HEIGHT) = (640, 480)  # display area size
+
+PORT = 8080
+
+class SampleHttpRequestHandler(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "application/json")
+        self.end_headers()
+
+        # Prepare the JSON response
+        response = json.dumps({"message": "Hello, World!"})
+
+        # Write the JSON response
+        self.wfile.write(response.encode())
+
+class Server(Task):
+    def run(self):
+        with http.server.HTTPServer(('', PORT), SampleHttpRequestHandler) as httpd:
+            actfw_core.notify([{"message": "serving at port" + str(PORT)}])
+            httpd.serve_forever()
+
+
+def main(args):
+
+    # Actcast application
+    app = actfw_core.Application()
+
+    # Load act setting
+    settings = app.get_settings({'display': True})
+
+    # CommandServer (for `Take Photo` command)
+    cmd = actfw_core.CommandServer()
+    app.register_task(cmd)
+
+    # run http server
+    app.register_task(Server())
+
+    app.run()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='example: Convertion to grayscale image')
+    main(parser.parse_args())
