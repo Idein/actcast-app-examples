@@ -1,0 +1,15 @@
+{
+  "boards": [
+    "RSPi4B",
+    "RSPiCM4"
+  ],
+  "devices": [],
+  "allow_all_networks": true,
+  "published_ports": [
+    {
+      "protocol": "tcp",
+      "container_port": 8080,
+      "host_port": 8080
+    }
+  ]
+}
