@@ -1,0 +1,9 @@
+{
+  "$schema": "https://actcast.io/schema/v8/data_schema_schema.json",
+  "type": "array",
+  "items": {
+    "properties": {},
+    "type": "object",
+    "required": []
+  }
+}

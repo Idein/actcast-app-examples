@@ -1,0 +1,96 @@
+#!/usr/bin/python3
+import actfw_core
+import actfw_raspberrypi
+import time
+
+from PIL import Image, ImageDraw, ImageFont
+import math
+
+import smbus2  # require pip install
+import time
+from sensor.VEML7700 import VEML7700
+from sensor.SHT3x import SHT3x
+from sensor.Omron2smpd02e import Omron2smpd02e
+
+bus = smbus2.SMBus(1)
+
+
+addr_veme7700 = 0x10
+addr_SHT3x = 0x44
+addr_2SMPB = 0x70
+invalid_sensor_count = 0
+try:
+    sensor_VEML7700 = VEML7700(addr_veme7700)
+except Exception as e:
+    actfw_core.notify([{'invalid_sensors': 'VEML7700'}])
+    invalid_sensor_count += 1
+
+try:
+    sensor_SHT3x = SHT3x(addr_SHT3x)
+except Exception as e:
+    actfw_core.notify([{'invalid_sensors': 'SHT3x'}])
+    invalid_sensor_count += 1
+
+try:
+    sensor_Omron2smpd02e = Omron2smpd02e(addr_2SMPB)
+except Exception as e:
+    actfw_core.notify([{'invalid_sensors': 'Omron2smpd02e'}])
+    invalid_sensor_count += 1
+
+if invalid_sensor_count == 3:
+    actfw_core.notify([{'HAT_Error': 'Errors were detected in all sensors. There might be no HAT sensor connected, or the \'Enable I2C\' setting in the actcast writer\'s Advanced Settings might not be turned on.'}])
+
+
+def read_sensors():
+    timestamp = time.time()
+    invalid_score = -9999
+
+    sensor_data = {
+        "timestamp": timestamp,
+        "ambient": invalid_score,
+        "pressure": invalid_score,
+        "temperature": invalid_score,
+        "humidity": invalid_score,
+        "invalid_sensors": []
+    }
+
+    try:
+        ambient_light = sensor_VEML7700.readData()
+        sensor_data['ambient'] = ambient_light
+    except Exception as e:
+        sensor_data['invalid_sensors'].append('VEML7700')
+
+    try:
+        pressure, temp = sensor_Omron2smpd02e.readData()
+        sensor_data['pressure'] = pressure
+        sensor_data['temperature'] = temp
+    except Exception as e:
+        sensor_data['invalid_sensors'].append('Omron2smpd02e')
+
+    try:
+        data = sensor_SHT3x.readData()
+        sensor_data['temperature'] = round(data[0], 1)
+        sensor_data['humidity'] = round(data[1], 1)
+    except Exception as e:
+        sensor_data['invalid_sensors'].append('SHT3x')
+
+    return sensor_data
+
+
+if __name__ == "__main__":
+    app = actfw_core.Application()
+
+    settings = app.get_settings(
+        default_settings={
+            "send_interval": 5
+        }
+    )
+    interval_time = settings['send_interval']
+    try:
+        while True:
+            actfw_core.heartbeat()
+            sensor_data = read_sensors()
+            actfw_core.notify([{'KSY_SmartSensor': sensor_data}])
+            time.sleep(interval_time)
+    except KeyboardInterrupt:
+        print("Program stopped")
