@@ -15,6 +15,12 @@
             "default": 0.9,
             "minimum": 0,
             "maximum": 1
+        },
+        "use_usb_camera": {
+            "title": "use USB camera",
+            "description": "use USB camera instead of Pi camera",
+            "type": "boolean",
+            "default": false
         }
     },
     "required": [
@@ -23,6 +29,7 @@
     ],
     "propertyOrder": [
         "display",
-        "threshold"
+        "threshold",
+        "use_usb_camera"
     ]
 }
