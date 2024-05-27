@@ -4,7 +4,9 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 import actfw_core
 from actfw_core.task import Pipe, Consumer
+from actfw_core.system import get_actcast_firmware_type, find_csi_camera_device
 from actfw_core.capture import V4LCameraCapture
+from actfw_core.unicam_isp_capture import UnicamIspCapture
 from actfw_raspberrypi.vc4 import Display
 import numpy as np
 from model import Model
@@ -12,6 +14,7 @@ from configuration import ACT_NOTIFY_LIMIT
 
 (CAPTURE_WIDTH, CAPTURE_HEIGHT) = (224, 224)  # capture image size
 (DISPLAY_WIDTH, DISPLAY_HEIGHT) = (640, 480)  # display area size
+
 
 def window_position(actual_display_size, virtual_display_size, expected_area):
     actual_display_width, actual_display_height = actual_display_size
@@ -195,6 +198,7 @@ def main(args):
         }
     )
     if isinstance(settings["target"], str):
+
         def to_int(s):
             try:
                 return int(s)
@@ -215,26 +219,38 @@ def main(args):
     app.register_task(cmd)
 
     # Capture task
-    if settings["resize_method"] == "crop":
-        cap = V4LCameraCapture("/dev/video0", (CAPTURE_WIDTH, CAPTURE_HEIGHT), 30)
+    firmware_type = get_actcast_firmware_type()
+    device = find_csi_camera_device()
+    if firmware_type == "raspberrypi-buster":
+        if settings["resize_method"] == "crop":
+            cap = V4LCameraCapture(device, (CAPTURE_WIDTH, CAPTURE_HEIGHT), 30)
+        else:
+            cap = V4LCameraCapture(
+                device,
+                (CAPTURE_WIDTH, CAPTURE_HEIGHT),
+                30,
+                format_selector=V4LCameraCapture.FormatSelector.PROPER,
+            )
+
+        def config(video):
+            video.set_rotation(
+                settings["rotation"]
+            )  # ignore result (requires camera capability)
+            video.set_horizontal_flip(
+                settings["hflip"]
+            )  # ignore result (requires camera capability)
+
+        cap.configure(config)
     else:
-        cap = V4LCameraCapture(
-            "/dev/video0",
-            (CAPTURE_WIDTH, CAPTURE_HEIGHT),
-            30,
-            format_selector=V4LCameraCapture.FormatSelector.PROPER,
+        # In bullseye, we need to use UnicamIspCapture to use CSI camera
+        cap = UnicamIspCapture(
+            unicam=device,
+            size=(CAPTURE_WIDTH, CAPTURE_HEIGHT),
+            framerate=30,
+            hflip=settings["hflip"],
         )
     capture_size = cap.capture_size()
 
-    def config(video):
-        video.set_rotation(
-            settings["rotation"]
-        )  # ignore result (requires camera capability)
-        video.set_horizontal_flip(
-            settings["hflip"]
-        )  # ignore result (requires camera capability)
-
-    cap.configure(config)
     app.register_task(cap)
 
     # Classifier task
@@ -258,9 +274,7 @@ def main(args):
             actual_display_size = display.size()
             width, height = actual_display_size
             virtual_display_size = (DISPLAY_WIDTH, DISPLAY_HEIGHT)
-            with display.open_window(
-                (0, 0, width, height), (32, 1), 1000
-            ):
+            with display.open_window((0, 0, width, height), (32, 1), 1):
                 title_window_size = (320, 100)
                 title_area = window_position(
                     actual_display_size,
@@ -268,7 +282,7 @@ def main(args):
                     (320, 16, *title_window_size),
                 )
                 with display.open_window(
-                    title_area, title_window_size, 2000
+                    title_area, title_window_size, 2
                 ) as title_window:
                     logo_window_size = (320, 44)
                     logo_area = window_position(
@@ -277,7 +291,7 @@ def main(args):
                         ((640 - 320) // 2, 480 - 44, *logo_window_size),
                     )
                     with display.open_window(
-                        logo_area, logo_window_size, 2000
+                        logo_area, logo_window_size, 3
                     ) as logo_window:
                         logo_bg = Image.new("RGBA", logo_window_size, "white")
                         logo = Image.open("IdeinLogoStoke.svg.png")
@@ -295,7 +309,7 @@ def main(args):
                             (48, 48, *preview_window_size),
                         )
                         with display.open_window(
-                            preview_area, (CAPTURE_WIDTH, CAPTURE_HEIGHT), 3000
+                            preview_area, (CAPTURE_WIDTH, CAPTURE_HEIGHT), 4
                         ) as preview_window:
                             result_window_size = (320, 300)
                             result_area = window_position(
@@ -304,7 +318,7 @@ def main(args):
                                 (320, 120, *result_window_size),
                             )
                             with display.open_window(
-                                result_area, result_window_size, 3000
+                                result_area, result_window_size, 5
                             ) as result_window:
                                 run(preview_window, result_window, title_window)
 

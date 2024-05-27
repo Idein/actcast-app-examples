@@ -49,12 +49,12 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 ### 設定項目
 
 * `display`: HDMIディスプレイへ撮影画像と分類結果top-10の描画を行う。
-* `camera rotation`: 撮影画像を回転する (0 or 90 or -90 or 180)。ただし、カメラが回転に対応している必要がある。もし対応していなければ。本設定は無視される。
-* `horizontal flip camera`: 撮影画像を左右反転する。ただし、カメラが回転に対応している必要がある。もし対応していなければ。本設定は無視される。
+* `camera rotation`: 撮影画像を回転する (0 or 90 or -90 or 180)。ただし、カメラが回転に対応している必要がある。もし対応していなければ本設定は無視される (raspberrypi-bullseye では未対応)。
+* `horizontal flip camera`: 撮影画像を左右反転する。ただし、カメラが回転に対応している必要がある。もし対応していなければ本設定は無視される。
 * `target class IDs`: `1,30,2,52,999`のようなカンマ区切りの対象クラスID(空は全クラス指定を意味する)。この一覧に含まれているクラスのみがActcastへの通知対象となる。
     * 例: `954,673` は "banana" と "mouse" を通知対象とする設定
 * `probability threshold`: 確度がこの閾値を越えたら通知を行う。
-* `crop or resize`: 撮影画像を必要なサイズへリサイズする際の方法
+* `crop or resize`: 撮影画像を必要なサイズへリサイズする際の方法 (raspberrypi-bullseye では未対応)
     * `crop` モードでは、撮影画像中心から必要なサイズ分を切り抜く
       ![cropモード画像](https://actcast-app-readme-static.s3-ap-northeast-1.amazonaws.com/common/resizing_method/resizing_method-crop.svg?versionId=11frKZkF.1KGGzYBJWhg4TdqeUTEIw0i "cropモード")
     * `resize` モードでは、撮影画像中心から必要なサイズと同一アスペクトの最大サイズを切り抜いた後に必要なサイズへ縮小を行う。
