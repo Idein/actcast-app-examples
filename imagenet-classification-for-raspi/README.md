@@ -52,3 +52,4 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 
 - `display`: HDMIディスプレイへ撮影画像と分類結果top-10の描画を行う。
 - `threshold`: 確度がこの閾値を越えたら通知を行う。
+- `use_usb_camera`: Raspberry Pi Camera の代わりにUSBカメラを使用する場合は `true` にする。

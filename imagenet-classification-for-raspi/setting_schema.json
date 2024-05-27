@@ -18,7 +18,7 @@
         },
         "use_usb_camera": {
             "title": "use USB camera",
-            "description": "use USB camera instead of Pi camera",
+            "description": "use USB camera instead of Raspberry Pi Camera",
             "type": "boolean",
             "default": false
         }
