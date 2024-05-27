@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
+  "boards": ["RSPiCM4"],
+  "devices": [
+    {
+      "type": "camera"
+    },
+    {
+      "type": "videocore"
+    },
+    {
+      "type": "other",
+      "device": ["/dev/hailo0"]
+    }
+  ]
+}
