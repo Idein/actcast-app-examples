@@ -108,8 +108,8 @@ def main(args):
             height = int(scale * CAPTURE_HEIGHT)
             left = (display_width - width) // 2
             upper = (display_height - height) // 2
-            # layer must be less than 16
-            layer = 15
+            # layer must be between 1 and 16
+            layer = 16
             with display.open_window((left, upper, width, height), (CAPTURE_WIDTH, CAPTURE_HEIGHT), layer) as preview_window:
                 run(preview_window)
     else:
