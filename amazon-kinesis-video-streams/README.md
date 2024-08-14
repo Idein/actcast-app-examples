@@ -1,4 +1,7 @@
 # Kinesis Video Stream example
+
+**※このサンプルアプリケーションは ActcastOS 3 に対応していません。こちらを参考にアプリケーションを実装する場合、[ActcastOS 3 Migration ガイド](https://actcast.io/docs/ja/ApplicationDevelopment/ForActcastOS3/) に従って Actcast OS 3 に対応させてください**
+
 ## 概要
 Raspberry Piに接続されたカメラの映像をKinesis Video Streamに配信するサンプルアプリです。
 

@@ -2,6 +2,8 @@
 
 Actcast アプリケーションの開発時に参考となるサンプルアプリケーションを集めたリポジトリです。
 
+**※一部サンプルアプリケーションは ActcastOS 3 に対応していません。詳細は各アプリケーションのREADMEをご確認下さい**
+
 ## サンプルアプリケーション一覧
 
 - [ImageNet Classification アプリ](imagenet-classification-for-raspi/)

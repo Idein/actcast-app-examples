@@ -1,5 +1,7 @@
 # ImageNet Classification for Raspberry Pi
 
+**※このサンプルアプリケーションはActcastOS 3 に対応しています**
+
 ## 概要
 
 Raspberry Pi 上で動く ImageNet Classification のサンプルアプリです。
