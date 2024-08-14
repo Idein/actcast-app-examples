@@ -1,5 +1,7 @@
 # ImageNet Classification for ai cast
 
+**※このサンプルアプリケーションはActcastOS 3 に対応しています**
+
 ## 概要
 
 ai cast 上で動く ImageNet Classification のサンプルアプリです。

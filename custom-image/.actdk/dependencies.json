@@ -4,6 +4,6 @@
   "raspberrypi-buster": {
     "apt": [],
     "pip": [],
-    "base_image": "ghcr.io/idein/custom-image-example:latest"
+    "base_image": "hoge"
   }
 }
