@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+import sys
+# local packageを参照
+sys.path.append('./python/site-packages')
+
 import argparse
 from PIL import Image, ImageDraw, ImageFont
 import actfw_core
