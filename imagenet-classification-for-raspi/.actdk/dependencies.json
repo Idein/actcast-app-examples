@@ -6,7 +6,7 @@
     "python3-numpy",
     "fonts-dejavu-core"
   ],
-  "pip": [],
+  "pip": ["git+https://github.com/Idein/actfw-core.git@add-timeout-parameter"],
   "raspberrypi-buster": {
     "apt": [
       "libraspberrypi0"
