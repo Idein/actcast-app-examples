@@ -4,20 +4,13 @@
   "items": {
     "type": "object",
     "properties": {
-      "prob": {
-        "title": "probability",
-        "description": "matching score",
-        "type": "number",
-        "minimum": 0.0,
-        "maximum": 1.0
-      },
-      "label": {
-        "title": "label",
-        "description": "the most matching class name",
+      "fps": {
+        "title": "fps",
+        "description": "fps",
         "type": "string"
       }
     },
-    "required": ["prob", "label"]
+    "required": ["fps"]
   },
   "propertyOrder": []
 }

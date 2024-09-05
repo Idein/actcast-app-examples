@@ -21,6 +21,12 @@
             "description": "use USB camera instead of Raspberry Pi Camera",
             "type": "boolean",
             "default": false
+        },
+        "fbset_enabled": {
+            "title": "fbset enabled",
+            "description": "enable fbset command to change HDMI resolution",
+            "type": "boolean",
+            "default": false
         }
     },
     "required": [
@@ -30,6 +36,7 @@
     "propertyOrder": [
         "display",
         "threshold",
-        "use_usb_camera"
+        "use_usb_camera",
+        "fbset_enabled"
     ]
 }

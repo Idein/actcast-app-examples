@@ -1,5 +1,6 @@
 {
-  "display": true,
+  "display": false,
   "threshold": 0.1,
-  "use_usb_camera": false
+  "use_usb_camera": true,
+  "fbset_enabled": true
 }
