@@ -10,6 +10,7 @@ import actfw_raspberrypi
 from actfw_raspberrypi.vc4 import Display
 import numpy as np
 from model import Model
+import time
 
 (CAPTURE_WIDTH, CAPTURE_HEIGHT) = (224, 224)  # capture image size
 (DISPLAY_WIDTH, DISPLAY_HEIGHT) = (640, 480)  # display area size
@@ -30,6 +31,28 @@ class Classifier(Pipe):
         return (rgb_image, probs[0][1:])
 
 
+class FPS(object):
+    def __init__(self, moving_average=30):
+        self.moving_average = moving_average
+        self.prev_time = time.time()
+        self.dtimes = []
+
+    def update(self):
+        cur_time = time.time()
+        dtime = cur_time - self.prev_time
+        self.prev_time = cur_time
+        self.dtimes.append(dtime)
+        if len(self.dtimes) > self.moving_average:
+            self.dtimes.pop(0)
+        return self.get()
+
+    def get(self):
+        if len(self.dtimes) == 0:
+            return None
+        else:
+            return len(self.dtimes) / sum(self.dtimes)
+
+
 class Presenter(Consumer):
 
     def __init__(self, settings, preview_window, cmd):
@@ -38,21 +61,30 @@ class Presenter(Consumer):
         self.preview_window = preview_window
         self.cmd = cmd
         self.font = ImageFont.truetype(font='/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf', size=18)
+        self.fps = FPS(30)
         with open('labels.txt') as f:
             self.labels = f.read().splitlines()
 
     def proc(self, images):
         rgb_image, probs = images
-        top1 = probs.argsort()[-1]
+        self.fps.update()
+        fps = self.fps.get()
+        if fps is None:
+            fps_txt = "FPS: N/A"
+        else:
+            fps_txt = "FPS: {:>6.3f}".format(fps)
+        actfw_core.notify([{'fps': fps_txt}])
+        top1 = probs.argsort()[-1]        
         if probs[top1] > self.settings['threshold']:
             actfw_core.notify([{'prob': float(probs[top1]), 'label': self.labels[top1]}])
         self.cmd.update_image(rgb_image)  # update `Take Photo` image
         actfw_core.heartbeat()
         if self.preview_window is not None:
             draw = ImageDraw.Draw(rgb_image)
-            draw.text((0, 0), "{:>6.2f}% {}".format(100 * probs[top1], self.labels[top1]), font=self.font, fill=(0, 255, 0))
+            draw.text((0, 0), "{}, {:>6.2f}% {}".format(fps_txt, 100 * probs[top1], self.labels[top1]), font=self.font, fill=(0, 255, 0))
             self.preview_window.blit(rgb_image.tobytes())
             self.preview_window.update()
+
 
 def setup_camera_capture(use_usb_camera):
     framerate = 15
