@@ -16,13 +16,6 @@
             "minimum": 0,
             "maximum": 1
         },
-        "camera_timeout": {
-            "title": "camera timeout",
-            "description": "camera timeout in seconds",
-            "type": "number",
-            "default": 1.0,
-            "minimum": 0
-        },
         "use_usb_camera": {
             "title": "use USB camera",
             "description": "use USB camera instead of Raspberry Pi Camera",
@@ -50,7 +43,6 @@
         "display",
         "threshold",
         "use_usb_camera",
-        "camera_timeout",
         "shutter_time",
         "analogue_gain"
     ]
