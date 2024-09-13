@@ -9,11 +9,12 @@ import actfw_core
 from actfw_core.task import Pipe, Consumer
 from actfw_core.system import get_actcast_firmware_type, find_csi_camera_device, find_usb_camera_device
 from actfw_core.capture import V4LCameraCapture
-from actfw_core.unicam_isp_capture import UnicamIspCapture
+from actfw_core.unicam_isp_capture import UnicamIspCapture, Auto
 import actfw_raspberrypi
 from actfw_raspberrypi.vc4 import Display
 import numpy as np
 from model import Model
+from typing import Union
 
 (CAPTURE_WIDTH, CAPTURE_HEIGHT) = (224, 224)  # capture image size
 (DISPLAY_WIDTH, DISPLAY_HEIGHT) = (640, 480)  # display area size
@@ -58,13 +59,14 @@ class Presenter(Consumer):
             self.preview_window.blit(rgb_image.tobytes())
             self.preview_window.update()
 
-def setup_camera_capture(use_usb_camera, timeout=1):
+def setup_camera_capture(use_usb_camera, timeout=1, shutter_time: Union[float, Auto]=Auto.AUTO, exposure_mode:Union[float, Auto]=Auto.AUTO):
     framerate = 15
     device = find_usb_camera_device() if use_usb_camera else find_csi_camera_device()
 
     if get_actcast_firmware_type() == "raspberrypi-bullseye" and not use_usb_camera:
         # Use UnicamIspCapture on Raspberry Pi OS Bullseye
         cap = UnicamIspCapture(unicam=device, size=(CAPTURE_WIDTH, CAPTURE_HEIGHT), framerate=framerate, timeout=timeout)
+        cap.set_exposure_settings(shutter_time=shutter_time, analogue_gain=exposure_mode)
     else:
         # Use V4LCameraCapture on Raspberry Pi OS Buster or use USB camera
         cap = V4LCameraCapture(device, (CAPTURE_WIDTH, CAPTURE_HEIGHT), framerate, format_selector=V4LCameraCapture.FormatSelector.PROPER)
@@ -83,7 +85,17 @@ def main(args):
     cmd = actfw_core.CommandServer()
     app.register_task(cmd)
 
-    cap = setup_camera_capture(settings['use_usb_camera'], settings['camera_timeout'])
+    shutter_name = settings["shutter_name"]
+    if shutter_name < 0:
+        shutter_name = Auto.AUTO
+    analogue_gain = settings["analogue_gain"]
+    if analogue_gain < 0:
+        analogue_gain = Auto.AUTO
+    cap = setup_camera_capture(settings['use_usb_camera'], 
+                               settings['camera_timeout'],
+                               shutter_time=shutter_name,
+                               analogue_gain=analogue_gain) 
+    
     capture_size = cap.capture_size()
     app.register_task(cap)
 

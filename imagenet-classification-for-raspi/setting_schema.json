@@ -28,6 +28,18 @@
             "description": "use USB camera instead of Raspberry Pi Camera",
             "type": "boolean",
             "default": false
+        },
+        "shutter_time": {
+            "title": "shutter time",
+            "description": "shutter time (negative value means auto)",
+            "type": "number",
+            "default": -1
+        },
+        "analogue_gain": {
+            "title": "analogue gain",
+            "description": "analogue gain (negative value means auto)",
+            "type": "number",
+            "default": -1
         }
     },
     "required": [
@@ -38,6 +50,8 @@
         "display",
         "threshold",
         "use_usb_camera",
-        "camera_timeout"
+        "camera_timeout",
+        "shutter_time",
+        "analogue_gain"
     ]
 }

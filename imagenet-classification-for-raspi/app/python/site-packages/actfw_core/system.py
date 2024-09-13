@@ -227,7 +227,7 @@ def _list_video_devices() -> List[str]:
     cameras = [dev for dev in devs.devices if dev.type == "camera"]
     paths: List[str] = []
     for c in cameras:
-        for node in c.nodes:
+        for node in filter(lambda n: str(n.path).startswith("/dev/video"), c.nodes):
             paths.append(str(node.path))
     return paths
 
