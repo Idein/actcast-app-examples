@@ -1,20 +1,12 @@
 {
-  "apt": [
-    "python3",
-    "python3-pil",
-    "i2c-tools"
-  ],
-  "pip": [
-    "actfw-core",
-    "smbus2"
-  ],
+  "apt": ["python3", "python3-pil", "i2c-tools"],
+  "pip": ["actfw-core", "smbus2"],
   "raspberrypi-buster": {
-    "apt": [
-      "libraspberrypi0"
-    ],
-    "pip": [
-      "actfw-raspberrypi",
-      "RPi.GPIO"
-    ]
+    "apt": ["libraspberrypi0"],
+    "pip": ["actfw-raspberrypi", "RPi.GPIO"]
+  },
+  "raspberrypi-bullseye": {
+    "apt": ["libraspberrypi0"],
+    "pip": ["actfw-raspberrypi", "RPi.GPIO"]
   }
 }
