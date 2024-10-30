@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 import numpy as np
-import actfw_core
 from PIL import Image
+import actfw_core
 from actfw_core.task import Pipe, Consumer
-from actfw_core.capture import V4LCameraCapture
+from actfw_core.system import find_csi_camera_device
+from actfw_core.unicam_isp_capture import UnicamIspCapture
+import actfw_raspberrypi
 from actfw_raspberrypi.vc4 import Display
 
 
@@ -90,7 +92,7 @@ def main():
         with Display() as display:
             preview_area = (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
             capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
-            layer = 2000
+            layer = 16
             with display.open_window(
                 preview_area, capture_size, layer
             ) as preview_window:
