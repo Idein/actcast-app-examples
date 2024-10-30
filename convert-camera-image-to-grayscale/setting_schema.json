@@ -10,6 +10,15 @@
       },
       "type": "boolean",
       "default": false
+    },
+    "use_usb_camera": {
+      "title": "use_usb_camera",
+      "description": "use USB camera",
+      "descriptions": {
+        "ja": "USBカメラを使用する"
+      },
+      "type": "boolean",
+      "default": false
     }
   },
   "required": []
