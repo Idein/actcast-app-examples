@@ -59,11 +59,8 @@ def run(app, preview_window=None):
     # register capture task
     capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
     framerate = 30
-    cap = V4LCameraCapture(
-        size=capture_size,
-        framerate=framerate,
-        format_selector=V4LCameraCapture.FormatSelector.PROPER,
-    )
+    device = find_csi_camera_device()
+    cap = UnicamIspCapture(unicam=device, size=capture_size, framerate=framerate)
     app.register_task(cap)
 
     # register converter task
