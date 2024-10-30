@@ -7,7 +7,7 @@
     "python3-numpy"
   ],
   "pip": [],
-  "raspberrypi": {
+  "raspberrypi-bullseye": {
     "apt": [
       "libraspberrypi0"
     ],
