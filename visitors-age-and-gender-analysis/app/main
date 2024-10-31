@@ -10,8 +10,10 @@ import math
 import os
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import actfw_core
+from actfw_core.system import get_actcast_firmware_type, find_csi_camera_device, find_usb_camera_device
 from actfw_core.task import Pipe, Consumer
 from actfw_core.capture import V4LCameraCapture
+from actfw_core.unicam_isp_capture import UnicamIspCapture
 import actfw_raspberrypi
 from actfw_raspberrypi.vc4 import Display
 import numpy as np
@@ -614,35 +616,48 @@ def main(args):
     (CAPTURE_WIDTH, CAPTURE_HEIGHT) = (int(SSD_WIDTH * CAPTURE_SCALE),
                                        int(SSD_HEIGHT * CAPTURE_SCALE))  # capture image size
 
-    # Capture task
-    if settings['resize_method'] == 'crop':
-        format_selector = V4LCameraCapture.FormatSelector.DEFAULT
-    elif settings['resize_method'].endswith('(maximum)'):
-        format_selector = V4LCameraCapture.FormatSelector.MAXIMUM
-    else:
-        format_selector = V4LCameraCapture.FormatSelector.PROPER
-
-    try:
-        cap = V4LCameraCapture('/dev/video0', (CAPTURE_WIDTH, CAPTURE_HEIGHT),
-                               settings['capture_framerate'],
-                               format_selector=format_selector)
-    except RuntimeError as e:
-        raise ActSettingsError(str(e))
-    except OSError as e:
-        if e.errno == 16:
+    use_usb_camera = settings['use_usb_camera']
+    if get_actcast_firmware_type() == "raspberrypi-bullseye" and not use_usb_camera:
+        try:
+            cap = UnicamIspCapture(unicam=find_csi_camera_device(), size=(
+                CAPTURE_WIDTH, CAPTURE_HEIGHT), framerate=settings['capture_framerate'])
+        except RuntimeError as e:
             raise ActSettingsError(str(e))
+        except OSError as e:
+            if e.errno == 16:
+                raise ActSettingsError(str(e))
+            else:
+                raise
+    else:
+        # Capture task
+        if settings['resize_method'] == 'crop':
+            format_selector = V4LCameraCapture.FormatSelector.DEFAULT
+        elif settings['resize_method'].endswith('(maximum)'):
+            format_selector = V4LCameraCapture.FormatSelector.MAXIMUM
         else:
-            raise
+            format_selector = V4LCameraCapture.FormatSelector.PROPER
+
+        try:
+            cap = V4LCameraCapture('/dev/video0', (CAPTURE_WIDTH, CAPTURE_HEIGHT),
+                                settings['capture_framerate'],
+                                format_selector=format_selector)
+            def config(video):
+                # ignore result (requires camera capability)
+                video.set_rotation(int(settings['camera_rotation']))
+                # ignore result (requires camera capability)
+                video.set_horizontal_flip(settings['hflip'])
+                video.set_exposure_time(settings['exposure_time'])
+            cap.configure(config)
+        except RuntimeError as e:
+            raise ActSettingsError(str(e))
+        except OSError as e:
+            if e.errno == 16:
+                raise ActSettingsError(str(e))
+            else:
+                raise
 
     capture_size = cap.capture_size()
 
-    def config(video):
-        # ignore result (requires camera capability)
-        video.set_rotation(int(settings['camera_rotation']))
-        # ignore result (requires camera capability)
-        video.set_horizontal_flip(settings['hflip'])
-        video.set_exposure_time(settings['exposure_time'])
-    cap.configure(config)
     app.register_task(cap)
 
     # Preprocess task
@@ -678,10 +693,10 @@ def main(args):
             actual_display_size = display.size()
             width, height = actual_display_size
             virtual_display_size = (DISPLAY_WIDTH, DISPLAY_HEIGHT)
-            with display.open_window((0, 0, width, height), (32, 1), 1000) as background:
+            with display.open_window((0, 0, width, height), (32, 1), 15) as background:
                 preview_area = window_position(
                     actual_display_size, virtual_display_size, (0, 0, UPDATE_AREA_WIDTH, UPDATE_AREA_HEIGHT))
-                with display.open_window(preview_area, (UPDATE_AREA_WIDTH, UPDATE_AREA_HEIGHT), 2000) as preview_window:
+                with display.open_window(preview_area, (UPDATE_AREA_WIDTH, UPDATE_AREA_HEIGHT), 16) as preview_window:
                     run(preview_window)
     else:
         run()
