@@ -4,6 +4,6 @@
   "short_description": "kinesis video streams sample",
   "short_descriptions": {},
   "target_types": [
-    "raspberrypi-buster"
+    "raspberrypi-bullseye"
   ]
 }
