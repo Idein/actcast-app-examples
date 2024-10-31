@@ -2,13 +2,6 @@
     "version": 2,
     "target_type": "raspberrypi-bullseye",
     "boards": [
-      "RSPi1A",
-      "RSPi1B",
-      "RSPi1APlus",
-      "RSPi1BPlus",
-      "RSPi2B",
-      "RSPiAlpha",
-      "RSPiCM1",
       "RSPi3B",
       "RSPiZero",
       "RSPiCM3",
