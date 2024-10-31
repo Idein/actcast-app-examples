@@ -16,5 +16,6 @@
   "display": false,
   "image_brightness_correction": false,
   "exclude_age": 0,
-  "capture_framerate": 8
+  "capture_framerate": 8,
+  "use_usb_camera": false
 }

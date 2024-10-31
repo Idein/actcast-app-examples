@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
+  "boards": [
+    "RSPi3B",
+    "RSPiZero",
+    "RSPiCM3",
+    "RSPiZeroW",
+    "RSPi3BPlus",
+    "RSPi3APlus",
+    "RSPiCM3Plus",
+    "RSPiZero2W",
+    "RSPi4B"
+  ],
+  "devices": [
+    {
+      "type": "camera"
+    },
+    {
+      "type": "videocore"
+    },
+    {
+      "type": "framebuffer",
+      "device": [
+        "/dev/fb0"
+      ],
+      "required": false
+    }
+  ]
+}

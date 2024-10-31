@@ -81,13 +81,13 @@
       "type": "string",
       "default": "0,0"
     },
-    "notification_direction":{
-      "title" : "[Face] notification direction",
+    "notification_direction": {
+      "title": "[Face] notification direction",
       "description": "This setting item determines which direction Act Log transmission performs when passing through the detection line.",
       "descriptions": {
         "ja": "どの方向に検出線を通過すると Act Log の送信が行われるか"
       },
-      "type":"string",
+      "type": "string",
       "enum": [
         "top_to_bottom",
         "left_to_right",
@@ -197,6 +197,12 @@
       "type": "integer",
       "default": 8,
       "minimum": 1
+    },
+    "use_usb_camera": {
+      "title": "use USB camera",
+      "description": "use USB camera instead of Raspberry Pi Camera",
+      "type": "boolean",
+      "default": false
     }
   },
   "propertyOrder": [
@@ -217,7 +223,8 @@
     "display",
     "image_brightness_correction",
     "exclude_age",
-    "capture_framerate"
+    "capture_framerate",
+    "use_usb_camera"
   ],
   "required": [
     "capture_cropping_size",
