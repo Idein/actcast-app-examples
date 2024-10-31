@@ -1,19 +1,10 @@
 #!/usr/bin/python3
 import actfw_core
-import actfw_raspberrypi
 import time
-
-from PIL import Image, ImageDraw, ImageFont
-import math
-
 import smbus2  # require pip install
-import time
 from sensor.VEML7700 import VEML7700
 from sensor.SHT3x import SHT3x
 from sensor.Omron2smpd02e import Omron2smpd02e
-
-bus = smbus2.SMBus(1)
-
 
 addr_veme7700 = 0x10
 addr_SHT3x = 0x44
@@ -23,18 +14,21 @@ try:
     sensor_VEML7700 = VEML7700(addr_veme7700)
 except Exception as e:
     actfw_core.notify([{'invalid_sensors': 'VEML7700'}])
+    actfw_core.notify([{'i2cerror': str(e)}])
     invalid_sensor_count += 1
 
 try:
     sensor_SHT3x = SHT3x(addr_SHT3x)
 except Exception as e:
     actfw_core.notify([{'invalid_sensors': 'SHT3x'}])
+    actfw_core.notify([{'i2cerror': str(e)}])
     invalid_sensor_count += 1
 
 try:
     sensor_Omron2smpd02e = Omron2smpd02e(addr_2SMPB)
 except Exception as e:
     actfw_core.notify([{'invalid_sensors': 'Omron2smpd02e'}])
+    actfw_core.notify([{'i2cerror': str(e)}])
     invalid_sensor_count += 1
 
 if invalid_sensor_count == 3:

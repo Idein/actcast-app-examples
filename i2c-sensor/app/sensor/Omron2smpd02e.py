@@ -1,9 +1,9 @@
 #!/usr/bin/python
 import smbus2  # require pip install
 import time
-# SMBusƒ‚ƒWƒ…[ƒ‹‚Ìİ’è
+# SMBusãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®è¨­å®š
 bus = smbus2.SMBus(1)
-# i2c’ÊM‚Ìİ’è     
+# i2cé€šä¿¡ã®è¨­å®š     
 # Driver for 2SMPD-02E
 # https://github.com/omron-devhub/2smpb02e-grove-raspberrypi
 # Copyright (c) OMRON Corporation. All rights reserved.
