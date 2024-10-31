@@ -1,5 +1,15 @@
 {
+  "version": 2,
+  "target_type": "raspberrypi-buster",
   "boards": [
+    "RSPi3B",
+    "RSPiZero",
+    "RSPiCM3",
+    "RSPiZeroW",
+    "RSPi3BPlus",
+    "RSPi3APlus",
+    "RSPiCM3Plus",
+    "RSPiZero2W",
     "RSPi4B"
   ],
   "devices": [
@@ -18,6 +28,12 @@
         "/dev/vchiq",
         "/dev/gpiomem",
         "/dev/dri/card0"
+      ]
+    },
+    {
+      "type": "framebuffer",
+      "device": [
+        "/dev/fb0"
       ]
     }
   ],

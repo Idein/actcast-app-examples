@@ -16,7 +16,7 @@
     "PySocks==1.7.1",
     "actfw-core==2.3.0"
   ],
-  "raspberrypi": {
+  "raspberrypi-buster": {
     "apt": [
       "libraspberrypi0",
       "libraspberrypi-bin"
