@@ -1,6 +1,4 @@
 {
-  "exposure_time": 0,
-  "camera_rotation": "0",
   "hflip": false,
   "display": true,
   "capture_framerate": 8,

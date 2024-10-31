@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
+  "boards": [
+    "RSPi4B",
+    "RSPiCM4"
+  ],
+  "devices": [
+    {
+      "type": "camera"
+    },
+    {
+      "type": "videocore"
+    },
+    {
+      "type": "other",
+      "device": [
+        "/dev/video11",
+        "/dev/video12",
+        "/dev/video13",
+        "/dev/video14",
+        "/dev/video15",
+        "/dev/video16"
+      ]
+    },
+    {
+      "type": "other",
+      "device": [
+        "/dev/v4l-subdev0"
+      ],
+      "required": false
+    }
+  ],
+  "networks": [
+    {
+      "domain": "kinesisvideo.*.amazonaws.com",
+      "port": 443,
+      "protocol": "tcp"
+    },
+    {
+      "domain": "*.kinesisvideo.*.amazonaws.com",
+      "port": 443,
+      "protocol": "tcp"
+    }
+  ]
+}

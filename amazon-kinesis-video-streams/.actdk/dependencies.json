@@ -1,28 +1,50 @@
 {
-  "apt": [
-    "libv4l-0",
-    "libv4lconvert0",
-    "fbset",
-    "python3-pil",
-    "python3-numpy",
-    "fonts-dejavu-core",
-    "python3-gst-1.0",
-    "gstreamer1.0-plugins-bad",
-    "gstreamer1.0-omx",
-    "libcurl4",
-    "liblog4cplus-1.1-9"
-  ],
-  "pip": [
-    "PySocks==1.7.1",
-    "actfw-core==2.3.0"
-  ],
-  "raspberrypi": {
+  "apt": [],
+  "pip": [],
+  "raspberrypi-bullseye": {
     "apt": [
+      "libv4l-0",
+      "libv4lconvert0",
+      "fbset",
+      "python3-pil",
+      "python3-numpy",
+      "fonts-dejavu-core",
+      "python3-gst-1.0",
+      "gstreamer1.0-plugins-bad",
+      "gstreamer1.0-plugins-good",
+      "gstreamer1.0-plugins-ugly",
+      "gstreamer1.0-tools",
+      "libgstreamer-plugins-base1.0-dev",
+      "libgstreamer-plugins-bad1.0-dev",
+      "libgstreamer1.0-dev",
+      "libcurl4",
+      "liblog4cplus-dev",
       "libraspberrypi0",
-      "libraspberrypi-bin"
+      "libraspberrypi-bin",
+      "gstreamer1.0-plugins-base-apps",
+      "gstreamer1.0-plugins-bad",
+      "gstreamer1.0-plugins-good",
+      "gstreamer1.0-plugins-ugly",
+      "gstreamer1.0-tools",
+      "gstreamer1.0-tools",
+      "gstreamer1.0-gl",
+      "gstreamer1.0-gtk3",
+      "git",
+      "cmake",
+      "gcc",
+      "g++",
+      "binutils",
+      "libunwind-dev",
+      "libssl-dev",
+      "libcurl4-openssl-dev",
+      "make",
+      "autoconf",
+      "build-essential"
     ],
     "pip": [
-      "actfw-raspberrypi==3.0.0"
+      "PySocks==1.7.1",
+      "actfw-core==2.7.0",
+      "actfw-raspberrypi==3.2.0"
     ]
   }
 }

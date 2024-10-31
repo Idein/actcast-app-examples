@@ -28,9 +28,11 @@ class KinesisVideoStream(Isolated):
         pipeline = " ! ".join(
             [
                 "appsrc name=source",
-                f"video/x-raw,format=RGB,width={resolution[0]},height={resolution[1]},bpp=24,depth=24,framerate=5/1",
-                "videoconvert",
-                "omxh264enc periodicty-idr=17 inline-header=FALSE",
+                f'video/x-raw,format=RGB,width={resolution[0]},height={resolution[1]},bpp=24,depth=24,framerate=5/1',
+                f'capssetter replace=true caps="video/x-raw,format=RGB,width={resolution[0]},height={resolution[1]}"',
+                'v4l2convert',
+                'v4l2h264enc extra-controls="controls,repeat_sequence_header=0,h264_i_frame_period=17"',
+                'video/x-h264,level=(string)4',  # https://github.com/raspberrypi/linux/issues/3974
                 "h264parse",
                 "video/x-h264,stream-format=avc,alignment=au",
                 f'kvssink log-config="{dirname}/log.cfg" stream-name={stream_name}',

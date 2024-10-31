@@ -12,4 +12,5 @@ then
   export https_proxy="${SOCKS_PROXY}"
 fi
 
+env
 exec python3 main.py

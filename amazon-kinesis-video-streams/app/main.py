@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 import argparse
-import subprocess
-import os
 import actfw_core
-from actfw_core.capture import V4LCameraCapture
+from actfw_core.unicam_isp_capture import UnicamIspCapture
+from actfw_core.system import find_csi_camera_device
 from actfw_raspberrypi.vc4 import Display
 
 # from configuration import *
@@ -40,10 +39,8 @@ def main(_args):
     # Load act setting
     settings = app.get_settings(
         {
-            "camera_rotation": "0",
             "hflip": False,
             "display": True,
-            "exposure_time": 0,
             "capture_framerate": 8,
             "stream_name": "",
             "region_name": "",
@@ -51,22 +48,18 @@ def main(_args):
             "aws_secret_access_key": "",
         }
     )
-    if settings["exposure_time"] <= 0:
-        settings["exposure_time"] = None
 
     # CommandServer (for `Take Photo` command)
     cmd = actfw_core.CommandServer()
     app.register_task(cmd)
-
-    # Capture task
-    format_selector = V4LCameraCapture.FormatSelector.DEFAULT
-
+    
     try:
-        cap = V4LCameraCapture(
-            "/dev/video0",
-            (CAPTURE_WIDTH, CAPTURE_HEIGHT),
-            settings["capture_framerate"],
-            format_selector=format_selector,
+        device = find_csi_camera_device()
+        cap = UnicamIspCapture(
+            unicam=device,
+            size=(CAPTURE_WIDTH, CAPTURE_HEIGHT),
+            framerate=int(settings["capture_framerate"]),
+            hflip=settings["hflip"],
         )
     except RuntimeError as e:
         raise ActSettingsError(str(e))
@@ -78,14 +71,6 @@ def main(_args):
 
     capture_size = cap.capture_size()
 
-    def config(video):
-        # ignore result (requires camera capability)
-        video.set_rotation(int(settings["camera_rotation"]))
-        # ignore result (requires camera capability)
-        video.set_horizontal_flip(settings["hflip"])
-        video.set_exposure_time(settings["exposure_time"])
-
-    cap.configure(config)
     app.register_task(cap)
 
     # Preprocess task
@@ -122,7 +107,7 @@ def main(_args):
         with Display() as display:
             preview_area = (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
             with display.open_window(
-                preview_area, (CAPTURE_WIDTH, CAPTURE_HEIGHT), 2000
+                preview_area, (CAPTURE_WIDTH, CAPTURE_HEIGHT), 16
             ) as preview_window:
                 run(preview_window)
     else:
