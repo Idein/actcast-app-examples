@@ -2,29 +2,6 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "exposure_time": {
-      "title": "[Capture] exposure time",
-      "description": "exposure time in ms (0 means auto)",
-      "descriptions": {
-        "ja": "カメラの露出時間（0で自動設定）"
-      },
-      "type": "integer",
-      "default": 0,
-      "minimum": 0
-    },
-    "camera_rotation": {
-      "title": "[Capture] camera rotation",
-      "description": "Rotate camera capture image",
-      "descriptions": {
-        "ja": "撮影画像の回転(0, 180 のどれか)"
-      },
-      "type": "string",
-      "default": "0",
-      "enum": [
-        "0",
-        "180"
-      ]
-    },
     "hflip": {
       "title": "[Capture] horizontal flip camera",
       "description": "flip camera capture",
@@ -52,6 +29,12 @@
       "type": "integer",
       "default": 8,
       "minimum": 1
+    },
+    "use_usb_camera": {
+      "title": "use USB camera",
+      "description": "use USB camera instead of Raspberry Pi Camera",
+      "type": "boolean",
+      "default": false
     },
     "stream_name": {
       "title": "stream name",
@@ -91,11 +74,10 @@
     }
   },
   "propertyOrder": [
-    "exposure_time",
-    "camera_rotation",
     "hflip",
     "display",
     "capture_framerate",
+    "use_usb_camera",
     "stream_name",
     "region_name",
     "aws_access_key_id",
@@ -103,7 +85,6 @@
   ],
   "required": [
     "display",
-    "exposure_time",
     "hflip",
     "capture_framerate"
   ]
