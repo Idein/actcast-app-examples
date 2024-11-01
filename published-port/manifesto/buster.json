@@ -1,5 +1,14 @@
 {
+  "version": 2,
+  "target_type": "raspberrypi-buster",
   "boards": [
+    "RSPi3B",
+    "RSPi3BPlus",
+    "RSPiZero2W",
+    "RSPi2B",
+    "RSPi3APlus",
+    "RSPiCM3",
+    "RSPiCM3Plus",
     "RSPi4B",
     "RSPiCM4"
   ],
