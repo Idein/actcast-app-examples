@@ -1,9 +1,10 @@
 {
   "app_id": "kinesis-video-streams-sample",
-  "app_server_id": 141,
+  "app_server_id": 53,
   "short_description": "kinesis video streams sample",
   "short_descriptions": {},
   "target_types": [
+    "raspberrypi-buster",
     "raspberrypi-bullseye"
   ]
 }

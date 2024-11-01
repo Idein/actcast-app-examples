@@ -1,27 +1,47 @@
 {
-  "apt": [
-    "libv4l-0",
-    "libv4lconvert0",
-    "fbset",
-    "python3-pil",
-    "python3-numpy",
-    "fonts-dejavu-core",
-    "python3-gst-1.0",
-    "gstreamer1.0-plugins-bad",
-    "gstreamer1.0-omx",
-    "libcurl4",
-    "liblog4cplus-1.1-9"
-  ],
-  "pip": [
-    "PySocks==1.7.1",
-    "actfw-core==2.3.0"
-  ],
-  "raspberrypi-bullseye": {
+  "apt": [],
+  "pip": [],
+  "raspberrypi-buster": {
     "apt": [
+      "libv4l-0",
+      "libv4lconvert0",
+      "fbset",
+      "python3-pil",
+      "python3-numpy",
+      "fonts-dejavu-core",
+      "python3-gst-1.0",
+      "gstreamer1.0-plugins-bad",
+      "gstreamer1.0-omx",
+      "libcurl4",
+      "liblog4cplus-1.1-9",
       "libraspberrypi0",
       "libraspberrypi-bin"
     ],
     "pip": [
+      "PySocks==1.7.1",
+      "actfw-core==2.7.0",
+      "actfw-raspberrypi==3.1.0"
+    ]
+  },
+  "raspberrypi-bullseye": {
+    "apt": [
+      "libv4l-0",
+      "libv4lconvert0",
+      "fbset",
+      "python3-pil",
+      "python3-numpy",
+      "fonts-dejavu-core",
+      "python3-gst-1.0",
+      "gstreamer1.0-plugins-bad",
+      "gstreamer1.0-omx",
+      "libcurl4",
+      "liblog4cplus-1.1-9",
+      "libraspberrypi0",
+      "libraspberrypi-bin"
+    ],
+    "pip": [
+      "PySocks==1.7.1",
+      "actfw-core==2.7.0",
       "actfw-raspberrypi==3.1.0"
     ]
   }
