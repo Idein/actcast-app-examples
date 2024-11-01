@@ -55,12 +55,14 @@ RUN cp /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build/libKinesisVideoP
 
 FROM docker.io/debian:bookworm-slim
 
-WORKDIR /buster
-COPY --from=buster-builder /opt/libKinesisVideoProducer.so /buster/
-COPY --from=buster-builder /opt/libgstkvssink.so /buster/
-COPY --from=buster-builder /opt/libcproducer.so /buster/
+WORKDIR /opt/buster
+COPY --from=buster-builder /opt/libKinesisVideoProducer.so /opt/buster/
+COPY --from=buster-builder /opt/libgstkvssink.so /opt/buster/
+COPY --from=buster-builder /opt/libcproducer.so /opt/buster/
 
-WORKDIR /bullseye
-COPY --from=bullseye-builder /opt/libKinesisVideoProducer.so /bullseye/
-COPY --from=bullseye-builder /opt/libgstkvssink.so /bullseye/
-COPY --from=bullseye-builder /opt/libcproducer.so /bullseye/
+WORKDIR /opt/bullseye
+COPY --from=bullseye-builder /opt/libKinesisVideoProducer.so /opt/bullseye/
+COPY --from=bullseye-builder /opt/libgstkvssink.so /opt/bullseye/
+COPY --from=bullseye-builder /opt/libcproducer.so /opt/bullseye/
+
+WORKDIR /opt
