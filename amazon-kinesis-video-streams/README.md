@@ -44,7 +44,7 @@ RUN apt-get install -y --no-install-recommends \
 WORKDIR /opt
 RUN git clone https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp.git
 WORKDIR /opt/amazon-kinesis-video-streams-producer-sdk-cpp
-RUN git checkout v3.4.1
+RUN git checkout v3.4.2
 RUN mkdir build
 WORKDIR /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build
 RUN cmake .. -DBUILD_TEST=OFF -DBUILD_GSTREAMER_PLUGIN=TRUE -DBUILD_DEPENDENCIES=OFF -DCMAKE_INSTALL_PREFIX=.

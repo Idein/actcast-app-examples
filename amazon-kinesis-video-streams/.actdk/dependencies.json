@@ -13,7 +13,7 @@
       "gstreamer1.0-plugins-bad",
       "gstreamer1.0-omx",
       "libcurl4",
-      "liblog4cplus-1.1-9",
+      "liblog4cplus-dev",
       "libraspberrypi0",
       "libraspberrypi-bin"
     ],
@@ -35,7 +35,7 @@
       "gstreamer1.0-plugins-bad",
       "gstreamer1.0-omx",
       "libcurl4",
-      "liblog4cplus-1.1-9",
+      "liblog4cplus-dev",
       "libraspberrypi0",
       "libraspberrypi-bin"
     ],
