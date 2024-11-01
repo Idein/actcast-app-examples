@@ -1,4 +1,2 @@
 .actdk/cache
-app/libKinesisVideoProducer.so
-app/libgstkvssink.so
-app/libcproducer.so
+app/**/*.so

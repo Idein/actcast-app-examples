@@ -1,24 +1,24 @@
 {
+  "version": 2,
+  "target_type": "raspberrypi-buster",
   "boards": [
-    "RSPi4B"
+    "RSPi3B",
+    "RSPi3APlus",
+    "RSPi3BPlus",
+    "RSPiCM3",
+    "RSPiCM3Plus",
+    "RSPi4B",
+    "RSPiCM4"
   ],
   "devices": [
     {
-      "type": "camera",
-      "device": [
-        "/dev/video0"
-      ]
+      "type": "camera"
     },
     {
-      "type": "videocore",
-      "device": [
-        "/dev/vcsm",
-        "/dev/vcio",
-        "/dev/vc-mem",
-        "/dev/vchiq",
-        "/dev/gpiomem",
-        "/dev/dri/card0"
-      ]
+      "type": "videocore"
+    },
+    {
+      "type": "framebuffer"
     }
   ],
   "networks": [
