@@ -2,5 +2,9 @@
   "app_id": "rtsp-player",
   "app_server_id": 1,
   "short_description": "RTSP player",
-  "apt_repository": "http://ftp.jaist.ac.jp/raspbian"
+  "apt_repository": "http://ftp.jaist.ac.jp/raspbian",
+  "target_types": [
+    "raspberrypi-buster",
+    "raspberrypi-bullseye"
+  ]
 }

@@ -20,7 +20,7 @@ class Presenter(Consumer):
             left = (display_width - width) // 2
             upper = (display_height - height) // 2
             self.preview_window = display.open_window(
-                (left, upper, width, height), display_size, 1000
+                (left, upper, width, height), display_size, 16
             )
             self.canvas = Image.new("RGB", display_size, (0, 0, 0))
         else:
