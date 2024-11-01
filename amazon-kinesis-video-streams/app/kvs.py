@@ -37,8 +37,8 @@ class KinesisVideoStream(Isolated):
             shutil.copy(buster_dir.join("libcproducer.so"), dirname)
             shutil.copy(buster_dir.join("libKinesisVideoProducer.so"), dirname)
         else:
-            unknown = distro.linux_distribution()[3]
-            raise Exception("Unsupported OS version" + unknown)
+            unknown = distro.linux_distribution()
+            raise Exception("Unsupported OS version" + str(unknown))
 
 
         # https://docs.aws.amazon.com/ja_jp/kinesisvideostreams/latest/dg/examples-gstreamer-plugin-parameters.html

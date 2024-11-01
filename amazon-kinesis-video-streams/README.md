@@ -17,7 +17,7 @@ Raspberry Piに接続されたカメラの映像をKinesis Video Streamに配信
 
 ### kvssink のビルド
 
-gstreamer 経由で kinesis video stream を使うためには `app/*` に以下の shared object が必要です
+gstreamer 経由で kinesis video stream を使うためには `app/buster/*` または `app/bullseye/*` に以下の shared object が必要です
 
 - libKinesisVideoProducer.so
 - libgstkvssink.so
