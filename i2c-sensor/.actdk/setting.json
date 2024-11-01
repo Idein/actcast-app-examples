@@ -4,6 +4,7 @@
   "short_description": "Environmental sensors",
   "short_descriptions": {},
   "target_types": [
-    "raspberrypi-buster"
+    "raspberrypi-buster",
+    "raspberrypi-bullseye"
   ]
 }

@@ -1,13 +1,13 @@
 #!/usr/bin/python
 import smbus2  # require pip install
 import time
-# SMBusƒ‚ƒWƒ…[ƒ‹‚Ìİ’è
+# SMBusãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®è¨­å®š
 bus = smbus2.SMBus(1)
-# i2c’ÊM‚Ìİ’è     
+# i2cé€šä¿¡ã®è¨­å®š     
 #VEML7700
 class VEML7700:
 
-    #ƒNƒ‰ƒX•Ï”
+    #ã‚¯ãƒ©ã‚¹å¤‰æ•°
     I2C_ADDR = 0x70
     
     #VEML7700 regidters

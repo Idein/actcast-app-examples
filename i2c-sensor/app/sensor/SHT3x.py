@@ -1,13 +1,13 @@
 #!/usr/bin/python
 import smbus2  # require pip install
 import time
-# SMBusƒ‚ƒWƒ…[ƒ‹‚Ìİ’è
+# SMBusãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®è¨­å®š
 bus = smbus2.SMBus(1)
 
 
 
 # (c) Copyright 2019 Sensirion AG, Switzerland
-#0x31(0x131)ix^8 + x^5 + x^4 + 1j
+#0x31(0x131)ï¼ˆx^8 + x^5 + x^4 + 1ï¼‰
 class CrcCalculator(object):
 
     def __init__(self, width=8, polynomial=0x31, init_value=0xFF, final_xor=0x00):
@@ -33,8 +33,8 @@ class CrcCalculator(object):
 
 
 
-# i2c’ÊM‚Ìİ’è     
-# SHT30(‰·¼“xƒZƒ“ƒT)‚Ì‘ª’è
+# i2cé€šä¿¡ã®è¨­å®š     
+# SHT30(æ¸©æ¹¿åº¦ã‚»ãƒ³ã‚µ)ã®æ¸¬å®š
 class SHT3x:
 
     #SHT3x command
@@ -80,28 +80,28 @@ class SHT3x:
     
     def __init__(self, address=0x44):
         self.I2C_ADDR = address
-        # CrcCalculator‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬
+        # CrcCalculatorã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆ
         self.crc8 = CrcCalculator()
         bus.write_byte_data(self.I2C_ADDR, *self.CMD_MEAS_PERI_1_H)
     
     def readData(self):
-        # ‘ª’èƒf[ƒ^æ‚İƒRƒ}ƒ“ƒh
+        # æ¸¬å®šãƒ‡ãƒ¼ã‚¿å–è¾¼ã¿ã‚³ãƒãƒ³ãƒ‰
         bus.write_byte_data(self.I2C_ADDR, *self.CMD_FETCH_DATA)
         time.sleep(0.1)
         data = bus.read_i2c_block_data(self.I2C_ADDR, 0x00, 6)
 
-        # crc8.calcƒƒ\ƒbƒh‚ğself.crc8.calc‚É•ÏX
+        # crc8.calcãƒ¡ã‚½ãƒƒãƒ‰ã‚’self.crc8.calcã«å¤‰æ›´
         crc1 = data[2]
         crc2 = data[5]
         calc1 = self.crc8.calc(data[0:2])
         calc2 = self.crc8.calc(data[3:5])
         if crc1 == calc1 and crc2 == calc2:
-            # ‰·“xŒvZ
-            # T[] = -45 +175*St/(2^16-1)
+            # æ¸©åº¦è¨ˆç®—
+            # T[â„ƒ] = -45 +175*St/(2^16-1)
             temp_mlsb = ((data[0] << 8) | data[1])
             temp = -45 + 175 * int(str(temp_mlsb), 10) / (pow(2, 16) - 1)
 
-            # ¼“xŒvZ
+            # æ¹¿åº¦è¨ˆç®—
             # RH = 100*Srh/(2^16-1)
             humi_mlsb = ((data[3] << 8) | data[4])
             humi = 100 * int(str(humi_mlsb), 10) / (pow(2, 16) - 1)
