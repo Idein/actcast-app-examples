@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "target_type": "raspberrypi-buster",
+  "target_type": "raspberrypi-bullseye",
   "boards": [
     "RSPi3B",
     "RSPi3BPlus",
@@ -8,7 +8,9 @@
     "RSPi2B",
     "RSPi3APlus",
     "RSPiCM3",
-    "RSPiCM3Plus"
+    "RSPiCM3Plus",
+    "RSPi4B",
+    "RSPiCM4"
   ],
   "devices": [],
   "allow_all_networks": true,
