@@ -1,9 +1,11 @@
 import os
+import shutil
 from queue import Queue, Empty, Full
 import traceback
 from actfw_core.task import Isolated
 import numpy as np
 import gi
+import distro
 
 if gi:
     gi.require_version("Gst", "1.0")
@@ -24,6 +26,21 @@ class KinesisVideoStream(Isolated):
         self._is_push_buffer_allowed = False
 
         dirname = os.path.dirname(os.path.abspath(__file__))
+        buster_dir = dirname.join("buster")
+        bullseye_dir = dirname.join("bullseye")
+        if distro.linux_distribution()[2] == "bullseye":
+            shutil.copy(bullseye_dir.join("libgstkvssink.so"), dirname)
+            shutil.copy(bullseye_dir.join("libcproducer.so"), dirname)
+            shutil.copy(bullseye_dir.join("libKinesisVideoProducer.so"), dirname)
+        elif distro.linux_distribution()[2] == "buster":
+            shutil.copy(buster_dir.join("libgstkvssink.so"), dirname)
+            shutil.copy(buster_dir.join("libcproducer.so"), dirname)
+            shutil.copy(buster_dir.join("libKinesisVideoProducer.so"), dirname)
+        else:
+            unknown = distro.linux_distribution()[3]
+            raise Exception("Unsupported OS version" + unknown)
+
+
         # https://docs.aws.amazon.com/ja_jp/kinesisvideostreams/latest/dg/examples-gstreamer-plugin-parameters.html
         pipeline = " ! ".join(
             [
