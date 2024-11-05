@@ -8,13 +8,21 @@
     "fbset",
     "fonts-dejavu-core"
   ],
-  "pip": ["actfw-core==2.6.0"],
+  "pip": [],
   "raspberrypi-buster": {
-    "apt": ["libraspberrypi0"],
-    "pip": ["actfw-raspberrypi==3.1.0"]
+    "apt": [
+      "libraspberrypi0"
+    ],
+    "pip": [
+      "actfw-raspberrypi"
+    ]
   },
   "raspberrypi-bullseye": {
-    "apt": ["libraspberrypi0"],
-    "pip": ["actfw-raspberrypi==3.1.0"]
+    "apt": [
+      "libraspberrypi0"
+    ],
+    "pip": [
+      "actfw-raspberrypi"
+    ]
   }
 }
