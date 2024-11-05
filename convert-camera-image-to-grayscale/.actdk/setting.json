@@ -4,6 +4,6 @@
   "short_description": "convert camera image to grayscale",
   "short_descriptions": {},
   "target_types": [
-    "raspberrypi"
+    "raspberrypi-bullseye"
   ]
 }

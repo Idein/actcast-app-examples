@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 import numpy as np
-import actfw_core
 from PIL import Image
+import actfw_core
 from actfw_core.task import Pipe, Consumer
-from actfw_core.capture import V4LCameraCapture
+from actfw_core.system import find_csi_camera_device
+from actfw_core.unicam_isp_capture import UnicamIspCapture
 from actfw_raspberrypi.vc4 import Display
 
 
@@ -59,11 +60,8 @@ def run(app, preview_window=None):
     # register capture task
     capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
     framerate = 30
-    cap = V4LCameraCapture(
-        size=capture_size,
-        framerate=framerate,
-        format_selector=V4LCameraCapture.FormatSelector.PROPER,
-    )
+    device = find_csi_camera_device()
+    cap = UnicamIspCapture(unicam=device, size=capture_size, framerate=framerate)
     app.register_task(cap)
 
     # register converter task
@@ -93,7 +91,7 @@ def main():
         with Display() as display:
             preview_area = (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
             capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
-            layer = 2000
+            layer = 16
             with display.open_window(
                 preview_area, capture_size, layer
             ) as preview_window:

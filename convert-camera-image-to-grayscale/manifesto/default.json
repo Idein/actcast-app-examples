@@ -1,4 +1,6 @@
 {
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
   "boards": [
     "RSPi2B",
     "RSPiAlpha",
@@ -7,30 +9,19 @@
     "RSPiCM3",
     "RSPi3BPlus",
     "RSPi3APlus",
-    "RSPiCM3Plus"
+    "RSPiCM3Plus",
+    "RSPi4B",
+    "RSPiCM4"
   ],
   "devices": [
-    {
-      "type": "camera",
-      "device": [
-        "/dev/video0"
-      ]
-    },
-    {
-      "type": "videocore",
-      "device": [
-        "/dev/vcsm",
-        "/dev/vcio",
-        "/dev/vc-mem",
-        "/dev/vchiq",
-        "/dev/gpiomem"
-      ]
-    },
+    { "type": "camera" },
+    { "type": "videocore" },
     {
       "type": "framebuffer",
       "device": [
         "/dev/fb0"
-      ]
+      ],
+      "required": false
     }
   ]
 }
