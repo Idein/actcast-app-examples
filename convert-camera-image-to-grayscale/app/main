@@ -5,7 +5,6 @@ import actfw_core
 from actfw_core.task import Pipe, Consumer
 from actfw_core.system import find_csi_camera_device
 from actfw_core.unicam_isp_capture import UnicamIspCapture
-import actfw_raspberrypi
 from actfw_raspberrypi.vc4 import Display
 
 
