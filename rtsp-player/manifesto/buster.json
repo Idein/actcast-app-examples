@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-buster",
+  "boards": [
+    "RSPi3B",
+    "RSPiCM3",
+    "RSPi3BPlus",
+    "RSPi3APlus",
+    "RSPiCM3Plus",
+    "RSPi4B",
+    "RSPiCM4"
+  ],
+  "devices": [
+    {
+      "type": "videocore"
+    },
+    {
+      "type": "framebuffer",
+      "device": [
+        "/dev/fb0"
+      ],
+      "required": false
+    },
+    {
+      "type": "other",
+      "device": [
+        "/dev/video10"
+      ],
+      "required": false
+    }
+  ],
+  "networks": [
+    {
+      "local_addr": true,
+      "protocol": "tcp",
+      "port": 554
+    },
+    {
+      "local_addr": true,
+      "protocol": "tcp",
+      "port": 8554
+    }
+  ]
+}
