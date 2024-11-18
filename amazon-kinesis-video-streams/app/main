@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# For kvssink 
+# For kvssink
 readonly SCRIPT_DIR=$(cd $(dirname $0); pwd)
 export GST_PLUGIN_PATH="${SCRIPT_DIR}:${GST_PLUGIN_PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}:${LD_LIBRARY_PATH}"

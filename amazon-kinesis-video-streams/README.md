@@ -1,6 +1,6 @@
 # Kinesis Video Stream example
 
-**※このサンプルアプリケーションは ActcastOS 3 に対応していません。こちらを参考にアプリケーションを実装する場合、[ActcastOS 3 Migration ガイド](https://actcast.io/docs/ja/ApplicationDevelopment/ForActcastOS3/) に従って Actcast OS 3 に対応させてください**
+**※このサンプルアプリケーションはActcastOS 3 に対応しています**
 
 ## 概要
 Raspberry Piに接続されたカメラの映像をKinesis Video Streamに配信するサンプルアプリです。
@@ -26,38 +26,16 @@ gstreamer 経由で kinesis video stream を使うためには `app/*` に以下
 これらは [ソースコード](https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp) からビルドする必要があります
 依存ライブラリのバージョンを揃えるために ssh で actsim にログインして docker コンテナの中でビルドします
 
-次の Dockerfile を使って docker イメージを作成します
+actsim にDockerfile を転送します
+`<REMOTE>` actsim がインストールされた Raspberry Pi の IP アドレスです
 
-```Dockerfile
-FROM idein/actcast-rpi-app-base:buster-1
-ENV DEBIAN_FRONTEND "noninteractive"
-ENV DEBCONF_NOWARNINGS "yes"
-RUN apt-get update -y
-RUN apt-get \
-    -o Dpkg::Options::="--force-confdef" \
-    -o Dpkg::Options::="--force-confold" \
-    upgrade -y
-RUN apt-get install -y --no-install-recommends \
-    libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools
-RUN apt-get install -y --no-install-recommends \
-    git cmake gcc g++ binutils libunwind-dev libssl-dev libcurl4-openssl-dev liblog4cplus-dev make autoconf build-essential
-WORKDIR /opt
-RUN git clone https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp.git
-WORKDIR /opt/amazon-kinesis-video-streams-producer-sdk-cpp
-RUN git checkout v3.4.1
-RUN mkdir build
-WORKDIR /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build
-RUN cmake .. -DBUILD_TEST=OFF -DBUILD_GSTREAMER_PLUGIN=TRUE -DBUILD_DEPENDENCIES=OFF -DCMAKE_INSTALL_PREFIX=.
-RUN make
-WORKDIR /opt
-RUN cp /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build/libKinesisVideoProducer.so /opt \
-    && cp /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so /opt \
-    && cp /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build/dependency/libkvscproducer/kvscproducer-src/libcproducer.so /opt
+ユーザ名とパスワードは [actsim のセットアップ時に決めたもの](https://actcast.io/docs/ja/ApplicationDevelopment/GettingStarted/SetupActsim/) です
+
+```bash
+rsync -e=ssh pi@<REMOTE> Dockerfile /home/pi/Dockerfile
 ```
 
-actsim に ssh でログインして docker image を作成します
-`<REMOTE>` actsim がインストールされた Raspberry Pi の IP アドレスです
-password は raspberry です
+ssh でログインして し docker build します
 
 ```bash
 ssh pi@<REMOTE>
@@ -68,44 +46,27 @@ cd ~/
 mkdir workspace
 chmod 777 workspace
 cd workspace
-vim Dockerfile
-sudo docker build --tag kvssink:buster-1 .
+mv ~/Dockerfile ./
+sudo docker build --output=. .
 ```
 
-docker image のビルドが終わったらコンテナを起動して shared object をコピーします
+docker image のビルドが終わったら Dockerfile 隣に .so がコピーされていることを確認します
 
-```bash
-sudo docker run -u 0:0 -v /home/pi/workspace:/workspace --rm -ti kvssink:buster-1 /bin/bash
+```console
+$ ls /home/pi/workspace
+drwxr-xr-x 2 pi   pi     4096 Nov 18 06:45 .
+drwxr-xr-x 3 root root   4096 Jan 28  2022 ..
+-rw-r--r-- 1 pi   pi     1448 Nov 18 06:45 Dockerfile
+-rwxr-xr-x 1 root root 471872 Nov 15 09:29 libKinesisVideoProducer.so
+-rwxr-xr-x 1 root root 601760 Nov 15 09:29 libcproducer.so
+-rwxr-xr-x 1 root root 528340 Nov 15 09:30 libgstkvssink.so
 ```
 
-コピーしたらコンテナを終了します
-
-```bash
-cp /opt/libKinesisVideoProducer.so /workspace
-cp /opt/libgstkvssink.so /workspace
-cp /opt/libcproducer.so /workspace
-exit
-```
-
-コンテナの外に .so がコピーされていることを確認します
-
-```bash
-ls /home/pi/workspace
-```
-
-コピーを確認したら docker image を削除して actsim からログアウトします
-
-```bash
-sudo docker rmi kvssink:buster-1
-exit
-```
-
+コピーを確認したら actsim からログアウトし、
 actsim にできたこの 3 つの shared object を `rsync` 等でホストマシンの `app/*` へコピーします
 
 ```bash
-rsync -e ssh pi@<REMOTE>:/home/pi/workspace/libKinesisVideoProducer.so ./app
-rsync -e ssh pi@<REMOTE>:/home/pi/workspace/libgstkvssink.so ./app
-rsync -e ssh pi@<REMOTE>:/home/pi/workspace/libcproducer.so ./app
+rsync -e=ssh pi@<REMOTE>:/home/pi/workspace/\*.so ./app/
 ```
 
 ## Actsim での動作確認

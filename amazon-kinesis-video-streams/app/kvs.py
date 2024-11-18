@@ -13,7 +13,7 @@ if gi:
 
 
 class KinesisVideoStream(Isolated):
-    def __init__(self, resolution, stream_name, region, access_key, secret_key):
+    def __init__(self, resolution, stream_name, region, access_key, secret_key, bitrate=None):
         super(KinesisVideoStream, self).__init__()
         self.running = True
         self.in_queue = Queue(maxsize=2)
@@ -25,12 +25,15 @@ class KinesisVideoStream(Isolated):
 
         dirname = os.path.dirname(os.path.abspath(__file__))
         # https://docs.aws.amazon.com/ja_jp/kinesisvideostreams/latest/dg/examples-gstreamer-plugin-parameters.html
+        bitrate_s = f"video_bitrate={bitrate}," if bitrate is not None else ""
         pipeline = " ! ".join(
             [
                 "appsrc name=source",
-                f"video/x-raw,format=RGB,width={resolution[0]},height={resolution[1]},bpp=24,depth=24,framerate=5/1",
-                "videoconvert",
-                "omxh264enc periodicty-idr=17 inline-header=FALSE",
+                f'video/x-raw,format=RGB,width={resolution[0]},height={resolution[1]},bpp=24,depth=24,framerate=5/1',
+                f'capssetter replace=true caps="video/x-raw,format=RGB,width={resolution[0]},height={resolution[1]}"',
+                'v4l2convert',
+                f'v4l2h264enc extra-controls="encode,{bitrate_s}repeat_sequence_header=0,h264_i_frame_period=17"',
+                'video/x-h264,level=(string)4',  # https://github.com/raspberrypi/linux/issues/3974
                 "h264parse",
                 "video/x-h264,stream-format=avc,alignment=au",
                 f'kvssink log-config="{dirname}/log.cfg" stream-name={stream_name}',
