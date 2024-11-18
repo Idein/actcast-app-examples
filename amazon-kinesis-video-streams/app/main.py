@@ -55,7 +55,7 @@ def main(_args):
     cmd = actfw_core.CommandServer()
     app.register_task(cmd)
     use_usb_camera = settings["use_usb_camera"]
-    
+
     try:
         if use_usb_camera:
             device = find_usb_camera_device()
