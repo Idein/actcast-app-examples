@@ -30,6 +30,12 @@
       "default": 8,
       "minimum": 1
     },
+    "use_usb_camera": {
+      "title": "use USB camera",
+      "description": "use USB camera instead of Raspberry Pi Camera",
+      "type": "boolean",
+      "default": false
+    },
     "stream_name": {
       "title": "stream name",
       "description": "The name of the destination Kinesis video stream.",
@@ -71,6 +77,7 @@
     "hflip",
     "display",
     "capture_framerate",
+    "use_usb_camera",
     "stream_name",
     "region_name",
     "aws_access_key_id",

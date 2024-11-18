@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 import argparse
 import actfw_core
+from actfw_core.capture import V4LCameraCapture
 from actfw_core.unicam_isp_capture import UnicamIspCapture
-from actfw_core.system import find_csi_camera_device
+from actfw_core.system import find_csi_camera_device, find_usb_camera_device
 from actfw_raspberrypi.vc4 import Display
 
 # from configuration import *
@@ -42,6 +43,7 @@ def main(_args):
             "hflip": False,
             "display": True,
             "capture_framerate": 8,
+            "use_usb_camera": False,
             "stream_name": "",
             "region_name": "",
             "aws_access_key_id": "",
@@ -52,15 +54,30 @@ def main(_args):
     # CommandServer (for `Take Photo` command)
     cmd = actfw_core.CommandServer()
     app.register_task(cmd)
+    use_usb_camera = settings["use_usb_camera"]
     
     try:
-        device = find_csi_camera_device()
-        cap = UnicamIspCapture(
-            unicam=device,
-            size=(CAPTURE_WIDTH, CAPTURE_HEIGHT),
-            framerate=int(settings["capture_framerate"]),
-            hflip=settings["hflip"],
-        )
+        if use_usb_camera:
+            device = find_usb_camera_device()
+            cap = V4LCameraCapture(
+                device,
+                size=(CAPTURE_WIDTH, CAPTURE_HEIGHT),
+                framerate=int(settings["capture_framerate"]),
+                format_selector=V4LCameraCapture.FormatSelector.PROPER
+            )
+            def config(video):
+                # ignore result (requires camera capability)
+                video.set_horizontal_flip(settings["hflip"])
+            cap.configure(config)
+        else:
+            device = find_csi_camera_device()
+            cap = UnicamIspCapture(
+                unicam=device,
+                size=(CAPTURE_WIDTH, CAPTURE_HEIGHT),
+                framerate=int(settings["capture_framerate"]),
+                hflip=settings["hflip"],
+            )
+
     except RuntimeError as e:
         raise ActSettingsError(str(e))
     except OSError as e:
