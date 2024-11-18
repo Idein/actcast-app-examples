@@ -41,6 +41,7 @@ def main(_args):
     settings = app.get_settings(
         {
             "hflip": False,
+            "vflip": False,
             "display": False,
             "capture_framerate": 8,
             "use_usb_camera": False,
@@ -68,6 +69,8 @@ def main(_args):
             def config(video):
                 # ignore result (requires camera capability)
                 video.set_horizontal_flip(settings["hflip"])
+                if settings['vflip']:
+                    video.set_rotation(180)
             cap.configure(config)
         else:
             device = find_csi_camera_device()
@@ -76,6 +79,7 @@ def main(_args):
                 size=(CAPTURE_WIDTH, CAPTURE_HEIGHT),
                 framerate=int(settings["capture_framerate"]),
                 hflip=settings["hflip"],
+                vflip=settings["vflip"],
             )
 
     except RuntimeError as e:

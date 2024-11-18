@@ -11,6 +11,15 @@
       "type": "boolean",
       "default": false
     },
+    "vflip": {
+      "title": "[Capture] vertical flip camera",
+      "description": "flip camera capture",
+      "descriptions": {
+        "ja": "撮影画像の上下反転"
+      },
+      "type": "boolean",
+      "default": false
+    },
     "display": {
       "title": "[Display] display",
       "description": "output video to HDMI display",
@@ -75,6 +84,7 @@
   },
   "propertyOrder": [
     "hflip",
+    "vflip",
     "display",
     "capture_framerate",
     "use_usb_camera",
@@ -85,7 +95,10 @@
   ],
   "required": [
     "display",
-    "hflip",
-    "capture_framerate"
+    "use_usb_camera",
+    "stream_name",
+    "region_name",
+    "aws_access_key_id",
+    "aws_secret_access_key"
   ]
 }

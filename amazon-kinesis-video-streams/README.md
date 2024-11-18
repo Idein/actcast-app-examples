@@ -28,14 +28,14 @@ gstreamer 経由で kinesis video stream を使うためには `app/*` に以下
 
 actsim にDockerfile を転送します
 `<REMOTE>` actsim がインストールされた Raspberry Pi の IP アドレスです
-password は raspberry です
+
+ユーザ名とパスワードは [actsim のセットアップ時に決めたもの](https://actcast.io/docs/ja/ApplicationDevelopment/GettingStarted/SetupActsim/) です
 
 ```bash
-rsync -e ssh pi@<REMOTE> Dockerfile /home/pi/Dockerfile
+rsync -e=ssh pi@<REMOTE> Dockerfile /home/pi/Dockerfile
 ```
 
 ssh でログインして し docker build します
-password は raspberry です
 
 ```bash
 ssh pi@<REMOTE>
@@ -66,7 +66,7 @@ drwxr-xr-x 3 root root   4096 Jan 28  2022 ..
 actsim にできたこの 3 つの shared object を `rsync` 等でホストマシンの `app/*` へコピーします
 
 ```bash
-rsync -e ssh pi@<REMOTE>:/home/pi/workspace/*.so ./app/
+rsync -e=ssh pi@<REMOTE>:/home/pi/workspace/\*.so ./app/
 ```
 
 ## Actsim での動作確認

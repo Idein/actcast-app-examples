@@ -1,5 +1,6 @@
 {
   "hflip": false,
+  "vflip": false,
   "display": false,
   "capture_framerate": 8,
   "use_usb_camera": false,
