@@ -3,6 +3,7 @@
   "pip": [],
   "raspberrypi-bullseye": {
     "apt": [
+      "git",
       "libv4l-0",
       "libv4lconvert0",
       "fbset",
@@ -21,8 +22,8 @@
     ],
     "pip": [
       "PySocks==1.7.1",
-      "actfw-core==2.7.0",
-      "actfw-raspberrypi==3.2.0"
+      "actfw-raspberrypi==3.2.0",
+      "git+https://github.com/idein/actfw-core@autofocus"
     ]
   }
 }

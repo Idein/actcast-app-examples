@@ -45,6 +45,12 @@
       "type": "boolean",
       "default": false
     },
+    "use_v3_camera": {
+      "title": "use v3 camera",
+      "description": "use Raspberry Pi Camera V3",
+      "type": "boolean",
+      "default": true
+    },
     "stream_name": {
       "title": "stream name",
       "description": "The name of the destination Kinesis video stream.",
@@ -80,6 +86,38 @@
       },
       "type": "string",
       "default": ""
+    },
+    "afmode": {
+      "title": "V3 camera autofocus mode",
+      "description": "V3 camera autofocus mode",
+      "descriptions": {
+        "ja": "V3カメラのオートフォーカスモード"
+      },
+      "type": "string",
+      "default": "continuous",
+      "enum": [
+        "continuous",
+        "manual",
+        "timer"
+      ]
+    },
+    "afvalue": {
+      "title": "V3 camera focus manual value",
+      "description": "V3 camera focus manual value",
+      "descriptions": {
+        "ja": "afmode=manualモードの固定フォーカス値"
+      },
+      "type": "integer",
+      "default": 420
+    },
+    "aftimer": {
+      "title": "V3 camera autofocus timer(sec)",
+      "description": "V3 camera autofocus timer(sec)",
+      "descriptions": {
+        "ja": "afmode=timerモードのタイマー時間（秒）"
+      },
+      "type": "integer",
+      "default": 10
     }
   },
   "propertyOrder": [
@@ -88,6 +126,10 @@
     "display",
     "capture_framerate",
     "use_usb_camera",
+    "use_v3_camera",
+    "afmode",
+    "afvalue",
+    "aftimer",
     "stream_name",
     "region_name",
     "aws_access_key_id",
