@@ -2,15 +2,8 @@
 import argparse
 import actfw_core
 from actfw_core.task.task import Task
-import actfw_raspberrypi
 import http.server
-import socketserver
 import json
-
-
-
-(CAPTURE_WIDTH, CAPTURE_HEIGHT) = (320, 240)  # capture image size
-(DISPLAY_WIDTH, DISPLAY_HEIGHT) = (640, 480)  # display area size
 
 PORT = 8080
 
@@ -27,11 +20,18 @@ class SampleHttpRequestHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(response.encode())
 
 class Server(Task):
-    def run(self):
-        with http.server.HTTPServer(('', PORT), SampleHttpRequestHandler) as httpd:
-            actfw_core.notify([{"message": "serving at port" + str(PORT)}])
-            httpd.serve_forever()
 
+    def __init__(self):
+        super().__init__()
+        self.httpd = http.server.HTTPServer(('', PORT), SampleHttpRequestHandler)
+
+    def run(self):
+        actfw_core.notify([{"message": "serving at port" + str(PORT)}])
+        self.httpd.serve_forever()
+
+    def stop(self):
+        super().stop()
+        self.httpd.shutdown()
 
 def main(args):
 
