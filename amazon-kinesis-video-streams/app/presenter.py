@@ -77,11 +77,6 @@ class Presenter(Consumer):
 
         self.kvssink = kvssink
 
-    def stop(self):
-        """Stop the activity"""
-        if self.kvssink is not None:
-            self.kvssink.stop()
-
     def proc(self, captured_image):
         current_time = time.time()
         result_image = captured_image.copy()
