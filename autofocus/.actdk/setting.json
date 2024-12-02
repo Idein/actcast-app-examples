@@ -1,7 +1,7 @@
 {
-  "app_id": "kinesis-video-streams-sample",
+  "app_id": "autofocus",
   "app_server_id": 1,
-  "short_description": "kinesis video streams sample",
+  "short_description": null,
   "short_descriptions": {},
   "target_types": [
     "raspberrypi-bullseye"

@@ -1,0 +1,19 @@
+{
+  "apt": [],
+  "pip": [],
+  "raspberrypi-bullseye": {
+    "apt": [
+      "python3",
+      "python3-pil",
+      "python3-numpy",
+      "fonts-dejavu-core",
+      "libraspberrypi0",
+      "libv4l-0",
+      "libv4lconvert0"
+    ],
+    "pip": [
+      "actfw-core==2.9.0",
+      "actfw-raspberrypi==3.2.0"
+    ]
+  }
+}
