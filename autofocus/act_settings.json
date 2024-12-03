@@ -1,0 +1,10 @@
+{
+  "hflip": false,
+  "vflip": false,
+  "display": false,
+  "capture_framerate": 8,
+  "use_v3_camera": true,
+  "afmode": "continuous",
+  "afvalue": 420,
+  "aftimer": 10
+}

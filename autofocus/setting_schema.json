@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "hflip": {
+      "title": "[Capture] horizontal flip camera",
+      "description": "flip camera capture",
+      "descriptions": {
+        "ja": "撮影画像の左右反転"
+      },
+      "type": "boolean",
+      "default": false
+    },
+    "vflip": {
+      "title": "[Capture] vertical flip camera",
+      "description": "flip camera capture",
+      "descriptions": {
+        "ja": "撮影画像の上下反転"
+      },
+      "type": "boolean",
+      "default": false
+    },
+    "display": {
+      "title": "[Display] display",
+      "description": "output video to HDMI display",
+      "descriptions": {
+        "ja": "HDMIディスプレイへの描画を行う"
+      },
+      "type": "boolean",
+      "default": false
+    },
+    "capture_framerate": {
+      "title": "capture framerate",
+      "description": "capture framerate",
+      "descriptions": {
+        "ja": "キャプチャフレームレート"
+      },
+      "type": "integer",
+      "default": 8,
+      "minimum": 1
+    },
+    "use_v3_camera": {
+      "title": "use v3 camera",
+      "description": "use Raspberry Pi Camera V3",
+      "type": "boolean",
+      "default": true
+    },
+    "afmode": {
+      "title": "V3 camera autofocus mode",
+      "description": "V3 camera autofocus mode",
+      "descriptions": {
+        "ja": "V3カメラのオートフォーカスモード"
+      },
+      "type": "string",
+      "default": "continuous",
+      "enum": [
+        "continuous",
+        "manual",
+        "timer"
+      ]
+    },
+    "afvalue": {
+      "title": "V3 camera focus manual value",
+      "description": "V3 camera focus manual value",
+      "descriptions": {
+        "ja": "afmode=manualモードの固定フォーカス値"
+      },
+      "type": "integer",
+      "default": 420
+    },
+    "aftimer": {
+      "title": "V3 camera autofocus timer(sec)",
+      "description": "V3 camera autofocus timer(sec)",
+      "descriptions": {
+        "ja": "afmode=timerモードのタイマー時間（秒）"
+      },
+      "type": "integer",
+      "default": 10
+    }
+  },
+  "propertyOrder": [
+    "hflip",
+    "vflip",
+    "display",
+    "capture_framerate",
+    "use_v3_camera",
+    "afmode",
+    "afvalue",
+    "aftimer"
+  ],
+  "required": [
+    "display",
+    "use_v3_camera"
+  ]
+}
