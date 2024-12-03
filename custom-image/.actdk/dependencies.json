@@ -5,5 +5,10 @@
     "apt": [],
     "pip": [],
     "base_image": "hoge"
+  },
+  "raspberrypi-bullseye": {
+    "apt": [],
+    "pip": [],
+    "base_image": "hoge"
   }
 }
