@@ -1,0 +1,11 @@
+#!/bin/bash
+
+function tojson {
+    while read -r line; do
+        echo "[{\"data\":\"${line}\"}]"
+    done
+}
+
+trap 'kill $(jobs -p) 2>/dev/null; exit 0' TERM
+(ping actcast.io 2>&1 | tojson) &
+wait
