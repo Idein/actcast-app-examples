@@ -102,32 +102,34 @@ def main(_args):
     pre = Preprocess(capture_size)
     app.register_task(pre)
 
-    preview_window = None
+    def run(preview_window=None):
+        # Presenter task
+        pres = Presenter(
+            preview_window,
+            cmd,
+            auto_focuser=auto_focuser,
+            afmode=settings["afmode"],
+            aftimer=settings["aftimer"],
+            afvalue=settings["afvalue"],
+        )
+        app.register_task(pres)
+
+        # Make task connection
+        cap.connect(pre)  # from `cap` to `pre`
+        pre.connect(pres)  # from `pre` to `pres
+
+        # Start application
+        app.run()
+
     if settings["display"]:
         with Display() as display:
             preview_area = (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
             with display.open_window(
                 preview_area, (CAPTURE_WIDTH, CAPTURE_HEIGHT), 16
-            ) as preview_window_:
-                preview_window = preview_window_
-
-    # Presenter task
-    pres = Presenter(
-        preview_window,
-        cmd,
-        auto_focuser=auto_focuser,
-        afmode=settings["afmode"],
-        aftimer=settings["aftimer"],
-        afvalue=settings["afvalue"],
-    )
-    app.register_task(pres)
-
-    # Make task connection
-    cap.connect(pre)  # from `cap` to `pre`
-    pre.connect(pres)  # from `pre` to `pres
-
-    # Start application
-    app.run()
+            ) as preview_window:
+                run(preview_window)
+    else:
+        run()
 
 
 if __name__ == "__main__":

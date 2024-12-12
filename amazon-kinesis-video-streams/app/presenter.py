@@ -110,5 +110,5 @@ class Presenter(Consumer):
         self.cmd.update_image(result_image)
 
         if self.preview_window is not None:
-            self.preview_window.blit(np.asarray(result_image).tobytes())
+            self.preview_window.blit(result_image.tobytes())
             self.preview_window.update()
