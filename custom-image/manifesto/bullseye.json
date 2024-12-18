@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
+  "boards": [
+    "RSPiZero2W",
+    "RSPi2B",
+    "RSPi3APlus",
+    "RSPi3B",
+    "RSPi3BPlus",
+    "RSPiCM3",
+    "RSPiCM3Plus",
+    "RSPi4B",
+    "RSPiCM4"
+  ],
+  "devices": []
+}
