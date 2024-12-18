@@ -10,8 +10,6 @@ from actfw_raspberrypi.vc4 import Display
 from presenter import Presenter
 from preprocess import Preprocess
 from consts import (
-    DISPLAY_HEIGHT,
-    DISPLAY_WIDTH,
     CAPTURE_HEIGHT,
     CAPTURE_WIDTH,
 )
@@ -123,7 +121,16 @@ def main(_args):
 
     if settings["display"]:
         with Display() as display:
-            preview_area = (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
+            actual_display_width, actual_display_height = display.size()
+            scale = min(
+                float(actual_display_width / CAPTURE_WIDTH),
+                float(actual_display_height / CAPTURE_WIDTH),
+            )
+            width = int(scale * CAPTURE_WIDTH)
+            height = int(scale * CAPTURE_HEIGHT)
+            left = (actual_display_width - width) // 2
+            upper = (actual_display_height - height) // 2
+            preview_area = (left, upper, width, height)
             with display.open_window(
                 preview_area, (CAPTURE_WIDTH, CAPTURE_HEIGHT), 16
             ) as preview_window:
