@@ -1,17 +1,14 @@
-
 {
   "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
   "type": "object",
   "properties": {
-       "send_interval": {
-           "title": "send_interval",
-           "description": "send_sensordata_interval",
-           "type": "integer",
-           "default": 60
-           }
+    "send_interval": {
+      "title": "send_interval",
+      "description": "send_sensordata_interval",
+      "type": "integer",
+      "default": 60,
+      "minimum": 1
+    }
   },
-  "required": 
-    [
-        "send_interval"
-    ]
+  "required": ["send_interval"]
 }
