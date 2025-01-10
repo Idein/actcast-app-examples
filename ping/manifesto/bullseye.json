@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
+  "boards": [
+    "RSPi3BPlus",
+    "RSPi4B"
+  ],
+  "devices": [],
+  "allow_all_networks": true
+}
