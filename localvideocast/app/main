@@ -12,6 +12,7 @@ from actfw_core.capture import V4LCameraCapture
 from actfw_core.unicam_isp_capture import UnicamIspCapture
 from actfw_raspberrypi.vc4 import Display
 from localvideocast import LocalVideoCast
+import time
 
 
 (CAPTURE_WIDTH, CAPTURE_HEIGHT) = (640, 480)  # capture image size
@@ -47,8 +48,11 @@ class Presenter(Consumer):
         self.cmd = cmd
         self.localvideocast = localvideocast
         self.font = ImageFont.truetype(
-            font="/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", size=18
+            font="/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", size=24
         )
+        self.prev_time = time.time()
+        self.diffs = []
+        self.diff_max = 30
 
     def proc(self, frame):
         rgb_image = Image.frombuffer(
@@ -56,12 +60,17 @@ class Presenter(Consumer):
         )
         rgb_image = rgb_image.resize((CAPTURE_WIDTH, CAPTURE_HEIGHT))
         draw = ImageDraw.Draw(rgb_image)
+        current_time = time.time()
+        self.diffs.append(current_time - self.prev_time)
+        if len(self.diffs) > self.diff_max:
+            self.diffs.pop(0)
         draw.text(
             (0, 0),
-            "test test",
+            f"FPS: {len(self.diffs) / (sum(self.diffs)):.2f}",
             font=self.font,
             fill=(0, 255, 0),
         )
+        self.prev_time = current_time
 
         self.cmd.update_image(rgb_image)  # update `Take Photo` image
         if self.localvideocast:
