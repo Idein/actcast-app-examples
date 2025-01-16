@@ -30,6 +30,10 @@ class LocalVideoCastHandler(http.server.BaseHTTPRequestHandler):
         self.image = image
         super().__init__(*args)
 
+    def log_message(*args):
+        """Suppress log messages"""
+        pass
+
     def do_GET(self):
         self.send_response(200)
         self.send_header("Age", 0)
