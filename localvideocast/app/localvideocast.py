@@ -2,7 +2,6 @@ from actfw_core.task import Isolated
 import io
 import socketserver
 import http.server
-import logging
 import threading
 
 PORT = 5100
@@ -45,8 +44,7 @@ class LocalVideoCastHandler(http.server.BaseHTTPRequestHandler):
             while True:
                 try:
                     frame = self.image.wait_new_value()
-                except Exception as e:
-                    logging.error(f"Error fetching frame from queue: {e}")
+                except Exception:
                     continue
                 else:
                     jpgimg = io.BytesIO()
@@ -55,8 +53,8 @@ class LocalVideoCastHandler(http.server.BaseHTTPRequestHandler):
                     self.wfile.write(b"Content-Type: image/jpeg\r\n\r\n")
                     self.wfile.write(jpgimg.getvalue())
                     self.wfile.write(b"\r\n")
-        except Exception as e:
-            logging.error(f"Removed streaming client {self.client_address}: {e}")
+        except Exception:
+            pass
 
 
 class LocalVideoCastServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
