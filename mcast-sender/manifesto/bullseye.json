@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
+  "boards": [
+    "RSPi3BPlus",
+    "RSPi4B",
+    "RSPiCM4"
+  ],
+  "devices": [],
+  "allow_all_networks": true,
+  "networks": [
+    {
+      "multicast_addr": "239.255.0.1",
+      "port": 30001,
+      "protocol": "udp",
+      "direction": "send"
+    }
+  ]
+}

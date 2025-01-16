@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "multicast_group": {
+            "title": "multicast_group",
+            "description": "ipv4 mcast address",
+            "type": "string",
+            "default": "239.255.0.1"
+        },
+        "multicast_port": {
+            "title": "multicast_port",
+            "description": "port",
+            "type": "integer",
+            "default": 30001
+        }
+    },
+    "required": [
+        "multicast_group",
+        "multicast_port"
+    ],
+    "propertyOrder": [
+        "multicast_group",
+        "multicast_port"
+    ]
+}
