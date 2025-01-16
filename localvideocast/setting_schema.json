@@ -1,8 +1,25 @@
-
 {
   "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
   "type": "object",
   "properties": {
+    "display": {
+      "title": "Display",
+      "description": "Display",
+      "type": "boolean",
+      "default": false
+    },
+    "use_usb_camera": {
+      "title": "Use USB Camera",
+      "description": "Use USB Camera",
+      "type": "boolean",
+      "default": false
+    },
+    "enable_localvideocast": {
+      "title": "Enable Local Video Cast",
+      "description": "Enable Local Video Cast",
+      "type": "boolean",
+      "default": true
+    }
   },
   "required": []
 }
