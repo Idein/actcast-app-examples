@@ -25,8 +25,9 @@ class ObservableValue:
 
 class LocalVideoCastHandler(http.server.BaseHTTPRequestHandler):
 
-    def __init__(self, image, *args):
+    def __init__(self, image, quality, *args):
         self.image = image
+        self.quality = quality
         super().__init__(*args)
 
     def log_message(*args):
@@ -48,7 +49,11 @@ class LocalVideoCastHandler(http.server.BaseHTTPRequestHandler):
                     continue
                 else:
                     jpgimg = io.BytesIO()
-                    frame.save(jpgimg, format="JPEG")
+                    frame.save(
+                        jpgimg,
+                        format="JPEG",
+                        quality=self.quality,
+                    )
                     self.wfile.write(b"--FRAME\r\n")
                     self.wfile.write(b"Content-Type: image/jpeg\r\n\r\n")
                     self.wfile.write(jpgimg.getvalue())
@@ -63,12 +68,12 @@ class LocalVideoCastServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 
 
 class LocalVideoCast(Isolated):
-    def __init__(self):
+    def __init__(self, quality=75):  # 75 is the default value for PIL JPEG quality
         super().__init__()
         self.image = ObservableValue()
 
         def handler(*args):
-            LocalVideoCastHandler(self.image, *args)
+            LocalVideoCastHandler(self.image, quality, *args)
 
         self.server = LocalVideoCastServer(("", PORT), handler)
 

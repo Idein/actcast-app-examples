@@ -3,8 +3,8 @@
   "type": "object",
   "properties": {
     "display": {
-      "title": "Display",
-      "description": "Display",
+      "title": "Enable Display",
+      "description": "Enable Display",
       "type": "boolean",
       "default": false
     },
@@ -14,11 +14,19 @@
       "type": "boolean",
       "default": false
     },
-    "enable_localvideocast": {
+    "localvideocast": {
       "title": "Enable Local Video Cast",
       "description": "Enable Local Video Cast",
       "type": "boolean",
       "default": true
+    },
+    "quality": {
+      "title": "Quality of Local Video Cast",
+      "description": "Quality of Local Video Cast",
+      "type": "integer",
+      "default": 75,
+      "minimum": 0,
+      "maximum": 100
     }
   },
   "required": []
