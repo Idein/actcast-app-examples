@@ -14,9 +14,9 @@
       "type": "boolean",
       "default": false
     },
-    "localvideocast": {
-      "title": "Enable Local Video Cast",
-      "description": "Enable Local Video Cast",
+    "local_video_server": {
+      "title": "Enable Local Video Server",
+      "description": "Enable Local Video Server",
       "type": "boolean",
       "default": true
     },

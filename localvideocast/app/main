@@ -11,7 +11,6 @@ from actfw_core.task import Consumer
 from actfw_core.capture import V4LCameraCapture
 from actfw_core.unicam_isp_capture import UnicamIspCapture
 from actfw_raspberrypi.vc4 import Display
-from localvideocast import LocalVideoCast
 import time
 
 
@@ -41,12 +40,12 @@ def setup_camera_capture(use_usb_camera):
 
 class Presenter(Consumer):
 
-    def __init__(self, capture_size, preview_window, cmd, localvideocast):
+    def __init__(self, capture_size, preview_window, cmd, local_video_server):
         super(Presenter, self).__init__()
         self.capture_size = capture_size
         self.preview_window = preview_window
         self.cmd = cmd
-        self.localvideocast = localvideocast
+        self.local_video_server = local_video_server
         self.font = ImageFont.truetype(
             font="/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", size=24
         )
@@ -63,8 +62,8 @@ class Presenter(Consumer):
         self.draw_fps(rgb_image, self.get_fps())
 
         self.cmd.update_image(rgb_image)  # update `Take Photo` image
-        if self.localvideocast is not None:
-            self.localvideocast.update_image(rgb_image)  # update local video cast image
+        if self.local_video_server is not None:
+            self.local_video_server.update_image(rgb_image)  # update local video cast image
         if self.preview_window is not None:
             self.preview_window.blit(rgb_image.tobytes())
             self.preview_window.update()
@@ -107,7 +106,7 @@ def main():
         {
             "display": False,
             "use_usb_camera": False,
-            "localvideocast": True,
+            "local_video_server": True,
             "quality": 75,
         }
     )
@@ -116,11 +115,11 @@ def main():
     cmd = actfw_core.CommandServer()
     app.register_task(cmd)
 
-    # LocalVideoCast
-    localvideocast = None
-    if settings["localvideocast"]:
-        localvideocast = LocalVideoCast(quality=settings["quality"])
-        app.register_task(localvideocast)
+    # LocalVideoServer
+    local_video_server = None
+    if settings["local_video_server"]:
+        local_video_server = actfw_core.LocalVideoServer(quality=settings["quality"])
+        app.register_task(local_video_server)
 
     cap = setup_camera_capture(settings["use_usb_camera"])
     capture_size = cap.capture_size()
@@ -129,7 +128,7 @@ def main():
     def run(preview_window=None):
 
         # Presentation task
-        pres = Presenter(capture_size, preview_window, cmd, localvideocast)
+        pres = Presenter(capture_size, preview_window, cmd, local_video_server)
         app.register_task(pres)
 
         # Make task connection
