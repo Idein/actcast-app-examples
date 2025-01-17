@@ -117,6 +117,7 @@ def main():
     app.register_task(cmd)
 
     # LocalVideoCast
+    localvideocast = None
     if settings["localvideocast"]:
         localvideocast = LocalVideoCast(quality=settings["quality"])
         app.register_task(localvideocast)
