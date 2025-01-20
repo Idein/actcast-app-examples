@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import time
 from PIL import Image, ImageDraw, ImageFont
 import actfw_core
 from actfw_core.system import (
@@ -11,7 +12,6 @@ from actfw_core.task import Consumer
 from actfw_core.capture import V4LCameraCapture
 from actfw_core.unicam_isp_capture import UnicamIspCapture
 from actfw_raspberrypi.vc4 import Display
-import time
 
 
 (CAPTURE_WIDTH, CAPTURE_HEIGHT) = (640, 480)  # capture image size
@@ -63,7 +63,9 @@ class Presenter(Consumer):
 
         self.cmd.update_image(rgb_image)  # update `Take Photo` image
         if self.local_video_server is not None:
-            self.local_video_server.update_image(rgb_image)  # update local video cast image
+            self.local_video_server.update_image(
+                rgb_image
+            )  # update local video server image
         if self.preview_window is not None:
             self.preview_window.blit(rgb_image.tobytes())
             self.preview_window.update()
