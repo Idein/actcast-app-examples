@@ -25,6 +25,7 @@ class Receiver(Producer[RecvData[bytes]]):
         self.multicast_port = multicast_port
         debug_log(f"Multicast address: {multicast_group}:{multicast_port}")
         debug_log(f"ACTCAST_SOCKS_SERVER: {os.environ.get('ACTCAST_SOCKS_SERVER')}")
+        # Create a UDP socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind(("", multicast_port))

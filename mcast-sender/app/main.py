@@ -47,7 +47,7 @@ class Sender(Producer[SendData[bytes]]):
                     self.multicast_message, (self.multicast_group, self.multicast_port)
                 )
             finally:
-                time.sleep(10)
+                time.sleep(3)
             if not self._is_running():
                 break
         self.sock.close()
