@@ -21,11 +21,11 @@ class SendData(Generic[T]):
 
 
 class Sender(Producer[SendData[bytes]]):
-    def __init__(self, multicast_group, multicast_port):
+    def __init__(self, multicast_group: str, multicast_port: int, message: str):
         super(Sender, self).__init__()
         self.multicast_group = multicast_group
         self.multicast_port = multicast_port
-        self.multicast_message = b"Hello, Multicast World!"
+        self.multicast_message = message.encode()
         debug_log(f"Multicast address: {multicast_group}:{multicast_port}")
         debug_log(f"ACTCAST_SOCKS_SERVER: {os.environ.get('ACTCAST_SOCKS_SERVER')}")
         # Create a UDP socket
@@ -67,7 +67,7 @@ def run(app, settings: dict):
     cmd = actfw_core.CommandServer()
     app.register_task(cmd)
 
-    send = Sender(settings["multicast_group"], int(settings["multicast_port"]))
+    send = Sender(settings["multicast_group"], int(settings["multicast_port"]), settings["multicast_message"])
     app.register_task(send)
 
     pres = Presenter()
@@ -83,7 +83,7 @@ def main():
 
     # Load act setting
     settings = app.get_settings(
-        {"multicast_group": "239.255.0.1", "multicast_port": 30001}
+        {"multicast_group": "239.255.0.1", "multicast_port": 30001, "multicast_message": "Hello, World!"}
     )
     debug_log(f"settings: {settings}")
     run(app, settings)

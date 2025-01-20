@@ -13,14 +13,18 @@
             "description": "port",
             "type": "integer",
             "default": 30001
+        },
+        "multicast_message": {
+            "title": "multicast_message",
+            "description": "message",
+            "type": "string",
+            "default": "Hello, World!"
         }
     },
-    "required": [
-        "multicast_group",
-        "multicast_port"
-    ],
+    "required": [],
     "propertyOrder": [
         "multicast_group",
-        "multicast_port"
+        "multicast_port",
+        "multicast_message"
     ]
 }

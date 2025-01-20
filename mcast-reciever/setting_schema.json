@@ -15,10 +15,7 @@
             "default": 30001
         }
     },
-    "required": [
-        "multicast_group",
-        "multicast_port"
-    ],
+    "required": [],
     "propertyOrder": [
         "multicast_group",
         "multicast_port"
