@@ -6,7 +6,11 @@
             "title": "multicast_group",
             "description": "ipv4 mcast address",
             "type": "string",
-            "default": "239.255.0.1"
+            "default": "239.255.0.1",
+            "enum": [
+                "239.255.0.1",
+                "224.0.0.1"
+            ]
         },
         "multicast_port": {
             "title": "multicast_port",

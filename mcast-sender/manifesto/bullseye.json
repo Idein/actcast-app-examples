@@ -13,6 +13,12 @@
       "port": 30001,
       "protocol": "udp",
       "direction": "send"
+    },
+    {
+      "multicast_addr": "239.255.0.1",
+      "port": 30001,
+      "protocol": "udp",
+      "direction": "recv"
     }
   ]
 }
