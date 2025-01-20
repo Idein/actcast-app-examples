@@ -20,6 +20,12 @@
       "port": 30001,
       "protocol": "udp",
       "direction": "recv"
+    },
+    {
+      "multicast_addr": "239.1.1.50",
+      "port": 5050,
+      "protocol": "udp",
+      "direction": "recv"
     }
   ]
 }

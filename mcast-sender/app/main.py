@@ -66,8 +66,14 @@ class Presenter(Consumer):
 def run(app, settings: dict):
     cmd = actfw_core.CommandServer()
     app.register_task(cmd)
+    multicast_group=settings["multicast_address"].split(":")[0]
+    multicast_port=int(settings["multicast_address"].split(":")[1])
 
-    send = Sender(settings["multicast_group"], int(settings["multicast_port"]), settings["multicast_message"])
+    send = Sender(
+        multicast_group,
+        multicast_port,
+        settings["multicast_message"],
+    )
     app.register_task(send)
 
     pres = Presenter()
@@ -83,7 +89,7 @@ def main():
 
     # Load act setting
     settings = app.get_settings(
-        {"multicast_group": "239.255.0.1", "multicast_port": 30001, "multicast_message": "Hello, World!"}
+        {"multicast_address": "239.255.0.1:30001", "multicast_message": "Hello, World!"}
     )
     debug_log(f"settings: {settings}")
     run(app, settings)
