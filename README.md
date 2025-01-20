@@ -17,4 +17,4 @@ Actcast アプリケーションの開発時に参考となるサンプルアプ
 - [I2C 接続したセンサーから値を取得するアプリ](i2c-sensor/)
 - [カメラの映像を Kinesis Video Stream に配信するアプリ](amazon-kinesis-video-streams/)
 - [Pi Camera V3 のオートフォーカスを使用するアプリ](autofocus/)
-- [ローカルビデオサーバでリアルタイム映像をストリーミング配信するアプリ](local_video_server)
+- [ローカルビデオサーバでリアルタイム映像をストリーミング配信するアプリ](local-video-server/)
