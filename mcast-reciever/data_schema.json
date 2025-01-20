@@ -1,0 +1,17 @@
+{
+  "$schema": "https://actcast.io/schema/v8/data_schema_schema.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "string",
+        "title": "data",
+        "description": "data received from multicast"
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
+}
