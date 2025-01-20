@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import actfw_core
 from actfw_core.task import Producer, Consumer
 import socket
