@@ -40,11 +40,11 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 
 ### actdk upload してアプリを作り act インストールする
 
-- `.actdk/setting.json` の `app_server_id` を ベンダコンソールのアプリケーション ID (`https://actcast.io/groups/<GROUP_ID>/dev/apps/<APP_ID>`
+1. `.actdk/setting.json` の `app_server_id` を ベンダコンソールのアプリケーション ID (`https://actcast.io/groups/<GROUP_ID>/dev/apps/<APP_ID>`
 )に変更します
-- `actdk upload` コマンドを実行します
-- `https://actcast.io/groups/<GROUP_ID>/dev/apps/<APP_ID>/builds` でビルドが完了するのを待ちます
-- ビルドが完了したら 「テスト」を押して act を作成し、actcastos の入ったデバイスにインストールします
+2. `actdk upload` コマンドを実行し、アプリをアップロードします
+3. `https://actcast.io/groups/<GROUP_ID>/dev/apps/<APP_ID>/builds` でアップロードしたアプリのビルドが完了するのを待ちます
+4. ビルドが完了したら 「テスト」を押して act を作成し、actcastos の入ったデバイスにインストールします
 
 ## 設定項目
 
