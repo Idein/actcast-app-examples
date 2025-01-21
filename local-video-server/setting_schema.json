@@ -21,8 +21,8 @@
       "default": true
     },
     "quality": {
-      "title": "Quality of Local Video Cast",
-      "description": "Quality of Local Video Cast",
+      "title": "Video Quality of Local Video Server",
+      "description": "Video Quality of Local Video Server",
       "type": "integer",
       "default": 75,
       "minimum": 0,
