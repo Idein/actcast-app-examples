@@ -53,3 +53,9 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
   - manifesto/bullseye.json のネットワークマニフェストで指定したアドレスとポートのみ選択可能です
 - `multicast_message`
   - 送信するメッセージ
+
+## 注意事項
+
+-  manifestos の `allow_all_networks:true` の有無に関わらず `networks` の `multicast_addr` で指定したアドレスとポートのみ通信が可能になります
+  - そのため `setting_schema.json` では アドレスの指定を enum にしています
+- デバイス同士で通信させるには 送信側・受信側のいずれかを `allow_all_networks:true` にする必要があります
