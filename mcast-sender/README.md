@@ -48,9 +48,8 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 
 ## 設定項目
 
-- `multicast_group`
+- `multicast_address`
   - UDP Multicast 送信先の [グループアドレス](https://ja.wikipedia.org/wiki/IP%E3%83%9E%E3%83%AB%E3%83%81%E3%82%AD%E3%83%A3%E3%82%B9%E3%83%88#IP%E3%83%9E%E3%83%AB%E3%83%81%E3%82%AD%E3%83%A3%E3%82%B9%E3%83%88%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9)
-- `multicast_port`
-  -  UDP Multicast 送信先のポート番号
+  - manifestos で設定したグループアドレスを使ってください
 - `multicast_message`
   - 送信するメッセージ
