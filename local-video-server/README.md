@@ -6,8 +6,8 @@
 
 actfw-core 2.10.0 で導入された `LocalVideoServer` のデモです。
 
-アプリ起動後、 `http://{machine_ip}:5100` にアクセスすることで、カメラの映像を確認できます。
-[デバイスの mDNS](https://actcast.io/docs/ja/DeviceManagement/DeviceInfo/#mdns) を有効にしていれば `http://{hostname}.local:5100` でもアクセスできます。
+アプリ起動後、デバイスと同じネットワークに接続したマシンから `http://<device_local_ip>:5100` にアクセスすることで、カメラの映像を確認できます。
+[デバイスの mDNS](https://actcast.io/docs/ja/DeviceManagement/DeviceInfo/#mdns) を有効にしていれば `http://<hostname>.local:5100` でもアクセスできます。
 
 ## 前提
 
@@ -45,5 +45,5 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 
 - `display`: HDMI ディスプレイへ撮影画像と FPS の描画を行う。
 - `use_usb_camera`: Raspberry Pi Camera の代わりに USB カメラを使用する場合は `true` にする。
-- `local_video_server`: Local Video Server を有効にし、5100 ポートで動画の配信を行う。`http://{machine_ip}:5100` でアクセスできる。
+- `local_video_server`: Local Video Server を有効にし、5100 ポートで動画の配信を行う。`http://<device_local_ip>:5100` でアクセスできる。
 - `quality`: Local Video Server の画質の設定。0 (最低画質) から 95 (最高画質) までの値を指定する。100 にすると無圧縮となる。
