@@ -1,0 +1,33 @@
+{
+  "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
+  "type": "object",
+  "properties": {
+    "display": {
+      "title": "Enable Display",
+      "description": "Enable Display",
+      "type": "boolean",
+      "default": false
+    },
+    "use_usb_camera": {
+      "title": "Use USB Camera",
+      "description": "Use USB Camera",
+      "type": "boolean",
+      "default": false
+    },
+    "local_video_server": {
+      "title": "Enable Local Video Server",
+      "description": "Enable Local Video Server",
+      "type": "boolean",
+      "default": true
+    },
+    "quality": {
+      "title": "Video Quality of Local Video Server",
+      "description": "Video Quality of Local Video Server",
+      "type": "integer",
+      "default": 75,
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "required": []
+}
