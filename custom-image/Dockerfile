@@ -1,5 +1,5 @@
 # Stage 1: Build Python
-FROM idein/actcast-rpi-app-base:bullseye-1 as base
+FROM idein/actcast-rpi-app-base:bullseye-3 as base
 
 # このステージのスクリプトは、
 # https://github.com/docker-library/python/blob/master/3.12/slim-bullseye/Dockerfile
@@ -33,7 +33,7 @@ RUN set -eux; \
     savedAptMark="$(apt-mark showmanual)"; \
     apt-get update; \
     # workaround: tk-dev だけ別にしないとインストールに失敗する
-    apt-get install -y --no-install-recommends tk-dev; \ 
+    apt-get install -y --no-install-recommends tk-dev; \
     apt-get install -y --no-install-recommends \
         dpkg-dev \
         gcc \
