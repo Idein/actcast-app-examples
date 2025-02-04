@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "multicast_address": {
+            "title": "multicast_address",
+            "description": "ipv4 mcast address",
+            "type": "string",
+            "default": "239.255.0.1:30001",
+            "enum": [
+                "239.255.0.1:30001",
+                "239.1.1.50:5050"
+            ]
+        },
+        "multicast_message": {
+            "title": "multicast_message",
+            "description": "message",
+            "type": "string",
+            "default": "Hello, World!"
+        }
+    },
+    "required": [],
+    "propertyOrder": [
+        "multicast_address",
+        "multicast_message"
+    ]
+}
