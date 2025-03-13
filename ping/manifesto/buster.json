@@ -1,11 +1,10 @@
 {
   "version": 2,
   "allow_all_networks": true,
-  "target_type": "raspberrypi-bullseye",
+  "target_type": "raspberrypi-buster",
   "boards": [
     "RSPi3BPlus",
     "RSPi4B"
   ],
   "devices": []
 }
-
