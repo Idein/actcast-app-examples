@@ -1,0 +1,16 @@
+{
+  "apt": [
+    "python3",
+    "python3-pil"
+  ],
+  "pip": [],
+  "raspberrypi-bullseye": {
+    "apt": [
+      "libraspberrypi0",
+      "libatomic1"
+    ],
+    "pip": [
+      "actfw-raspberrypi"
+    ]
+  }
+}

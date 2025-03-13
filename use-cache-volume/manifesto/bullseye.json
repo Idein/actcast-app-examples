@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
+  "boards": [
+    "RSPi3B",
+    "RSPi3BPlus",
+    "RSPi3APlus",
+    "RSPi4B"
+  ],
+  "devices": [],
+  "cache_volume": {
+    "size": 256
+  }
+}

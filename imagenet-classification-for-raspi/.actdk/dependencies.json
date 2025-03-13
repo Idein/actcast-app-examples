@@ -17,7 +17,8 @@
   },
   "raspberrypi-bullseye": {
     "apt": [
-      "libraspberrypi0"
+      "libraspberrypi0",
+      "libatomic1"
     ],
     "pip": [
       "actfw-raspberrypi"
