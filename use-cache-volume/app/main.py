@@ -1,12 +1,22 @@
 from time import sleep
 import actfw_core 
 from actfw_core.task.task import Task
+import subprocess
 
-class EmptyTask(Task):
+FILE_PATH = "/mnt/cache_volume/cachced_file"
+
+class WritingFileTask(Task):
     def run(self):
+        subprocess.run(["touch", FILE_PATH], check=True)
+        count = 0
         while True:
-            actfw_core.notify([{ "message": "EmptyTask is running" }])
-            sleep(1)
+            with open(FILE_PATH, "a") as f:
+                f.write(f"{count}\n")
+            count += 1
+            # read file
+            with open(FILE_PATH, "r") as f:
+                actfw_core.notify([{ "message": f.read() }])
+            sleep(10)
             if not self._is_running():
                 break
 
@@ -19,7 +29,7 @@ def main():
     actfw_core.notify([{ "message": "start up" }])
 
     app.register_task(cmd)
-    app.register_task(EmptyTask())
+    app.register_task(WritingFileTask())
 
     app.run()
 
