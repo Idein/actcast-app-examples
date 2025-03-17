@@ -13,9 +13,8 @@ class WritingFileTask(Task):
         # /mnt/cache_volumeのファイル一覧を取得して通知
         result = subprocess.run(['ls', '-la', '/mnt/cache_volume'], capture_output=True, text=True)
         actfw_core.notify([{
-            "message": f"cache_volume contents:\n{result.stdout}"
+            "message": f"ls -la /mnt/cache_volume\n{result.stdout}"
         }])
-
 
         # ファイルが存在しない場合は初期データを作成
         if not os.path.exists(FILE_PATH):
