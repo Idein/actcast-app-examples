@@ -3,13 +3,19 @@ import actfw_core
 from actfw_core.task.task import Task
 import subprocess
 from datetime import datetime
+import os
+import json
 
 FILE_PATH = "/mnt/cache_volume/cached_state.json"
 
 class WritingFileTask(Task):
     def run(self):
-        import os
-        import json
+        # /mnt/cache_volumeのファイル一覧を取得して通知
+        result = subprocess.run(['ls', '-la', '/mnt/cache_volume'], capture_output=True, text=True)
+        actfw_core.notify([{
+            "message": f"cache_volume contents:\n{result.stdout}"
+        }])
+
 
         # ファイルが存在しない場合は初期データを作成
         if not os.path.exists(FILE_PATH):
@@ -17,9 +23,11 @@ class WritingFileTask(Task):
                 "count": 0,
                 "datetime": datetime.now().isoformat()
             }
-            os.makedirs(os.path.dirname(FILE_PATH), exist_ok=True)
             with open(FILE_PATH, "w") as f:
                 json.dump(initial_data, f)
+            actfw_core.notify([{
+                "message": f"file created: {FILE_PATH}"
+            }])
 
         # ファイルを読み込んでカウントアップ
         with open(FILE_PATH, "r") as f:
@@ -36,6 +44,9 @@ class WritingFileTask(Task):
         # 更新したデータを保存
         with open(FILE_PATH, "w") as f:
             json.dump(data, f)
+            actfw_core.notify([{
+                "message": f"file updated: {FILE_PATH}"
+            }])
 
         while True:
             sleep(1)
