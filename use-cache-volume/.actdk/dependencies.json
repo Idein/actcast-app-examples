@@ -1,13 +1,11 @@
 {
-  "apt": [
-    "python3",
-    "python3-pil"
-  ],
+  "apt": [],
   "pip": [],
   "raspberrypi-buster": {
     "apt": [
-      "libraspberrypi0",
-      "libatomic1"
+      "python3",
+      "python3-pil",
+      "libraspberrypi0"
     ],
     "pip": [
       "actfw-raspberrypi"
@@ -15,8 +13,9 @@
   },
   "raspberrypi-bullseye": {
     "apt": [
-      "libraspberrypi0",
-      "libatomic1"
+      "python3",
+      "python3-pil",
+      "libraspberrypi0"
     ],
     "pip": [
       "actfw-raspberrypi"
