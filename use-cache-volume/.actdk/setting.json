@@ -1,7 +1,7 @@
 {
   "app_id": "use-cache-volume",
   "app_server_id": 1,
-  "short_description": null,
+  "short_description": "example of using cache volume",
   "short_descriptions": {},
   "target_types": [
     "raspberrypi-bullseye"
