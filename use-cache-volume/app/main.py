@@ -8,15 +8,21 @@ FILE_PATH = "/mnt/cache_volume/cachced_file"
 class WritingFileTask(Task):
     def run(self):
         subprocess.run(["touch", FILE_PATH], check=True)
-        count = 0
         while True:
-            with open(FILE_PATH, "a") as f:
-                f.write(f"{count}\n")
-            count += 1
-            # read file
+            # read count from file
             with open(FILE_PATH, "r") as f:
-                actfw_core.notify([{ "message": f.read() }])
-            sleep(10)
+                content = f.read()
+                actfw_core.notify([{ "message": content }])
+                if content == "":
+                    count = 0
+                else:
+                    count = int(content)
+
+            # overwrite count to file
+            with open(FILE_PATH, "w") as f:
+                f.write(str(count + 1))
+
+            sleep(60)
             if not self._is_running():
                 break
 
