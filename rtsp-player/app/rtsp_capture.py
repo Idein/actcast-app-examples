@@ -34,14 +34,59 @@ if True:
 
 import errno
 import subprocess
-from typing import Dict
+from typing import Dict, Optional
 from urllib.parse import urlparse, urlunparse
 
 import actfw_gstreamer.gstreamer.preconfigured_pipeline as preconfigured_pipeline
+from actfw_core.system import get_actcast_firmware_type
 from actfw_gstreamer.capture import GstreamerCapture
-from actfw_gstreamer.gstreamer.converter import ConverterPIL
-from actfw_gstreamer.gstreamer.stream import GstStreamBuilder
-from actfw_gstreamer.restart_handler import SimpleRestartHandler
+from actfw_gstreamer.gstreamer.converter import ConverterPIL, ConverterRaw
+from actfw_gstreamer.gstreamer.stream import (
+    GstStreamBuilder,
+    Inner,
+    _BuiltPipeline,
+    _GstStream,
+)
+from actfw_gstreamer.restart_handler import RestartHandlerBase, SimpleRestartHandler
+
+import gi  # noqa isort:skip
+gi.require_version('Gst', '1.0')  # noqa isort:skip
+from gi.repository import Gst  # noqa isort:skip
+
+
+class RTSPCaptureBuilder(GstStreamBuilder):
+    def __init__(self, width: int, height: int, rtsp_url: str, proxy_url: Optional[str] = None, protocol: Optional[str] = None):
+        add_props = "" if proxy_url is None else f"protocols={protocol} proxy={proxy_url}"
+        caps_str = f"capssetter replace=true caps=\"video/x-h264, width=(int){width}, height=(int){height}, stream-format=(string)byte-stream, alignment=(string)au, profile=(string)baseline, level=(string)4\" ! " if get_actcast_firmware_type() == "raspberrypi-bullseye" else ""
+        self.rtspsrc = f"""rtspsrc location="{rtsp_url}" {add_props} latency=0 max-rtcp-rtp-time-diff=100 drop-on-latency=true"""
+        pipeline_str = f"""\
+        {self.rtspsrc} ! queue ! rtph264depay ! h264parse ! {caps_str} v4l2h264dec ! \
+        v4l2convert ! \
+        video/x-raw,format=RGB ! \
+        appsink emit-signals=true max-buffers=1 drop=true sync=false
+        """
+        print(pipeline_str)
+        self.pipeline = Gst.parse_launch(pipeline_str)
+        appsink = self.pipeline.get_by_name("appsink0")
+        self.built_pipeline = _BuiltPipeline(self.pipeline, appsink)
+        self.converter = ConverterPIL()
+
+    def start_streaming(self) -> "_GstStream":  # noqa F821 (Hey linter, see below.)
+        inner = Inner(self.built_pipeline, self.converter)
+        return _GstStream(inner)
+
+
+class RTSPCapture(GstreamerCapture):
+    def __init__(self,
+                 width: int,
+                 height: int,
+                 rtsp_url: str,
+                 proxy_url: Optional[str],
+                 protocol: Optional[str],
+                 restart_handler: RestartHandlerBase):
+        builder = RTSPCaptureBuilder(width, height, rtsp_url, proxy_url, protocol)
+        super(RTSPCapture, self).__init__(
+            builder=builder, restart_handler=restart_handler)
 
 
 def start_tcp2socksd(bind, socks5, server):
@@ -87,7 +132,7 @@ def start_tcp2socksd(bind, socks5, server):
         )
 
 
-def make_rtsp_capture(rtsp_url: str, caps: Dict[str, int], decoder_type: str):
+def make_rtsp_capture(width: int, height: int, rtsp_url: str):
     """
     Make `GstreamerCapture` task that read RTSP.
 
@@ -96,26 +141,19 @@ def make_rtsp_capture(rtsp_url: str, caps: Dict[str, int], decoder_type: str):
     rtsp_url     : url
         RTSP url
         e.g. tcp://127.0.0.1:1081,
-    caps         : dict, { 'width': int, 'height': int, 'framerate': int }
-        caps of appsink
-    decoder_type : 'v4l2' | 'omx'
-        type of decoder
-    """
+"""
     tcp2socksd_bind = urlparse("tcp://127.0.0.1:1081")
     start_tcp2socksd(
         urlunparse(tcp2socksd_bind),
         f"socks5h://{os.environ['ACTCAST_SOCKS_SERVER']}",
-        f"tcp://{urlparse(rtsp_url).netloc}",
+        f"tcp://{urlparse(rtsp_url).netloc}"
     )
     proxy_url = tcp2socksd_bind.netloc
-    pipeline_generator = preconfigured_pipeline.rtsp_h264(
-        proxy_url, rtsp_url, "tcp", decoder_type, caps
-    )
-    builder = GstStreamBuilder(pipeline_generator, ConverterPIL())
-
+    protocol = "tcp"
     connection_lost_secs_threshold = 10
     error_count_threshold = 5
     restart_handler = SimpleRestartHandler(
         connection_lost_secs_threshold, error_count_threshold
     )
-    return GstreamerCapture(builder, restart_handler)
+    capture = RTSPCapture(width, height, rtsp_url, proxy_url, protocol, restart_handler)
+    return capture

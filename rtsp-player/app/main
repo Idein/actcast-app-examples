@@ -14,16 +14,7 @@ from rtsp_capture import make_rtsp_capture
 
 def get_rtsp_capture(settings):
     rtsp_url = settings["rtsp_url"]
-    caps = {
-        "width": CAPTURE_WIDTH,
-        "height": CAPTURE_HEIGHT,
-        "framerate": settings["fps"],
-    }
-    # Raspberry Pi のバージョンによってデコーダを切り替える
-    # https://github.com/Idein/actfw-gstreamer/tree/master#rtspsrc
-    is_video_core_6 = os.path.exists("/dev/dri/card0")
-    decoder_type = "v4l2" if is_video_core_6 else "omx"
-    capture = make_rtsp_capture(rtsp_url, caps, decoder_type)
+    capture = make_rtsp_capture(CAPTURE_WIDTH, CAPTURE_HEIGHT, rtsp_url)
     return capture
 
 
