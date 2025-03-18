@@ -28,6 +28,13 @@
         "/dev/video10"
       ],
       "required": false
+    },
+    {
+      "type": "other",
+      "device": [
+        "/dev/video12"
+      ],
+      "required": false
     }
   ],
   "networks": [

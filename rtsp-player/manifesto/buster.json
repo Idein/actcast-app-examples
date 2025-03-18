@@ -26,7 +26,14 @@
       "device": [
         "/dev/video10"
       ],
-      "required": false
+      "required": true
+    },
+    {
+      "type": "other",
+      "device": [
+        "/dev/video12"
+      ],
+      "required": true
     }
   ],
   "networks": [
