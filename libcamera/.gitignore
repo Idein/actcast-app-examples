@@ -1,0 +1,5 @@
+tmp/
+.actdk/cache/
+app/libmodel.so
+app/model.py
+include/model.h

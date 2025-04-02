@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+export LIBCAMERA_LOG_LEVELS=4
+python3 ./main.py
