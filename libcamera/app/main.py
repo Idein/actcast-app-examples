@@ -110,7 +110,7 @@ def main() -> None:
     app = actfw_core.Application()
 
     # Load act setting
-    settings = app.get_settings()
+    settings = app.get_settings({'display': False})
 
     if settings['display']:
         with Display() as display:

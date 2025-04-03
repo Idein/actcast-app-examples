@@ -3,3 +3,4 @@ tmp/
 app/libmodel.so
 app/model.py
 include/model.h
+act_settings.json
