@@ -3,6 +3,12 @@
   "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
   "type": "object",
   "properties": {
+    "display": {
+        "title": "display",
+        "description": "output video to HDMI display",
+        "type": "boolean",
+        "default": false
+    }
   },
-  "required": []
+  "required": ["display"]
 }

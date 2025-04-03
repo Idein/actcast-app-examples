@@ -108,12 +108,19 @@ def run(app: Application, preview_window=None) -> None:
 
 def main() -> None:
     app = actfw_core.Application()
-    with Display() as display:
-        preview_area = (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
-        capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
-        layer = 16
-        with display.open_window(preview_area, capture_size, layer) as preview_window:
-            run(app, preview_window)
+
+    # Load act setting
+    settings = app.get_settings()
+
+    if settings['display']:
+        with Display() as display:
+            preview_area = (0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
+            capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
+            layer = 16
+            with display.open_window(preview_area, capture_size, layer) as preview_window:
+                run(app, preview_window)
+    else:
+        run(app)
 
 
 if __name__ == "__main__":
