@@ -110,7 +110,8 @@ def main() -> None:
     app = actfw_core.Application()
 
     # Load act setting
-    settings = app.get_settings({'display': False})
+    settings = app.get_settings({'display': False, 'libcamera_log_levels': 'FATAL'})
+    os.environ['LIBCAMERA_LOG_LEVELS'] = settings['libcamera_log_levels']
 
     if settings['display']:
         with Display() as display:

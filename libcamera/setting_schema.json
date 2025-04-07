@@ -8,6 +8,13 @@
         "description": "output video to HDMI display",
         "type": "boolean",
         "default": false
+    },
+    "libcamera_log_levels": {
+        "title": "libcamera_log_levels",
+        "description": "Libcamera log levels (DEBUG, INFO, WARN, ERROR, FATAL)",
+        "type": "string",
+        "enum": ["DEBUG", "INFO", "WARN", "ERROR", "FATAL"],
+        "default": "FATAL"
     }
   },
   "required": ["display"]
