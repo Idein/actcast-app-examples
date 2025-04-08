@@ -1,4 +1,4 @@
-# Libcamera
+# Usbcamera
 
 ※このサンプルアプリケーションはActcastOS 4にのみ対応しています
 
