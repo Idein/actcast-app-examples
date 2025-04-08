@@ -1,0 +1,14 @@
+{
+  "apt": [
+    "python3"
+  ],
+  "pip": [],
+  "raspberrypi-bookworm": {
+    "apt": [
+    ],
+    "pip": [
+      "actfw-raspberrypi",
+      "numpy"
+    ]
+  }
+}
