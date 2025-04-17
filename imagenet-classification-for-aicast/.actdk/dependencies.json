@@ -6,7 +6,8 @@
     "python3-pil",
     "python3-numpy",
     "fbset",
-    "fonts-dejavu-core"
+    "fonts-dejavu-core",
+    "libatomic1"
   ],
   "pip": [],
   "raspberrypi-buster": {
