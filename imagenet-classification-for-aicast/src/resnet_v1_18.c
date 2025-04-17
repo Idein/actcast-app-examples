@@ -74,8 +74,8 @@ int init()
     status = hailo_create_output_vstreams(network_group, output_vstream_params, output_vstreams_size, output_vstreams);
     assert(status == HAILO_SUCCESS);
 
-    status = hailo_activate_network_group(network_group, NULL, &activated_network_group);
-    assert(status == HAILO_SUCCESS);
+    /* status = hailo_activate_network_group(network_group, NULL, &activated_network_group); */
+    /* assert(status == HAILO_SUCCESS); */
 
     return status;
 }
