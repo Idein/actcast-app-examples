@@ -1,4 +1,5 @@
 from ctypes import cdll
+import ctypes as c
 import numpy as np
 
 # These values are taken from translated_params.csv
@@ -15,8 +16,8 @@ class Model:
         self.lib.destroy()
 
     def infer(self, image):
-        out = np.zeros(1000, dtype=np.float32)
-        self.lib.infer(image.ctypes.data, out.ctypes.data)
+        out = np.zeros(1000, dtype=np.float32, order='C')
+        self.lib.infer(image.ctypes.data_as(c.c_void_p), out.ctypes.data_as(c.c_void_p))
         expx = np.exp(out)
         prob = expx / expx.sum()
         return (prob,)
