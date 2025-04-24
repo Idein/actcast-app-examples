@@ -24,10 +24,9 @@ int infer(void *input0, void *out0)
 {
     hailo_status status = HAILO_UNINITIALIZED;
     printf("hailo infer\n");
-    uint8_t *input1 = (uint8_t*)input0;
     unsigned char q_out0[1000];
     /* Feed Data */
-    status = hailo_vstream_write_raw_buffer(input_vstreams[0], input1, 224 * 224 * 3);
+    status = hailo_vstream_write_raw_buffer(input_vstreams[0], input0, 224 * 224 * 3);
     assert(status == HAILO_SUCCESS);
     printf("write raw buffer\n");
     status = hailo_flush_input_vstream(input_vstreams[0]);

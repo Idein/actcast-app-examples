@@ -77,7 +77,7 @@ class Classifier(Pipe):
                 (w // 2 - l // 2, h // 2 - l // 2, w // 2 + l // 2, h // 2 + l // 2)
             )
             captured_image = captured_image.resize((CAPTURE_WIDTH, CAPTURE_HEIGHT))
-        input_image = np.asarray(captured_image, order='C', copy=True)
+        input_image = np.asarray(captured_image)
         (probs,) = self.model.infer(input_image)
         return (captured_image, probs)
 
