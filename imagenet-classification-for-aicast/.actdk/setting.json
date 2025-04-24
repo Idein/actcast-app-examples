@@ -1,9 +1,9 @@
 {
   "app_id": "imagenet-classification-for-aicast",
-  "app_server_id": 1,
+  "app_server_id": 182,
   "short_description": "1000 class ImageNet classification demo for ai cast",
   "short_descriptions": {
     "ja": "ImageNet1000クラス分類デモ(for ai cast)"
   },
-  "target_types": ["raspberrypi-buster", "raspberrypi-bullseye"]
+  "target_types": ["raspberrypi-bookworm"]
 }
