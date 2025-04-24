@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <assert.h>
 #include "hailo/hailort.h"
 
@@ -12,7 +11,6 @@ static hailo_configured_network_group network_group = NULL;
 static size_t network_group_size = 1;
 static hailo_input_vstream_params_by_name_t input_vstream_params[MAX_EDGE_LAYERS] = {0};
 static hailo_output_vstream_params_by_name_t output_vstream_params[MAX_EDGE_LAYERS] = {0};
-/* static hailo_activated_network_group activated_network_group = NULL; */
 static size_t vstreams_infos_size = MAX_EDGE_LAYERS;
 static hailo_vstream_info_t vstreams_infos[MAX_EDGE_LAYERS] = {0};
 static hailo_input_vstream input_vstreams[MAX_EDGE_LAYERS] = {NULL};
@@ -23,19 +21,15 @@ static size_t output_vstreams_size = MAX_EDGE_LAYERS;
 int infer(void *input0, void *out0)
 {
     hailo_status status = HAILO_UNINITIALIZED;
-    printf("hailo infer\n");
     unsigned char q_out0[1000];
     /* Feed Data */
     status = hailo_vstream_write_raw_buffer(input_vstreams[0], input0, 224 * 224 * 3);
     assert(status == HAILO_SUCCESS);
-    printf("write raw buffer\n");
     status = hailo_flush_input_vstream(input_vstreams[0]);
     assert(status == HAILO_SUCCESS);
-    printf("flush input\n");
 
     status = hailo_vstream_read_raw_buffer(output_vstreams[0], q_out0, 1000);
     assert(status == HAILO_SUCCESS);
-    printf("read raw buffer\n");
     /* dequantize */
 
     float* out1 = (float*)out0;
@@ -80,14 +74,10 @@ int init()
     status = hailo_create_output_vstreams(network_group, output_vstream_params, output_vstreams_size, output_vstreams);
     assert(status == HAILO_SUCCESS);
 
-    /* status = hailo_activate_network_group(network_group, NULL, &activated_network_group); */
-    /* assert(status == HAILO_SUCCESS); */
-
     return status;
 }
 
 void destroy() {
-    /* (void) hailo_deactivate_network_group(activated_network_group); */
     (void) hailo_release_output_vstreams(output_vstreams, output_vstreams_size);
     (void) hailo_release_input_vstreams(input_vstreams, input_vstreams_size);
     (void) hailo_release_hef(hef);
