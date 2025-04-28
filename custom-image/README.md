@@ -1,6 +1,6 @@
 # Custom Image Example
 
-**※このサンプルアプリケーションは ActcastOS 3 に対応していません。こちらを参考にアプリケーションを実装する場合、[ActcastOS 3 Migration ガイド](https://actcast.io/docs/ja/ApplicationDevelopment/ForActcastOS3/) に従って Actcast OS 3 に対応させてください**
+**※このサンプルアプリケーションはActcastOS 3 に対応しています**
 
 ## 概要
 
@@ -17,7 +17,7 @@ Python 3.12 をインストールしたイメージをビルドし、そのイ�
 
 ## ベースイメージのビルド方法
 
-> [!NOTE] 
+> [!NOTE]
 > ベースイメージ `ghcr.io/idein/custom-image-example` は予め公開されているため、動作確認のために改めてビルドする必要はありません。
 
 ```bash
