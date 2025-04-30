@@ -1,20 +1,11 @@
 {
   "apt": [
-    "libv4l-0",
-    "libv4lconvert0",
-    "python3",
-    "python3-libcamera",
-    "fbset",
-    "fonts-dejavu-core",
-    "libatomic1"
   ],
   "pip": [],
   "raspberrypi-bookworm": {
+    "base_image": "actcast-app-pyhailort:4.21.0",
     "apt": [
     ],
-    "pip": [
-      "numpy",
-      "actfw-raspberrypi"
-    ]
+    "pip": []
   }
 }
