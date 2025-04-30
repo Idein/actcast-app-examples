@@ -14,13 +14,12 @@ ai cast 上で動く ImageNet Classification のサンプルアプリです。
 - [Docker](https://www.docker.com/)
 
 ## ビルド方法
+以下でアプリのカスタムベースイメージをビルドします。このときhailoのdeveloper zoneから `hailort-4.21.0-cp311-cp311-linux_aarch64.whl` をダウンロードしてこのディレクトリに配置しておく必要があります。また `libhailort.so.4.21.0` が適切に配置された `root_4.21.0.aarch64.tar` も必要です。
 
 ```bash
-make
+docker buildx build --platform 'linux/arm64' -t actcast-app-pyhailort:4.21.0 .
 ```
 
-これにより `src/resnet_v1_18.c` が ai cast 用にクロスコンパイルされて `app/libresnet_v1_18.so` が生成されます。
-`src/resnet_v1_18.c` は HEF ファイルを扱うための C のプログラムで、コンパイルされた `app/libresnet_v1_18.so` は Python プログラム(`app/model.py`)から利用されます。
 
 ## Actsim での動作確認
 
