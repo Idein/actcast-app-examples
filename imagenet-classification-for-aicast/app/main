@@ -121,7 +121,7 @@ class Presenter(Consumer):
         rgb_image, probs = images
 
         self.cmd.update_image(rgb_image)  # update `Take Photo` image
-        # actfw_core.heartbeat()
+        actfw_core.heartbeat()
 
         top1 = probs.argsort()[-1]
         if self.prev_top1 == top1:
