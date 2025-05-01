@@ -5,7 +5,7 @@ from hailo_platform import VDevice, HailoSchedulingAlgorithm
 OUT_ZP = 45.0
 OUT_SCALE = 0.09447
 
-timeout_ms = 1000
+timeout_ms = 500
 
 params = VDevice.create_params()
 params.scheduling_algorithm = HailoSchedulingAlgorithm.ROUND_ROBIN
@@ -17,21 +17,19 @@ class Model:
         self.configured_infer_model = self.infer_model.configure()
 
     def __del__(self):
+        self.configured_infer_model.shutdown()
         self.vdevice.release()
 
     def infer(self, image):
         bindings = self.configured_infer_model.create_bindings()
 
-        # buffer = np.empty(self.infer_model.input().shape).astype(np.uint8)
         buffer = image.reshape(self.infer_model.input().shape).astype(np.uint8)
         bindings.input().set_buffer(buffer)
 
-        # buffer = np.empty(self.infer_model.output().shape).astype(np.uint8)
         buffer = np.zeros(self.infer_model.output().shape).astype(np.uint8)
         bindings.output().set_buffer(buffer)
 
-        # self.infer_model.run([bindings], timeout_ms)
-        # buffer = bindings.output().get_buffer()
+        # self.configured_infer_model.run([bindings], timeout_ms)
 
         job = self.configured_infer_model.run_async([bindings])
         job.wait(timeout_ms)
