@@ -17,8 +17,8 @@ class Model:
         self.configured_infer_model = self.infer_model.configure()
 
     def __del__(self):
-        self.configured_infer_model.shutdown()
-        self.vdevice.release()
+        self.configured_infer_model.__exit__(None, None, None)
+        self.vdevice.__exit__(None, None, None)
 
     def infer(self, image):
         bindings = self.configured_infer_model.create_bindings()
