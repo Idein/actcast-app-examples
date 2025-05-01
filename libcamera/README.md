@@ -19,3 +19,6 @@ LibcameraCaptureを使用し、ActのFPSをAct Logに出力するサンプルア
 
 - `display`: ディスプレイに表示するかどうかを指定します。
 - `libcamera_log_levels`: [Environment variables &mdash; libcamera](https://www.libcamera.org/environment_variables.html#list-of-variables) の `LIBCAMERA_LOG_LEVELS` に対応した値を指定します。
+- `hflip`: 水平反転を指定します。デフォルトは `false` です。
+- `vflip`: 垂直反転を指定します。デフォルトは `false` です。
+- `framerate`: フレームレートを指定します。デフォルトは 30 fps です。

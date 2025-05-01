@@ -2,7 +2,7 @@
 # type: ignore
 import os
 import time
-from typing import Tuple
+from typing import Tuple, assert_never
 
 import actfw_core
 import libcamera as libcam
@@ -85,9 +85,9 @@ class Presenter(Consumer):
             self.preview_window.update()
 
 
-def run(app: Application, preview_window=None) -> None:
+def run(app: Application, orientation: libcam.Orientation, framerate: int, preview_window=None) -> None:
     cmd = actfw_core.CommandServer()
-    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"))
+    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"), orientation=orientation, framerate=framerate)
 
     conv = Converter((CAPTURE_WIDTH, CAPTURE_HEIGHT))
     fps = FPSCounter()
@@ -110,8 +110,9 @@ def main() -> None:
     app = actfw_core.Application()
 
     # Load act setting
-    settings = app.get_settings({'display': False, 'libcamera_log_levels': 'FATAL'})
+    settings = app.get_settings({'display': False, 'libcamera_log_levels': 'FATAL', 'hflip': False, 'vflip': False, 'framerate': 30})
     os.environ['LIBCAMERA_LOG_LEVELS'] = settings['libcamera_log_levels']
+    orientation = orientation_from_flips(hflip=settings["hflip"], vflip=settings["vflip"])
 
     if settings['display']:
         with Display() as display:
@@ -121,8 +122,17 @@ def main() -> None:
             with display.open_window(preview_area, capture_size, layer) as preview_window:
                 run(app, preview_window)
     else:
-        run(app)
+        run(app=app, orientation=orientation, framerate=settings['framerate'])
 
+
+def orientation_from_flips(hflip: bool, vflip: bool) -> libcam.Orientation:
+    orientation_map = {
+        (True, True): libcam.Orientation.Rotate180,
+        (True, False): libcam.Orientation.Rotate0Mirror,
+        (False, True): libcam.Orientation.Rotate180Mirror,
+        (False, False): libcam.Orientation.Rotate0,
+    }
+    return orientation_map.get((hflip, vflip), assert_never())
 
 if __name__ == "__main__":
     main()
