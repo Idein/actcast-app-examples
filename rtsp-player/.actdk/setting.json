@@ -4,7 +4,6 @@
   "short_description": "RTSP player",
   "apt_repository": "http://ftp.jaist.ac.jp/raspbian",
   "target_types": [
-    "raspberrypi-buster",
     "raspberrypi-bullseye"
   ]
 }
