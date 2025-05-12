@@ -8,33 +8,25 @@
     "fbset",
     "fonts-dejavu-core",
     "python3-gst-1.0",
-    "libgstreamer1.0-0",
+    "libgstreamer1.0-dev",
+    "libgirepository1.0-dev",
+    "libcairo2-dev",
+    "python3-dev",
     "gstreamer1.0-plugins-base",
     "gstreamer1.0-plugins-good",
     "gstreamer1.0-plugins-bad",
-    "gstreamer1.0-omx"
+    "gstreamer1.0-omx",
+    "gcc"
   ],
   "pip": [
     "actfw-core==2.7.0",
     "result==0.6.0"
   ],
-  "raspberrypi-buster": {
-    "apt": [
-      "libraspberrypi0",
-      "gstreamer1.0-omx-rpi"
-    ],
-    "pip": [
-      "actfw-raspberrypi==3.2.0",
-      "actfw-gstreamer==0.2.0"
-    ]
-  },
   "raspberrypi-bullseye": {
-    "apt": [
-      "libraspberrypi0"
-    ],
+    "apt": [],
     "pip": [
       "actfw-raspberrypi==3.2.0",
-      "actfw-gstreamer==0.4.0"
+      "actfw-gstreamer==0.5.0"
     ]
   }
 }
