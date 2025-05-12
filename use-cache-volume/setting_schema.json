@@ -1,0 +1,12 @@
+{
+  "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
+  "type": "object",
+  "properties": {
+    "interval": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Interval in seconds to count up"
+    }
+  },
+  "required": []
+}
