@@ -14,13 +14,13 @@ ai cast 上で動く ImageNet Classification のサンプルアプリです。
 - [Docker](https://www.docker.com/)
 
 ## ビルド方法
+以下でアプリのカスタムベースイメージをビルドします。このときhailoのdeveloper zoneから `hailort-4.21.0-cp311-cp311-linux_aarch64.whl` をダウンロードしてこのディレクトリに配置しておく必要があります。
 
 ```bash
-make
+docker buildx build --platform 'linux/arm64' -t actcast-app-pyhailort:4.21.0 .
+actdk build --release --target-type raspberrypi-bookworm
 ```
 
-これにより `src/resnet_v1_18.c` が ai cast 用にクロスコンパイルされて `app/libresnet_v1_18.so` が生成されます。
-`src/resnet_v1_18.c` は HEF ファイルを扱うための C のプログラムで、コンパイルされた `app/libresnet_v1_18.so` は Python プログラム(`app/model.py`)から利用されます。
 
 ## Actsim での動作確認
 
@@ -37,7 +37,7 @@ actdk remote add <IDENTIFIER_YOU_LIKE>@<REMOTE>
 `actdk run` により Actsim 上でアプリケーションの動作確認をすることができます。停止させるには `Ctrl + C` を押します。
 
 ```bash
-actdk run -a <IDENTIFIER_YOU_LIKE>
+actdk run --release -a <IDENTIFIER_YOU_LIKE>
 ```
 
 ## Actcast Agent での動作確認
@@ -62,7 +62,3 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
     * `resize` モードでは、撮影画像中心から必要なサイズと同一アスペクトの最大サイズを切り抜いた後に必要なサイズへ縮小を行う。
       ![resizeモード画像](https://actcast-app-readme-static.s3-ap-northeast-1.amazonaws.com/common/resizing_method/resizing_method-resize.svg?versionId=YxE5ZC5YHJOeEY2D8l2ospJhDArrKo2y "resizeモード")
 
-
-## 補足説明
-
-`root.tar` は Hailo-8 を扱うのに必要なツールチェインが同梱されています。

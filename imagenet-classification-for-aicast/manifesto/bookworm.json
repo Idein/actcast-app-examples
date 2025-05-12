@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bookworm",
+  "boards": ["RSPiCM4"],
+  "hailort_version": "4.21.0",
+  "devices": [
+    {
+      "type": "camera"
+    },
+    {
+      "type": "display"
+    },
+    {
+      "type": "other",
+      "device": ["/dev/hailo0"]
+    }
+  ]
+}
