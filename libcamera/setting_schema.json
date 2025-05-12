@@ -15,6 +15,24 @@
         "type": "string",
         "enum": ["DEBUG", "INFO", "WARN", "ERROR", "FATAL"],
         "default": "FATAL"
+    },
+    "framerate": {
+      "title": "framerate",
+      "description": "framerate",
+      "type": "integer",
+      "default": 30
+    },
+    "hflip": {
+      "title": "hflip",
+      "description": "hflip",
+      "type": "boolean",
+      "default": false
+    },
+    "vflip": {
+      "title": "vflip",
+      "description": "hflip",
+      "type": "boolean",
+      "default": false
     }
   },
   "required": ["display"]
