@@ -5,7 +5,7 @@ function tojson {
         echo "[{\"data\":\"${line}\"}]"
     done
 }
-
-trap 'kill $(jobs -p) 2>/dev/null; exit 0' TERM
+# os4 以降は不要
+#trap 'kill $(jobs -p) 2>/dev/null; exit 0' TERM
 (ping actcast.io 2>&1 | tojson) &
 wait
