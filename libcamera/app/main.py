@@ -87,8 +87,7 @@ class Presenter(Consumer):
 
 def run(app: Application, preview_window=None) -> None:
     cmd = actfw_core.CommandServer()
-    # framerateを指定しないとFPSが8-30FPSの間で変動するので注意
-    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"), framerate=30)
+    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"))
 
     conv = Converter((CAPTURE_WIDTH, CAPTURE_HEIGHT))
     fps = FPSCounter()
