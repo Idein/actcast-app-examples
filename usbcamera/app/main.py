@@ -5,7 +5,6 @@ import time
 from typing import Tuple
 
 import actfw_core
-import libcamera as libcam
 import numpy as np
 from actfw_core.application import Application
 from actfw_core.capture import Frame, V4LCameraCapture
