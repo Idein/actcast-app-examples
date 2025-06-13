@@ -22,6 +22,8 @@ Python 3.12 をインストールしたイメージをビルドし、そのイ�
 
 ```bash
 cd custom-image
+# 事前に QEMU を有効にする必要があります
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 # イメージのビルド (時間がかかります)
 docker buildx build --platform linux/amd64 -t ghcr.io/idein/custom-image-example --load .
 ```
