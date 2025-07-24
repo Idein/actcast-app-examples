@@ -2,7 +2,7 @@
 import smbus2  # require pip install
 import time
 # SMBusモジュールの設定
-bus = smbus2.SMBus(1)
+bus = smbus2.SMBus(0)
 
 
 
