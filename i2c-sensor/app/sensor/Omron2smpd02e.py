@@ -2,7 +2,7 @@
 import smbus2  # require pip install
 import time
 # SMBusモジュールの設定
-bus = smbus2.SMBus(0)
+bus = smbus2.SMBus(20)
 # i2c通信の設定     
 # Driver for 2SMPD-02E
 # https://github.com/omron-devhub/2smpb02e-grove-raspberrypi
