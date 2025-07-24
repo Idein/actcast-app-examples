@@ -11,6 +11,7 @@
       {
         "type": "other",
         "device": [
+          "/dev/i2c-1",
           "/dev/i2c-20",
           "/dev/i2c-21"
         ]
