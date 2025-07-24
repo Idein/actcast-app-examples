@@ -8,6 +8,11 @@
       "type": "integer",
       "default": 60,
       "minimum": 1
+    },
+    "i2c_device_path": {
+      "title": "i2c_device_path",
+      "description": "i2c_device_path",
+      "type": "string"
     }
   },
   "required": ["send_interval"]

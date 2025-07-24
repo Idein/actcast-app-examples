@@ -1,8 +1,7 @@
 #!/usr/bin/python
 import smbus2  # require pip install
 import time
-# SMBusモジュールの設定
-bus = smbus2.SMBus(20)
+
 # i2c通信の設定     
 #VEML7700
 class VEML7700:
@@ -33,19 +32,22 @@ class VEML7700:
 
     power_save_mode = [0x00, 0x00] # Clear values
     #Reference data sheet Table 4 for Power Saving Modes
-    def __init__(self, address=0x70):
+    def __init__(self, address=0x70,i2c_device_path=None):
         
+        # SMBusモジュールの設定
+        self.bus = smbus2.SMBus(i2c_device_path)
+
         self.I2C_ADDR = address
         
-        bus.write_i2c_block_data(self.I2C_ADDR , self.ALS_CONF_0, self.confValues)
-        bus.write_i2c_block_data(self.I2C_ADDR , self.ALS_WH, self.interrupt_high)
-        bus.write_i2c_block_data(self.I2C_ADDR , self.ALS_WL, self.interrupt_low)
-        bus.write_i2c_block_data(self.I2C_ADDR , self.POW_SAV, self.power_save_mode)
+        self.bus.write_i2c_block_data(self.I2C_ADDR , self.ALS_CONF_0, self.confValues)
+        self.bus.write_i2c_block_data(self.I2C_ADDR , self.ALS_WH, self.interrupt_high)
+        self.bus.write_i2c_block_data(self.I2C_ADDR , self.ALS_WL, self.interrupt_low)
+        self.bus.write_i2c_block_data(self.I2C_ADDR , self.POW_SAV, self.power_save_mode)
     
     def readData(self):
         time.sleep(0.04) # 40ms 
 
-        word = bus.read_word_data(self.I2C_ADDR ,self.ALS)
+        word = self.bus.read_word_data(self.I2C_ADDR ,self.ALS)
 
         gain = 1.8432 #Gain for 1/8 gain & 25ms IT
         #Reference www.vishay.com/docs/84323/designingveml7700.pdf
