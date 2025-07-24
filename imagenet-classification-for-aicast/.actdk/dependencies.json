@@ -1,28 +1,11 @@
 {
   "apt": [
-    "libv4l-0",
-    "libv4lconvert0",
-    "python3",
-    "python3-pil",
-    "python3-numpy",
-    "fbset",
-    "fonts-dejavu-core"
   ],
   "pip": [],
-  "raspberrypi-buster": {
+  "raspberrypi-bookworm": {
+    "base_image": "actcast-app-pyhailort:4.21.0",
     "apt": [
-      "libraspberrypi0"
     ],
-    "pip": [
-      "actfw-raspberrypi"
-    ]
-  },
-  "raspberrypi-bullseye": {
-    "apt": [
-      "libraspberrypi0"
-    ],
-    "pip": [
-      "actfw-raspberrypi"
-    ]
+    "pip": []
   }
 }
