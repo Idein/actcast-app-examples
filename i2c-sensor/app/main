@@ -99,12 +99,16 @@ def main():
 
     settings = app.get_settings({"send_interval": 60})
     interval = settings["send_interval"]
-
-    i2c_device_path = settings.get("i2c_device_path")
     
-    app.register_task(Reader(interval,i2c_device_path))
+    app.register_task(Reader(interval,get_i2c_device_path()))
     app.run()
 
+def get_i2c_device_path():
+    firmware_type = actfw_core.system.get_actcast_firmware_type()
+    if firmware_type == "raspberrypi-bookworm":
+        return "/dev/i2c-21"
+    else:
+        return "/dev/i2c-1"
 
 if __name__ == "__main__":
     main()
