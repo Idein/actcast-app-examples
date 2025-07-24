@@ -104,11 +104,7 @@ def main():
     app.run()
 
 def get_i2c_device_path():
-    firmware_type = actfw_core.system.get_actcast_firmware_type()
-    if firmware_type == "raspberrypi-bookworm":
-        return "/dev/i2c-21"
-    else:
-        return "/dev/i2c-1"
+    return "/dev/i2c-1"
 
 if __name__ == "__main__":
     main()
