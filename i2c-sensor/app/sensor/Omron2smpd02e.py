@@ -75,15 +75,15 @@ class Omron2smpd02e:
         self.bus.write_byte_data(self.I2C_ADDR, address, data)
  
     def readByte(self,addr):
-        data = bus.read_i2c_block_data(self.I2C_ADDR, addr, 1)
+        data = self.bus.read_i2c_block_data(self.I2C_ADDR, addr, 1)
         return data[0]
  
     def readByteData(self,addr,num):
-        data = bus.read_i2c_block_data(self.I2C_ADDR, addr, num)
+        data = self.bus.read_i2c_block_data(self.I2C_ADDR, addr, num)
         return data
  
     def setAverage(self,avg_tem,avg_pressure):
-        bus.write_byte_data(self.I2C_ADDR, self.REG_CTRL_MEAS, 0x27)
+        self.bus.write_byte_data(self.I2C_ADDR, self.REG_CTRL_MEAS, 0x27)
  
     def readRawTemp(self):
         temp_txd2 = self.readByte(self.REG_TEMP_TXD2)
