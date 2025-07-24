@@ -9,6 +9,8 @@ LibcameraCaptureを使用し、ActのFPSをAct Logに出力するサンプルア
 ## 前提
 
 - 対象機種:
+  - Raspberry Pi 3B
+  - Raspberry Pi 3B+
   - Raspberry Pi 4B
   - Compute Module 4
   - Raspberry Pi 5B

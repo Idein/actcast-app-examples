@@ -2,6 +2,8 @@
   "version": 2,
   "target_type": "raspberrypi-bookworm",
   "boards": [
+    "RSPi3B",
+    "RSPi3BPlus",
     "RSPi4B",
     "RSPiCM4",
     "RSPi5B"
