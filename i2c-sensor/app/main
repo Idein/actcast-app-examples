@@ -9,7 +9,7 @@ from sensor.Omron2smpd02e import Omron2smpd02e
 
 
 class Reader(Isolated):
-    def __init__(self, interval):
+    def __init__(self, interval,i2c_device_path):
         super().__init__()
         self.interval = interval
 
@@ -18,21 +18,21 @@ class Reader(Isolated):
         addr_2SMPB = 0x70
         invalid_sensor_count = 0
         try:
-            self.sensor_VEML7700 = VEML7700(addr_veme7700)
+            self.sensor_VEML7700 = VEML7700(addr_veme7700,i2c_device_path)
         except Exception as e:
             actfw_core.notify([{"invalid_sensors": "VEML7700"}])
             actfw_core.notify([{"i2cerror": str(e)}])
             invalid_sensor_count += 1
 
         try:
-            self.sensor_SHT3x = SHT3x(addr_SHT3x)
+            self.sensor_SHT3x = SHT3x(addr_SHT3x,i2c_device_path)
         except Exception as e:
             actfw_core.notify([{"invalid_sensors": "SHT3x"}])
             actfw_core.notify([{"i2cerror": str(e)}])
             invalid_sensor_count += 1
 
         try:
-            self.sensor_Omron2smpd02e = Omron2smpd02e(addr_2SMPB)
+            self.sensor_Omron2smpd02e = Omron2smpd02e(addr_2SMPB,i2c_device_path)
         except Exception as e:
             actfw_core.notify([{"invalid_sensors": "Omron2smpd02e"}])
             actfw_core.notify([{"i2cerror": str(e)}])
@@ -94,16 +94,17 @@ class Reader(Isolated):
             remaining_seconds -= 1
             time.sleep(1)
 
-
 def main():
     app = actfw_core.Application()
 
     settings = app.get_settings({"send_interval": 60})
     interval = settings["send_interval"]
-
-    app.register_task(Reader(interval))
+    
+    app.register_task(Reader(interval,get_i2c_device_path()))
     app.run()
 
+def get_i2c_device_path():
+    return "/dev/i2c-1"
 
 if __name__ == "__main__":
     main()

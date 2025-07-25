@@ -1,9 +1,6 @@
 #!/usr/bin/python
 import smbus2  # require pip install
 import time
-# SMBusモジュールの設定
-bus = smbus2.SMBus(1)
-
 
 
 # (c) Copyright 2019 Sensirion AG, Switzerland
@@ -11,7 +8,6 @@ bus = smbus2.SMBus(1)
 class CrcCalculator(object):
 
     def __init__(self, width=8, polynomial=0x31, init_value=0xFF, final_xor=0x00):
-
         super(CrcCalculator, self).__init__()
         self._width = width
         self._polynomial = polynomial
@@ -78,17 +74,18 @@ class SHT3x:
 
     I2C_ADDR = 0x44
     
-    def __init__(self, address=0x44):
+    def __init__(self, address=0x44,i2c_device_path=None):
         self.I2C_ADDR = address
+        self.bus = smbus2.SMBus(i2c_device_path)
         # CrcCalculatorのインスタンスを作成
         self.crc8 = CrcCalculator()
-        bus.write_byte_data(self.I2C_ADDR, *self.CMD_MEAS_PERI_1_H)
+        self.bus.write_byte_data(self.I2C_ADDR, *self.CMD_MEAS_PERI_1_H)
     
     def readData(self):
         # 測定データ取込みコマンド
-        bus.write_byte_data(self.I2C_ADDR, *self.CMD_FETCH_DATA)
+        self.bus.write_byte_data(self.I2C_ADDR, *self.CMD_FETCH_DATA)
         time.sleep(0.1)
-        data = bus.read_i2c_block_data(self.I2C_ADDR, 0x00, 6)
+        data = self.bus.read_i2c_block_data(self.I2C_ADDR, 0x00, 6)
 
         # crc8.calcメソッドをself.crc8.calcに変更
         crc1 = data[2]

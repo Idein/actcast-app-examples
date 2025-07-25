@@ -1,8 +1,7 @@
 #!/usr/bin/python
 import smbus2  # require pip install
 import time
-# SMBusモジュールの設定
-bus = smbus2.SMBus(1)
+
 # i2c通信の設定     
 # Driver for 2SMPD-02E
 # https://github.com/omron-devhub/2smpb02e-grove-raspberrypi
@@ -63,25 +62,28 @@ class Omron2smpd02e:
     MODE_FORCED = 0x1
     MODE_NORMAL = 0x3
  
-    def __init__(self,address=0x70):
+    def __init__(self,address=0x70,i2c_device_path=None):
         self.I2C_ADDR = address
+
+        self.bus = smbus2.SMBus(i2c_device_path)
+
         self.writeByteData(0xf5, 0x00)
         time.sleep(0.5)
         self.setAverage(self.AVG_1,self.AVG_1)
  
     def writeByteData(self,address,data):
-        bus.write_byte_data(self.I2C_ADDR, address, data)
+        self.bus.write_byte_data(self.I2C_ADDR, address, data)
  
     def readByte(self,addr):
-        data = bus.read_i2c_block_data(self.I2C_ADDR, addr, 1)
+        data = self.bus.read_i2c_block_data(self.I2C_ADDR, addr, 1)
         return data[0]
  
     def readByteData(self,addr,num):
-        data = bus.read_i2c_block_data(self.I2C_ADDR, addr, num)
+        data = self.bus.read_i2c_block_data(self.I2C_ADDR, addr, num)
         return data
  
     def setAverage(self,avg_tem,avg_pressure):
-        bus.write_byte_data(self.I2C_ADDR, self.REG_CTRL_MEAS, 0x27)
+        self.bus.write_byte_data(self.I2C_ADDR, self.REG_CTRL_MEAS, 0x27)
  
     def readRawTemp(self):
         temp_txd2 = self.readByte(self.REG_TEMP_TXD2)
