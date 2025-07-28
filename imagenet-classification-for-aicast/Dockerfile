@@ -1,11 +1,11 @@
-FROM python:3.11-slim-bookworm AS python-env
+FROM idein/actcast-rpi-app-base:bookworm-3 AS python-env
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV VIRTUAL_ENV /venv
 ENV PATH /venv/bin:$PATH
 
 # 以下のパッケージは hailort の依存パッケージのビルドで必要
-RUN apt-get update && apt-get install -y --no-install-recommends python3-dev gcc
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-dev gcc
 
 RUN python3 -m venv --system-site-packages /venv
 
@@ -23,7 +23,7 @@ ENV PATH /venv/bin:$PATH
 
 RUN apt-get update \
  && apt-get upgrade -y \
- && apt-get install -y libv4l-0 libv4lconvert0 python3 python3-libcamera fbset fonts-dejavu-core libatomic1 \
+ && apt-get install -y --no-install-recommends libv4l-0 libv4lconvert0 python3-libcamera fbset fonts-dejavu-core libatomic1 \
  && apt-get clean \
  && apt-get autoclean \
  && apt-get autoremove -y \
