@@ -17,7 +17,7 @@ ai cast 上で動く ImageNet Classification のサンプルアプリです。
 以下でアプリのカスタムベースイメージをビルドします。このときhailoのdeveloper zoneから `hailort-4.21.0-cp311-cp311-linux_aarch64.whl` をダウンロードしてこのディレクトリに配置しておく必要があります。
 
 ```bash
-docker buildx build --platform 'linux/arm64' -t actcast-app-pyhailort:4.21.0 .
+docker buildx build --load --platform 'linux/arm64' -t actcast-app-pyhailort:4.21.0 .
 actdk build --release --target-type raspberrypi-bookworm
 ```
 
