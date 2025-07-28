@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import time
+import os
 from PIL import Image, ImageDraw, ImageFont
 import actfw_core
 from actfw_core.task import Pipe, Consumer
@@ -196,6 +197,9 @@ def main(args):
             "resize_method": "crop",
         }
     )
+
+    os.environ['LIBCAMERA_LOG_LEVELS'] = 'FATAL'
+
     if isinstance(settings["target"], str):
 
         def to_int(s):
