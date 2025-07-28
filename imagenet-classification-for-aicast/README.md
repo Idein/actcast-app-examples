@@ -2,6 +2,8 @@
 
 **※このサンプルアプリケーションはActcastOS 4 のみに対応しています**
 
+ActcastOS3用のコードは [過去のコミット](https://github.com/Idein/actcast-app-examples/tree/073053e657d81393094461743182927f607beb84/imagenet-classification-for-aicast) を参照。またActcastOS4かつpyhailortを利用するコードは [PR51](https://github.com/Idein/actcast-app-examples/pull/51) を参照。
+
 ## 概要
 
 ai cast 上で動く ImageNet Classification のサンプルアプリです。
