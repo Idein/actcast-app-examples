@@ -4,9 +4,6 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 import actfw_core
 from actfw_core.task import Pipe, Consumer
-from actfw_core.system import get_actcast_firmware_type, find_csi_camera_device
-from actfw_core.capture import V4LCameraCapture
-from actfw_core.unicam_isp_capture import UnicamIspCapture
 from actfw_core.libcamera_capture import LibcameraCapture
 import libcamera as libcam
 from actfw_raspberrypi.vc4 import Display
@@ -221,38 +218,7 @@ def main(args):
     app.register_task(cmd)
 
     # Capture task
-    firmware_type = get_actcast_firmware_type()
-    # device = find_csi_camera_device()
-    if firmware_type == "raspberrypi-buster":
-        device = find_csi_camera_device()
-        if settings["resize_method"] == "crop":
-            cap = V4LCameraCapture(device, (CAPTURE_WIDTH, CAPTURE_HEIGHT), 30)
-        else:
-            cap = V4LCameraCapture(
-                device,
-                (CAPTURE_WIDTH, CAPTURE_HEIGHT),
-                30,
-                format_selector=V4LCameraCapture.FormatSelector.PROPER,
-            )
-
-        def config(video):
-            video.set_rotation(
-                settings["rotation"]
-            )  # ignore result (requires camera capability)
-            video.set_horizontal_flip(
-                settings["hflip"]
-            )  # ignore result (requires camera capability)
-
-        cap.configure(config)
-    else:
-        # In bullseye, we need to use UnicamIspCapture to use CSI camera
-        # cap = UnicamIspCapture(
-        #     unicam=device,
-        #     size=(CAPTURE_WIDTH, CAPTURE_HEIGHT),
-        #     framerate=30,
-        #     hflip=settings["hflip"],
-        # )
-        cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"))
+    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"))
     capture_size = cap.capture_size()
 
     app.register_task(cap)
