@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bookworm",
+  "boards": [
+    "RSPi3B",
+    "RSPi3BPlus",
+    "RSPi4B",
+    "RSPiCM4",
+    "RSPi5B",
+    "RSPiCM5"
+  ],
+  "devices": [],
+  "network_mode": "bridge",
+  "published_ports": [
+    {
+      "protocol": "tcp",
+      "container_port": 8080,
+      "host_port": 8080
+    }
+  ]
+}

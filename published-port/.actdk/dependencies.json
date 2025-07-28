@@ -19,5 +19,11 @@
     "pip": [
       "actfw-raspberrypi == 3.1.0"
     ]
+  },
+  "raspberrypi-bookworm": {
+    "apt": [],
+    "pip": [
+      "actfw-raspberrypi == 3.3.1"
+    ]
   }
 }
