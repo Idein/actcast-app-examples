@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bookworm",
+  "boards": [
+    "RSPi3BPlus",
+    "RSPi4B",
+    "RSPiCM4",
+    "RSPi5B",
+    "RSPiCM5"
+  ],
+  "devices": [],
+  "network_mode": "bridge",
+  "networks": [
+    {
+      "multicast_addr": "239.255.0.1",
+      "port": 30001,
+      "protocol": "udp",
+      "direction": "recv"
+    },
+    {
+      "multicast_addr": "239.1.1.50",
+      "port": 5050,
+      "protocol": "udp",
+      "direction": "recv"
+    }
+  ]
+}

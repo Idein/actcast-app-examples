@@ -11,5 +11,11 @@
     "pip": [
       "actfw-raspberrypi"
     ]
+  },
+  "raspberrypi-bookworm": {
+    "apt": [],
+    "pip": [
+      "actfw-raspberrypi"
+    ]
   }
 }
