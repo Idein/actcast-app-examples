@@ -1,6 +1,6 @@
 # ImageNet Classification for ai cast
 
-**※このサンプルアプリケーションはActcastOS 3 に対応しています**
+**※このサンプルアプリケーションはActcastOS 4 のみに対応しています**
 
 ## 概要
 
