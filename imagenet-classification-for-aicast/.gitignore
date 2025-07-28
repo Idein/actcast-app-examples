@@ -1,3 +1,5 @@
 .actdk/cache/
 
 app/*.so
+
+backup/
