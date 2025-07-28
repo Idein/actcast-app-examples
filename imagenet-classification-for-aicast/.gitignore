@@ -1,5 +1,6 @@
 .actdk/cache/
 
 app/*.so
+hailort-*.whl
 
 backup/
