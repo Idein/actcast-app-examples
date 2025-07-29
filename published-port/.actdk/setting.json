@@ -4,7 +4,7 @@
   "short_description": "garasubo sample",
   "short_descriptions": {},
   "target_types": [
-    "raspberrypi-buster",
-    "raspberrypi-bullseye"
+    "raspberrypi-bullseye",
+    "raspberrypi-bookworm"
   ]
 }

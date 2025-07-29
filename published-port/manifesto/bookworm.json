@@ -1,19 +1,16 @@
 {
   "version": 2,
-  "target_type": "raspberrypi-buster",
+  "target_type": "raspberrypi-bookworm",
   "boards": [
     "RSPi3B",
     "RSPi3BPlus",
-    "RSPiZero2W",
-    "RSPi2B",
-    "RSPi3APlus",
-    "RSPiCM3",
-    "RSPiCM3Plus",
     "RSPi4B",
-    "RSPiCM4"
+    "RSPiCM4",
+    "RSPi5B",
+    "RSPiCM5"
   ],
   "devices": [],
-  "allow_all_networks": true,
+  "network_mode": "bridge",
   "published_ports": [
     {
       "protocol": "tcp",
