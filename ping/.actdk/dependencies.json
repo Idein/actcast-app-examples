@@ -1,0 +1,10 @@
+{
+  "apt": [],
+  "pip": [],
+  "raspberrypi-bullseye": {
+    "apt": [
+      "iputils-ping"
+    ],
+    "pip": []
+  }
+}
