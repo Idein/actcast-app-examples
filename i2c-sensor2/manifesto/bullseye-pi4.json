@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
+  "boards": [
+    "RSPi4B",
+    "RSPiCM4"
+  ],
+  "devices": [
+    {
+      "type": "gpio",
+      "device": [
+        "/dev/gpiomem",
+        "/dev/mem",
+        "/dev/i2c-1"
+      ],
+      "required": true
+    }
+  ]
+}

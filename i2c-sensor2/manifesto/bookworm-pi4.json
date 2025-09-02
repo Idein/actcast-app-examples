@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bookworm",
+  "boards": [
+    "RSPi4B"
+  ],
+  "devices": [
+    {
+      "type": "gpio",
+      "device": [
+        "/dev/gpiomem",
+        "/dev/gpiochip0",
+        "/dev/mem",
+        "/dev/i2c-1"
+      ],
+      "required": true
+    }
+  ]
+}
