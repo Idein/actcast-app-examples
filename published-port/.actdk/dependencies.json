@@ -5,9 +5,7 @@
   ],
   "pip": [],
   "raspberrypi-bullseye": {
-    "apt": [
-      "libraspberrypi0"
-    ],
+    "apt": [],
     "pip": [
       "actfw-raspberrypi == 3.1.0"
     ]
