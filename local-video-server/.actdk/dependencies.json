@@ -8,7 +8,7 @@
   ],
   "pip": ["actfw-core>=2.10.0"],
   "raspberrypi-bullseye": {
-    "apt": ["libraspberrypi0"],
+    "apt": [],
     "pip": ["actfw-raspberrypi"]
   }
 }
