@@ -16,9 +16,7 @@
     ]
   },
   "raspberrypi-bullseye": {
-    "apt": [
-      "libraspberrypi0"
-    ],
+    "apt": [],
     "pip": [
       "actfw-raspberrypi"
     ]
