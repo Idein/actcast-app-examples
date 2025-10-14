@@ -11,18 +11,8 @@
   "pip": [
     "actfw-core==2.7.0"
   ],
-  "raspberrypi-buster": {
-    "apt": [
-      "libraspberrypi0"
-    ],
-    "pip": [
-      "actfw-raspberrypi==3.1.0"
-    ]
-  },
   "raspberrypi-bullseye": {
-    "apt": [
-      "libraspberrypi0"
-    ],
+    "apt": [],
     "pip": [
       "actfw-raspberrypi==3.1.0"
     ]
