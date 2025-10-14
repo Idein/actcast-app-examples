@@ -4,7 +4,6 @@
   "short_description": null,
   "short_descriptions": {},
   "target_types": [
-    "raspberrypi-buster",
     "raspberrypi-bullseye"
   ]
 }

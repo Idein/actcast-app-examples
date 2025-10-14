@@ -5,5 +5,5 @@
   "short_descriptions": {
     "ja": "ImageNet1000クラス分類デモ(for raspi)"
   },
-  "target_types": ["raspberrypi-buster", "raspberrypi-bullseye"]
+  "target_types": ["raspberrypi-bullseye"]
 }
