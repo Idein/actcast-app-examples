@@ -16,7 +16,8 @@
       "gstreamer1.0-plugins-base",
       "libgstreamer1.0-0",
       "libcurl4",
-      "liblog4cplus-dev"
+      "liblog4cplus-dev",
+      "libraspberrypi0"
     ],
     "pip": [
       "PySocks==1.7.1",
