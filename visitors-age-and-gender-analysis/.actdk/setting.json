@@ -6,7 +6,6 @@
     "ja": "来場者の属性を収集します"
   },
   "target_types": [
-    "raspberrypi-buster",
     "raspberrypi-bullseye"
   ]
 }

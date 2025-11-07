@@ -1,11 +1,6 @@
 {
   "apt": [],
   "pip": ["actfw-core"],
-  "raspberrypi-buster": {
-    "apt": [],
-    "pip": [],
-    "base_image": "ghcr.io/idein/custom-image-example-bullseye"
-  },
   "raspberrypi-bullseye": {
     "apt": [],
     "pip": [],
