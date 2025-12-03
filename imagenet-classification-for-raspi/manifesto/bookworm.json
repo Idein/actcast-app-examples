@@ -2,23 +2,10 @@
   "version": 2,
   "target_type": "raspberrypi-bookworm",
   "boards": [
-    "RSPi1A",
-    "RSPi1B",
-    "RSPi1APlus",
-    "RSPi1BPlus",
-    "RSPi2B",
-    "RSPiAlpha",
-    "RSPiCM1",
     "RSPi3B",
-    "RSPiZero",
-    "RSPiCM3",
-    "RSPiZeroW",
     "RSPi3BPlus",
-    "RSPi3APlus",
     "RSPi4B",
     "RSPiCM4",
-    "RSPiCM3Plus",
-    "RSPiZero2W",
     "RSPi5B"
   ],
   "devices": [
