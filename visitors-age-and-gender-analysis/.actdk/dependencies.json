@@ -9,7 +9,7 @@
     "fonts-dejavu-core"
   ],
   "pip": [
-    "actfw-core==2.7.0"
+    "actfw-core"
   ],
   "raspberrypi-bullseye": {
     "apt": [],
