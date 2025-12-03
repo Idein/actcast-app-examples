@@ -71,8 +71,11 @@ def window_position(actual_display_size, virtual_display_size, expected_area):
     actual_height = int(scale * expected_height)
     return (actual_left, actual_upper, actual_width, actual_height)
 
+if get_actcast_firmware_type() == "raspberrypi-bookworm":
+    _lib = cdll.LoadLibrary('./libbilinear_64bit.so')
+else:
+    _lib = cdll.LoadLibrary('./libbilinear.so')
 
-_lib = cdll.LoadLibrary('./libbilinear.so')
 bilinear = _lib.bilinear_HWC_u8
 
 bilinear.argtypes = [
@@ -621,6 +624,18 @@ def main(args):
         try:
             cap = UnicamIspCapture(unicam=find_csi_camera_device(), size=(
                 CAPTURE_WIDTH, CAPTURE_HEIGHT), framerate=settings['capture_framerate'])
+        except RuntimeError as e:
+            raise ActSettingsError(str(e))
+        except OSError as e:
+            if e.errno == 16:
+                raise ActSettingsError(str(e))
+            else:
+                raise
+    elif get_actcast_firmware_type() == "raspberrypi-bookworm" and not use_usb_camera:
+        import libcamera as libcam
+        from actfw_core.libcamera_capture import LibcameraCapture
+        try:
+            cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"), framerate=settings['capture_framerate'])
         except RuntimeError as e:
             raise ActSettingsError(str(e))
         except OSError as e:
