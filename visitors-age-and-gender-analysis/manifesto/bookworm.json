@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bookworm",
+  "boards": [
+    "RSPi3B",
+    "RSPi3BPlus",
+    "RSPi4B",
+    "RSPiCM4",
+    "RSPi5B"
+  ],
+  "devices": [
+    {
+      "type": "camera"
+    },
+    {
+      "type": "videocore"
+    },
+    {
+      "type": "framebuffer",
+      "device": [
+        "/dev/fb0"
+      ],
+      "required": false
+    }
+  ]
+}

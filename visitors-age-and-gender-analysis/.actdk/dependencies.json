@@ -9,12 +9,18 @@
     "fonts-dejavu-core"
   ],
   "pip": [
-    "actfw-core==2.7.0"
+    "actfw-core"
   ],
   "raspberrypi-bullseye": {
     "apt": [],
     "pip": [
       "actfw-raspberrypi==3.1.0"
+    ]
+  },
+  "raspberrypi-bookworm": {
+    "apt": [ "python3-libcamera" ],
+    "pip": [
+      "actfw-raspberrypi"
     ]
   }
 }
