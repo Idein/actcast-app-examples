@@ -1,26 +1,33 @@
 # Custom Image Example
 
-**※このサンプルアプリケーションはActcastOS 4 にのみ対応しています**
-
-ActcastOS 3 用のコードは [過去のコミット](https://github.com/Idein/actcast-app-examples/tree/f17fa11ae543f25ba00c5e36f7aa72520eac700a/custom-image) を参照してください
+**※このサンプルアプリケーションはActcastOS 3 と 4 に対応しています**
 
 ## 概要
 
 カスタムイメージ機能を使う例です。
-Python 3.14 をインストールしたイメージをビルドし、そのイメージを使ってアプリケーションを実行します。
+デフォルトのベースイメージより新しいバージョンの Python をインストールしたイメージをビルドし、そのイメージを使ってアプリケーションを実行します。
 
 ## 前提
 
 - 対象機種: [Actcast がサポートする Raspberry Pi](https://actcast.io/docs/ja/SupportedDevices/RaspberryPi/)
-  - ファームウェアバージョン: 4.0.0 以降
+  - ファームウェアバージョン: 3.0.0 以降
 - [actdk](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/GettingStarted/ActDK/)
   - バージョン: 1.51.0 以降
 - [Docker](https://www.docker.com/), [buildx extension](https://github.com/docker/buildx)
 
+## カスタムイメージの指定方法
+
+`.actdk/dependencies.json` に `base_image` として `ghcr.io/idein/custom-image-example-bullseye`または`ghcr.io/idein/custom-image-example-bookworm` が指定されており、`actdk build --release` や `actdk upload` ではここでビルドしたイメージが使われます。
+
+`custom-image-bullseye`にはPython 3.12が、`custom-image-bookworm`にはPython 3.14がインストールされています。
+
+
 ## ベースイメージのビルド方法
 
+このサンプルアプリで使用しているベースイメージのビルド方法を説明します。
+
 > [!NOTE]
-> ベースイメージ `ghcr.io/idein/custom-image-example-bookworm` は予め公開されているため、動作確認のために改めてビルドする必要はありません。
+> ベースイメージ `ghcr.io/idein/custom-image-example-bookworm` 及び `ghcr.io/idein/custom-image-example-bullseye` は予め公開されているため、動作確認のために改めてビルドする必要はありません。
 
 ```bash
 cd custom-image
@@ -28,10 +35,9 @@ cd custom-image
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 # イメージのビルド (時間がかかります)
 docker buildx build --platform linux/arm64 -t ghcr.io/idein/custom-image-example-bookworm --load .
+# bullseye向けイメージのビルド
+docker buildx build --platform linux/arm/v7 -t ghcr.io/idein/custom-image-example-bullseye -f Dockerfile.bullseye --load .
 ```
-
-`.actdk/dependencies.json` に `base_image` として `ghcr.io/idein/custom-image-example-bookworm` が指定されており、`actdk build --release` や `actdk upload` ではここでビルドしたイメージが使われます。
-
 
 ## Actsim での動作確認
 
@@ -55,7 +61,7 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 以下のようなログが出力されます。
 
 ```json
-[{"python_version":"3.14.2 (main, Dec 11 2025, 02:10:15) [GCC 12.2.0]"}]
+[{"python_version": "3.12.0 (main, Nov 29 2023, 03:48:30) [GCC 10.2.1 20210110]"}]
 ```
 
 ベースイメージを変更・再ビルドした場合は、以下のコマンドにより動作確認が可能です。

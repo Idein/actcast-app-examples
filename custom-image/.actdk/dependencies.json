@@ -1,6 +1,11 @@
 {
   "apt": [],
   "pip": ["actfw-core"],
+  "raspberrypi-bullseye": {
+    "apt": [],
+    "pip": [],
+    "base_image": "ghcr.io/idein/custom-image-example-bullseye"
+  },
   "raspberrypi-bookworm": {
     "apt": [],
     "pip": [],
