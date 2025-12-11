@@ -1,7 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1
-
-FROM docker.io/idein/actcast-rpi-app-base:bullseye-3 as build
-
+FROM idein/actcast-rpi-app-base:bookworm-7
 ENV DEBIAN_FRONTEND "noninteractive"
 ENV DEBCONF_NOWARNINGS "yes"
 RUN apt-get update -y
@@ -16,13 +13,9 @@ RUN apt-get install -y --no-install-recommends \
 WORKDIR /opt
 RUN git clone https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp.git
 WORKDIR /opt/amazon-kinesis-video-streams-producer-sdk-cpp
-RUN git checkout v3.4.1
+RUN git checkout v3.5.0
 RUN mkdir build
 WORKDIR /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build
-RUN cmake .. -DBUILD_TEST=OFF -DBUILD_GSTREAMER_PLUGIN=TRUE -DBUILD_DEPENDENCIES=OFF -DCMAKE_INSTALL_PREFIX=.
+RUN cmake .. -DPARALLEL_BUILD=OFF -DBUILD_GSTREAMER_PLUGIN=TRUE -DBUILD_DEPENDENCIES=OFF -DCMAKE_INSTALL_PREFIX=.
 RUN make
-
-FROM scratch
-COPY --from=build /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build/libKinesisVideoProducer.so /
-COPY --from=build /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so /
-COPY --from=build /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build/dependency/libkvscproducer/kvscproducer-src/libcproducer.so /
+RUN ls -la

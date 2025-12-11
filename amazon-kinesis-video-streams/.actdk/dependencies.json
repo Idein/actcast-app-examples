@@ -1,27 +1,21 @@
 {
   "apt": [],
   "pip": [],
-  "raspberrypi-bullseye": {
+  "raspberrypi-bookworm": {
     "apt": [
-      "libv4l-0",
-      "libv4lconvert0",
-      "fbset",
       "python3",
       "python3-pil",
       "python3-numpy",
-      "fonts-dejavu-core",
       "python3-gst-1.0",
       "gstreamer1.0-plugins-bad",
       "gstreamer1.0-plugins-good",
       "gstreamer1.0-plugins-base",
-      "libgstreamer1.0-0",
       "libcurl4",
       "liblog4cplus-dev"
     ],
     "pip": [
-      "PySocks==1.7.1",
-      "actfw-core==2.7.0",
-      "actfw-raspberrypi==3.2.0"
+      "actfw-core==2.14.0",
+      "actfw-raspberrypi==3.3.1"
     ]
   }
 }
