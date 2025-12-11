@@ -1,10 +1,7 @@
 {
   "version": 2,
-  "target_type": "raspberrypi-bullseye",
+  "target_type": "raspberrypi-bookworm",
   "boards": [
-    "RSPiZero2W",
-    "RSPi2B",
-    "RSPi3APlus",
     "RSPi3B",
     "RSPi3BPlus",
     "RSPiCM3",
