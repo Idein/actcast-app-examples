@@ -4,6 +4,7 @@
   "short_description": "sample application with custom image",
   "short_descriptions": {},
   "target_types": [
-    "raspberrypi-bookworm"
+    "raspberrypi-bookworm",
+    "raspberrypi-bullseye"
   ]
 }
