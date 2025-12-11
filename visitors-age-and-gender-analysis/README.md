@@ -1,6 +1,6 @@
 # Visitors' Age and Gender Analysis
 
-**※このサンプルアプリケーションはActcastOS 3 に対応しています**
+**※このサンプルアプリケーションはActcastOS 4 に対応しています**
 
 ## 概要
 
