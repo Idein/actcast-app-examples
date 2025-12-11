@@ -1,0 +1,5 @@
+#!/bin/bash
+
+HEARTBEAT_FILE='/root/heartbeat'
+
+[ "$(find "${HEARTBEAT_FILE}" -mmin -1)" == "${HEARTBEAT_FILE}" ]
