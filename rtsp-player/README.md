@@ -1,13 +1,13 @@
 # RTSP Player
 
-**※このサンプルアプリケーションはActcastOS 3 に対応しています**
+**※このサンプルアプリケーションはActcastOS 4 に対応しています**
 
 ## 概要
 
 RTSP を用いてリモートの映像を再生するサンプルアプリです。
 
 - RTSP の映像をキャプチャするために [actfw-gstreamer](https://pypi.org/project/actfw-gstreamer/) を利用しています。
-- Actcast アプリでは外部と通信するために SOCKS プロキシを経由する必要がありますが、gstreamer は SOCKS プロキシに対応していないため、[tcp2socks](https://github.com/Idein/tcp2socks) を用いて通信を透過させています。
+- GStreamer を用いて RTSP サーバーに直接接続し、映像ストリームを取得します。
 
 ## 前提
 
@@ -16,14 +16,6 @@ RTSP を用いてリモートの映像を再生するサンプルアプリです
   - [PC からテスト映像を配信する方法](#pc-からテスト映像を配信する方法)に記載の手順により、PC から映像を配信することもできます。
 - [actdk](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/GettingStarted/ActDK/)
 - [Docker](https://www.docker.com/)
-
-## ビルド方法
-
-```bash
-make
-```
-
-これにより tcp2socksd のバイナリが `app/bin/tcp2socksd` にダウンロードされます。
 
 ## Actsim での動作確認
 
