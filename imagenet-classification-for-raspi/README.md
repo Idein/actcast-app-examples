@@ -1,6 +1,6 @@
 # ImageNet Classification for Raspberry Pi
 
-**※このサンプルアプリケーションはActcastOS 3 に対応しています**
+**※このサンプルアプリケーションはActcastOS 4 に対応しています**
 
 ## 概要
 
@@ -21,7 +21,8 @@ make
 make により、以下のファイルが生成されます。
 
 - `include/model.h`
-- `app/libmodel.so` 
+- `app/libmodel.so`
+- `app/libmodel_64bit.so`
 - `app/model.py`
 
 ## Actsim での動作確認
