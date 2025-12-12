@@ -2,7 +2,7 @@
 
 **※このサンプルアプリケーションはActcastOS 4 向けです**
 
-OS3 向けのサンプルは [こちら](https://actcast.io/schema/v8/data_schema_schema.json)
+OS3 向けのサンプルは [こちら](https://github.com/Idein/actcast-app-examples/tree/b595cf3a830f143bd845353b9a6c6de40efdcaf0/amazon-kinesis-video-streams)
 
 ## 概要
 
@@ -163,9 +163,9 @@ AWS コンソールで Kinesis Video Stream を使うためには以下の準備
 3. Kinesis Video Stream を作成します
 4. 2, 3 で作った アクセスキーとストリーム名を入れた `act_settings.json` を作ります
 
-### actdk run で actsin 上での動作確認
+### actdk run で開発モードデバイス上での動作確認
 
-`actdk run` により Actsim 上でアプリケーションの動作確認をすることができます。
+`actdk run` によりデバイス上でアプリケーションの動作確認をすることができます。
 停止させるには `Ctrl + C` を押します。
 
 ```bash
