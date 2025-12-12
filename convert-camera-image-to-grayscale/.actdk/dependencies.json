@@ -4,10 +4,17 @@
     "libv4lconvert0",
     "python3",
     "python3-pil",
-    "python3-numpy"
+    "python3-numpy",
+    "python3-libcamera"
   ],
   "pip": [],
   "raspberrypi-bullseye": {
+    "apt": [],
+    "pip": [
+      "actfw-raspberrypi"
+    ]
+  },
+  "raspberrypi-bookworm": {
     "apt": [],
     "pip": [
       "actfw-raspberrypi"
