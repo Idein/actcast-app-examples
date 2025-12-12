@@ -17,7 +17,7 @@ Raspberry Piに接続されたカメラの映像をKinesis Video Streamに配信
 
 ## ビルド方法
 
-Actcast OS4 の入った Raspbeery Pi を用意します。
+Actcast OS4 の入った Raspberry Pi を用意します。
 こちらの手順のとおりに [Dev Mode を有効化](https://actcast.io/docs/ja/ApplicationDevelopment/DevMode/) してください。
 
 __※開発者モードを有効化してから ssh でログインできるようになるまで数分かかる場合があります。__
