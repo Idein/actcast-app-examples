@@ -89,7 +89,7 @@ $ ls /home/actcast | grep \.so
 
 ```bash
 docker rm "$cid"
-docker rmi ksv-libs
+docker rmi kvs-libs
 ```
 
 ssh しているデバイスからログアウトします。
