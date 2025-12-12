@@ -4,6 +4,7 @@
   "short_description": "S3 file upload test",
   "short_descriptions": {},
   "target_types": [
-    "raspberrypi-bullseye"
+    "raspberrypi-bullseye",
+    "raspberrypi-bookworm"
   ]
 }
