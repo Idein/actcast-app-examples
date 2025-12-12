@@ -18,4 +18,3 @@ RUN mkdir build
 WORKDIR /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build
 RUN cmake .. -DPARALLEL_BUILD=OFF -DBUILD_GSTREAMER_PLUGIN=TRUE -DBUILD_DEPENDENCIES=OFF -DCMAKE_INSTALL_PREFIX=.
 RUN make
-RUN ls -la
