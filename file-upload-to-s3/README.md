@@ -20,11 +20,16 @@ S3 にファイルをアップロードするため、事前に [S3 のバケッ
 
 作成したバケットの名前、リージョン、アクセスキー、シークレットキーを控えておきます。
 
-## Actsim での動作確認
+## 開発モードが有効になった ActcastOS4 での動作確認
 
 ### 準備
 
 actdk に[確認用 Raspberry Pi を登録](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/GettingStarted/TestInLocalDevice/#%e7%a2%ba%e8%aa%8d%e7%94%a8-raspberry-pi-%e3%81%ae%e7%99%bb%e9%8c%b2)します。
+
+Actcast OS4 の入った Raspberry Pi を用意します。
+こちらの手順のとおりに [Dev Mode を有効化](https://actcast.io/docs/ja/ApplicationDevelopment/DevMode/) してください。
+
+actdk に開発モードが有効になった ActcastOS4 が入ったデバイスを [登録](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/GettingStarted/TestInLocalDevice/#%e7%a2%ba%e8%aa%8d%e7%94%a8-raspberry-pi-%e3%81%ae%e7%99%bb%e9%8c%b2)します。
 
 ```bash
 actdk remote add <IDENTIFIER_YOU_LIKE>@<REMOTE>
