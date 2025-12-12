@@ -1,34 +1,36 @@
 # Custom Image Example
 
-**※このサンプルアプリケーションはActcastOS 3 に対応しています**
+**※このサンプルアプリケーションはActcastOS 4 にのみ対応しています**
+
+ActcastOS 3 用のコードは [過去のコミット](https://github.com/Idein/actcast-app-examples/tree/f17fa11ae543f25ba00c5e36f7aa72520eac700a/custom-image) を参照してください
 
 ## 概要
 
 カスタムイメージ機能を使う例です。
-Python 3.12 をインストールしたイメージをビルドし、そのイメージを使ってアプリケーションを実行します。
+Python 3.14 をインストールしたイメージをビルドし、そのイメージを使ってアプリケーションを実行します。
 
 ## 前提
 
 - 対象機種: [Actcast がサポートする Raspberry Pi](https://actcast.io/docs/ja/SupportedDevices/RaspberryPi/)
-  - ファームウェアバージョン: 1.34.0 以降
+  - ファームウェアバージョン: 4.0.0 以降
 - [actdk](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/GettingStarted/ActDK/)
-  - バージョン: 1.17.0 以降
+  - バージョン: 1.51.0 以降
 - [Docker](https://www.docker.com/), [buildx extension](https://github.com/docker/buildx)
 
 ## ベースイメージのビルド方法
 
 > [!NOTE]
-> ベースイメージ `ghcr.io/idein/custom-image-example` は予め公開されているため、動作確認のために改めてビルドする必要はありません。
+> ベースイメージ `ghcr.io/idein/custom-image-example-bookworm` は予め公開されているため、動作確認のために改めてビルドする必要はありません。
 
 ```bash
 cd custom-image
 # 事前に QEMU を有効にする必要があります
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 # イメージのビルド (時間がかかります)
-docker buildx build --platform linux/amd64 -t ghcr.io/idein/custom-image-example --load .
+docker buildx build --platform linux/arm64 -t ghcr.io/idein/custom-image-example-bookworm --load .
 ```
 
-`.actdk/dependencies.json` に `base_image` として `ghcr.io/idein/custom-image-example` が指定されており、`actdk build --release` や `actdk upload` ではここでビルドしたイメージが使われます。
+`.actdk/dependencies.json` に `base_image` として `ghcr.io/idein/custom-image-example-bookworm` が指定されており、`actdk build --release` や `actdk upload` ではここでビルドしたイメージが使われます。
 
 
 ## Actsim での動作確認
@@ -53,7 +55,7 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 以下のようなログが出力されます。
 
 ```json
-[{"python_version": "3.12.0 (main, Nov 29 2023, 03:48:30) [GCC 10.2.1 20210110]"}]
+[{"python_version":"3.14.2 (main, Dec 11 2025, 02:10:15) [GCC 12.2.0]"}]
 ```
 
 ベースイメージを変更・再ビルドした場合は、以下のコマンドにより動作確認が可能です。
