@@ -13,6 +13,7 @@ Raspberry Piに接続されたカメラの映像をKinesis Video Streamに配信
 - 対象機種: [ActcastOS 4 がサポートする Raspberry Pi](https://actcast.io/docs/ja/SupportedDevices/RaspberryPi/)
 - Raspberry Pi に接続可能なカメラ
 - [actdk](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/GettingStarted/ActDK/)
+- [Docker](https://www.docker.com/)
 - [AWS Kinesis Video Stream](https://docs.aws.amazon.com/ja_jp/kinesisvideostreams/latest/dg/producer-sdk-cpp.html)
 
 ## ビルド方法
