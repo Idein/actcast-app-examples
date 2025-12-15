@@ -1,11 +1,9 @@
 #!/usr/bin/python3
 import numpy as np
 from PIL import Image
-import libcamera
 import actfw_core
 from actfw_core.task import Pipe, Consumer
 from actfw_core.system import find_csi_camera_device, get_actcast_firmware_type
-from actfw_core.libcamera_capture import LibcameraCapture
 from actfw_core.unicam_isp_capture import UnicamIspCapture
 from actfw_raspberrypi.vc4 import Display
 
@@ -20,14 +18,13 @@ from actfw_raspberrypi.vc4 import Display
 class Converter(Pipe):
     """Convert RGB camera image to grayscale image"""
 
-    def __init__(self, capture_size, image_mode):
+    def __init__(self, capture_size):
         super(Converter, self).__init__()
         self.capture_size = capture_size
-        self.image_mode = image_mode
 
     def proc(self, frame):
         rgb_image = Image.frombuffer(
-            "RGB", self.capture_size, frame.getvalue(), "raw", self.image_mode
+            "RGB", self.capture_size, frame.getvalue(), "raw", "RGB"
         )
         gray_image = rgb_image.convert("L")
         return gray_image
@@ -64,16 +61,16 @@ def run(app, preview_window=None):
     capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
     framerate = 30
     if get_actcast_firmware_type() == "raspberrypi-bookworm":
+        import libcamera
+        from actfw_core.libcamera_capture import LibcameraCapture
         cap = LibcameraCapture(capture_size, libcamera.PixelFormat("BGR888"), framerate=framerate)
-        image_mode = "BGR"
     else:
         device = find_csi_camera_device()
         cap = UnicamIspCapture(unicam=device, size=capture_size, framerate=framerate)
-        image_mode = "RGB"
     app.register_task(cap)
 
     # register converter task
-    conv = Converter(cap.capture_size(), image_mode)
+    conv = Converter(cap.capture_size())
     app.register_task(conv)
 
     # register presenter task
