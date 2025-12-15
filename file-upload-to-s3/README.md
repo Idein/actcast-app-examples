@@ -50,7 +50,7 @@ actdk remote add <IDENTIFIER_YOU_LIKE>@<REMOTE>
 
 ```bash
 actdk run -a <IDENTIFIER_YOU_LIKE>
-```p
+```
 
 ファイルアップロードに成功した場合は、以下のようなメッセージが表示されます。また、S3 に `<時刻>.txt` というファイルが作られます。
 
