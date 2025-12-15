@@ -76,7 +76,7 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 
 [アプリケーションをアップロードし、実機にインストール](https://actcast.io/docs/ja/ForVendor/ApplicationDevelopment/GettingStarted/TestViaActcast/)します。
 
-## 補則説明
+## 補足説明
 
 `root.tar` には、SOCKS プロキシ対応のパッチがあてられた `botocore` が含まれています。
 `root.tar` はアプリケーションのビルド時に展開され、アプリケーションのルートディレクトリに配置されます。
