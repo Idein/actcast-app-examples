@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bookworm",
+  "boards": ["RSPi3B", "RSPi3BPlus", "RSPi4B", "RSPiCM4", "RSPi5B"],
+  "devices": [
+    {
+      "type": "camera"
+    },
+    {
+      "type": "videocore"
+    }
+  ],
+  "allow_all_networks": true,
+  "published_ports": [
+    {
+      "container_port": 5100,
+      "host_port": 5100,
+      "protocol": "tcp"
+    }
+  ]
+}

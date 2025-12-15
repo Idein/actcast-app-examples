@@ -21,13 +21,18 @@ FRAMERATE = 30  # frame rate
 def setup_camera_capture(use_usb_camera):
     device = find_usb_camera_device() if use_usb_camera else find_csi_camera_device()
 
-    if get_actcast_firmware_type() == "raspberrypi-bullseye" and not use_usb_camera:
-        # Use UnicamIspCapture on Raspberry Pi OS Bullseye
-        cap = UnicamIspCapture(
-            unicam=device, size=(CAPTURE_WIDTH, CAPTURE_HEIGHT), framerate=FRAMERATE
-        )
+    if not use_usb_camera:
+        if get_actcast_firmware_type() == "raspberrypi-bookworm":
+            import libcamera
+            from actfw_core.libcamera_capture import LibcameraCapture
+            cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcamera.PixelFormat("BGR888"), framerate=FRAMERATE)
+        else:
+            # Use UnicamIspCapture on Raspberry Pi OS Bullseye
+            cap = UnicamIspCapture(
+                unicam=device, size=(CAPTURE_WIDTH, CAPTURE_HEIGHT), framerate=FRAMERATE
+            )
     else:
-        # Use V4LCameraCapture on Raspberry Pi OS Buster or use USB camera
+        # Use V4LCameraCapture on use USB camera
         cap = V4LCameraCapture(
             device,
             (CAPTURE_WIDTH, CAPTURE_HEIGHT),
