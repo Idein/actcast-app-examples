@@ -1,7 +1,7 @@
 {
   "version": 2,
   "target_type": "raspberrypi-bookworm",
-  "boards": ["RSPi3BPlus", "RSPi4B", "RSPiCM4"],
+  "boards": ["RSPi3BPlus", "RSPi4B", "RSPiCM4", "RSPi5B"],
   "devices": [
     {
       "type": "camera"

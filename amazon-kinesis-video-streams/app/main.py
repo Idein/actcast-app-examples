@@ -73,14 +73,22 @@ def main(_args):
 
             cap.configure(config)
         else:
-            device = find_csi_camera_device()
-            cap = UnicamIspCapture(
-                unicam=device,
-                size=(CAPTURE_WIDTH, CAPTURE_HEIGHT),
+            # bookworm 64bit libcamera support
+            import libcamera
+            from actfw_core.libcamera_capture import LibcameraCapture
+            cap = LibcameraCapture(
+                (CAPTURE_WIDTH, CAPTURE_HEIGHT),
+                libcamera.PixelFormat("BGR888"),
                 framerate=int(settings["capture_framerate"]),
-                hflip=settings["hflip"],
-                vflip=settings["vflip"],
             )
+
+            def config(video):
+                # ignore result (requires camera capability)
+                video.set_horizontal_flip(settings["hflip"])
+                if settings["vflip"]:
+                    video.set_rotation(180)
+
+            cap.configure(config)
 
     except RuntimeError as e:
         raise ActSettingsError(str(e))
