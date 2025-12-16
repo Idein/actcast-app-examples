@@ -11,9 +11,8 @@ RUN apt-get install -y --no-install-recommends \
 RUN apt-get install -y --no-install-recommends \
     git cmake gcc g++ binutils libunwind-dev libssl-dev libcurl4-openssl-dev liblog4cplus-dev make autoconf build-essential
 WORKDIR /opt
-RUN git clone https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp.git
+RUN git clone https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp.git -b v3.5.0 --depth 1
 WORKDIR /opt/amazon-kinesis-video-streams-producer-sdk-cpp
-RUN git checkout v3.5.0
 RUN mkdir build
 WORKDIR /opt/amazon-kinesis-video-streams-producer-sdk-cpp/build
 RUN cmake .. -DPARALLEL_BUILD=OFF -DBUILD_GSTREAMER_PLUGIN=TRUE -DBUILD_DEPENDENCIES=OFF -DCMAKE_INSTALL_PREFIX=.
