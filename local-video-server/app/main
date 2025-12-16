@@ -23,6 +23,7 @@ def setup_camera_capture(use_usb_camera):
 
     if not use_usb_camera:
         if get_actcast_firmware_type() == "raspberrypi-bookworm":
+            # Use LibcameraCapture on Raspberry Pi OS Bookworm
             import libcamera
             from actfw_core.libcamera_capture import LibcameraCapture
             cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcamera.PixelFormat("BGR888"), framerate=FRAMERATE)
