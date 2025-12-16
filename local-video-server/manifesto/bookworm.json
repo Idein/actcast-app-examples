@@ -10,7 +10,7 @@
       "type": "videocore"
     }
   ],
-  "allow_all_networks": true,
+  "network_mode": "bridge",
   "published_ports": [
     {
       "container_port": 5100,
