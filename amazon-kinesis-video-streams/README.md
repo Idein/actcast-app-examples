@@ -19,13 +19,13 @@ Raspberry Piに接続されたカメラの映像をKinesis Video Streamに配信
 ## ビルド方法
 
 Actcast OS4 の入った Raspberry Pi を用意します。
-こちらの手順のとおりに [Dev Mode を有効化](https://actcast.io/docs/ja/ApplicationDevelopment/DevMode/) してください。
+こちらの手順のとおりに [開発モードを有効化](https://actcast.io/docs/ja/ApplicationDevelopment/DevMode/) してください。
 
-__※開発者モードを有効化してから ssh でログインできるようになるまで数分かかる場合があります。__
+__※開発モードを有効化してから ssh でログインできるようになるまで数分かかる場合があります。__
 
 ### kvssink のビルド
 
-gstreamer 経由で kinesis video stream を使うためには `app/*` に以下の shared object が必要です。
+gstreamer 経由で kinesis video stream を使うためには `app/*` に以下の .so ファイルが必要です。
 
 - libKinesisVideoProducer.so
 - libgstkvssink.so
@@ -33,16 +33,16 @@ gstreamer 経由で kinesis video stream を使うためには `app/*` に以下
 - libkvsCommonCurl.so
 
 これらは [ソースコード](https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp) からビルドする必要があります。
-依存ライブラリのバージョンを揃えるために ssh で開発者モードを有効にしたデバイスにログインして docker コンテナの中でビルドします。
+依存ライブラリのバージョンを揃えるために ssh で開発モードを有効にしたデバイスにログインして docker コンテナの中でビルドします。
 
-開発者モードを有効にしたデバイスにDockerfile を転送します。
+開発モードを有効にしたデバイスにDockerfile を転送します。
 
 ```bash
 rsync -e='ssh -i /path/to/privkey' ./Dockerfile actcast@<REMOTE>:/home/actcast/Dockerfile
 ```
 
-- `<REMOTE>` は開発者モードを有効にしたデバイスの IP アドレス、または mdns で`<HOSTNAME>.local` です。
-- `/path/to/privkey` はデバイスの開発者モードを有効にしたときに登録した公開鍵と対になる秘密鍵へのパスです。
+- `<REMOTE>` は開発モードを有効にしたデバイスの IP アドレス、または mdns で`<HOSTNAME>.local` です。
+- `/path/to/privkey` はデバイスの開発モードを有効にしたときに登録した公開鍵と対になる秘密鍵へのパスです。
 
 デバイスに ssh でログインします。
 
@@ -55,7 +55,7 @@ ssh actcast@<REMOTE> -i /path/to/privkey
 ```console
 $ pwd
 /home/actcast
-$ ls -la | grep Docker
+$ ls -la Dockerfile
 -rw-r--r-- 1 actcast actcast   1059 Dec 12 13:13 Dockerfile
 ```
 
@@ -65,7 +65,7 @@ docker build します。
 docker build -t kvs-libs .
 ```
 
-ビルドが終わったら、コンテナから shared object をコピーします。
+ビルドが終わったら、コンテナから .so ファイルをコピーします。
 
 ```bash
 cid=$(docker create kvs-libs /bin/bash -lc "true")
@@ -75,10 +75,10 @@ docker cp "$cid:/opt/amazon-kinesis-video-streams-producer-sdk-cpp/build/depende
 docker cp "$cid:/opt/amazon-kinesis-video-streams-producer-sdk-cpp/build/dependency/libkvscproducer/kvscproducer-src/libkvsCommonCurl.so.1.6.0" .
 ```
 
-.so がホームディレクトリにコピーされていることを確認します。
+.so ファイルがホームディレクトリにコピーされていることを確認します。
 
 ```console
-$ ls /home/actcast | grep \.so
+$ ls -la /home/actcast | grep \.so
 -rwxr-xr-x 1 actcast actcast 463440 Dec 12 14:41 libcproducer.so.1.6.0
 -rwxr-xr-x 1 actcast actcast 245248 Dec 12 12:58 libgstkvssink.so
 -rwxr-xr-x 1 actcast actcast 249352 Dec 12 12:57 libKinesisVideoProducer.so
@@ -99,11 +99,11 @@ ssh しているデバイスからログアウトします。
 exit
 ```
 
-デバイスでビルドした shared object を `rsync` 等でホストマシンの `app/*` へコピーします
+デバイスでビルドした .so ファイルを `rsync` 等でホストマシンの `app/*` へコピーします
 
 ```bash
 rsync -e='ssh -i /path/to/privkey'  \
-  -av --prune-empty-dirs  --include='*/-' --include='*.so' --include='*.so.*' --exclude='*' \
+  -av --prune-empty-dirs  --include='*/' --include='*.so' --include='*.so.*' --exclude='*' \
   actcast@<REMOTE>:/home/actcast/ ./app/
 ```
 
@@ -132,7 +132,7 @@ lrwxrwxrwx 1 idein developers     25 Dec 12 15:07 libkvsCommonCurl.so.1 -> libkv
 
 ```
 
-## 開発者モードを有効にしたデバイスでの動作確認
+## 開発モードを有効にしたデバイスでの動作確認
 
 kvs アプリを動かすためには以下のファイルが必要です。
 
