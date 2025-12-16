@@ -2,7 +2,7 @@
 FROM idein/actcast-rpi-app-base:bullseye-3 AS base
 
 # このステージのスクリプトは、
-# https://github.com/docker-library/python/blob/master/3.12/slim-bullseye/Dockerfile
+# https://github.com/docker-library/python/blob/ff4d235f6e63f81fdd83d4c93fa33a39638df1bb/3.12/slim-bullseye/Dockerfile
 # からコピーしてきたものです。ライセンスは MIT ライセンス (Copyright (c) Docker, Inc.) です。
 # Python 公式のイメージから multi-stage build 機能でファイルをコピーする方針を取っていない理由は以下の通りです。
 # - actcast-rpi-app-base は Raspberry Pi 用の apt repository を参照しているが、Python の公式イメージは debian の apt repository を参照している
