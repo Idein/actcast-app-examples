@@ -76,19 +76,21 @@ def main(_args):
             # bookworm 64bit libcamera support
             import libcamera
             from actfw_core.libcamera_capture import LibcameraCapture
+            # libcamera flip mapping
+            if settings["hflip"] and settings["vflip"]:
+                orientation = libcamera.Orientation.Rotate180
+            elif settings["hflip"] and not settings["vflip"]:
+                orientation = libcamera.Orientation.Rotate0Mirror
+            elif not settings["hflip"] and settings["vflip"]:
+                orientation = libcamera.Orientation.Rotate180Mirror
+            elif not settings["hflip"] and not settings["vflip"]:
+                orientation = libcamera.Orientation.Rotate0
             cap = LibcameraCapture(
                 (CAPTURE_WIDTH, CAPTURE_HEIGHT),
                 libcamera.PixelFormat("BGR888"),
                 framerate=int(settings["capture_framerate"]),
+                orientation=orientation
             )
-
-            def config(video):
-                # ignore result (requires camera capability)
-                video.set_horizontal_flip(settings["hflip"])
-                if settings["vflip"]:
-                    video.set_rotation(180)
-
-            cap.configure(config)
 
     except RuntimeError as e:
         raise ActSettingsError(str(e))
