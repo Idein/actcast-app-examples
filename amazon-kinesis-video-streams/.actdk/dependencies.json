@@ -9,8 +9,9 @@
       "python3-gst-1.0",
       "python3-libcamera",
       "gstreamer1.0-plugins-bad",
-      "gstreamer1.0-plugins-good",
       "gstreamer1.0-plugins-base",
+      "gstreamer1.0-plugins-good",
+      "gstreamer1.0-plugins-ugly",
       "libcurl4",
       "liblog4cplus-dev"
     ],
