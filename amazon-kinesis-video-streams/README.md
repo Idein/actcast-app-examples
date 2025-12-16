@@ -102,9 +102,10 @@ exit
 デバイスでビルドした .so ファイルを `rsync` 等でホストマシンの `app/*` へコピーします
 
 ```bash
-rsync -e='ssh -i /path/to/privkey'  \
-  -av --prune-empty-dirs  --include='*/' --include='*.so' --include='*.so.*' --exclude='*' \
-  actcast@<REMOTE>:/home/actcast/ ./app/
+rsync -e='ssh -i /path/to/privkey' actcast@<REMOTE>:/home/actcast/libcproducer.so.1.6.0 ./app/
+rsync -e='ssh -i /path/to/privkey' actcast@<REMOTE>:/home/actcast/libgstkvssink.so ./app/
+rsync -e='ssh -i /path/to/privkey' actcast@<REMOTE>:/home/actcast/libKinesisVideoProducer.so ./app/
+rsync -e='ssh -i /path/to/privkey' actcast@<REMOTE>:/home/actcast/libkvsCommonCurl.so.1.6.0 ./app/
 ```
 
 symlink を作成します。
