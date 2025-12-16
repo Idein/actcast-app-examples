@@ -4,6 +4,7 @@ import traceback
 from actfw_core.task import Isolated
 import numpy as np
 import gi
+import actfw_core
 
 if gi:
     gi.require_version("Gst", "1.0")
@@ -25,7 +26,7 @@ class KinesisVideoStream(Isolated):
 
         dirname = os.path.dirname(os.path.abspath(__file__))
         # https://docs.aws.amazon.com/ja_jp/kinesisvideostreams/latest/dg/examples-gstreamer-plugin-parameters.html
-        if is_raspberry_pi_5_from_cpuinfo():
+        if actfw_core.system.get_actcast_device_type() == "RSPi5B":
             # pi5 にはハードウェアエンコーダがないため、ソフトウェアエンコーダを使用する
             # bitrate は x264enc だと kbps 指定（例: 2000 = 2Mbps）
             bitrate_s = f"bitrate={bitrate // 1000}," if bitrate is not None else ""
@@ -129,14 +130,3 @@ class KinesisVideoStream(Isolated):
             raise RuntimeError("Failed to push sample")
         return
 
-
-def is_raspberry_pi_5_from_cpuinfo(path="/proc/cpuinfo") -> bool:
-    try:
-        with open(path, "r", encoding="utf-8", errors="replace") as f:
-            for line in f:
-                if line.startswith("Model"):
-                    model = line.split(":", 1)[1].strip()
-                    return "Raspberry Pi 5" in model
-    except FileNotFoundError:
-        pass
-    return False
