@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 import actfw_core
 from actfw_core.task import Pipe, Consumer
-from actfw_core.system import find_csi_camera_device
+from actfw_core.system import find_csi_camera_device, get_actcast_firmware_type
 from actfw_core.unicam_isp_capture import UnicamIspCapture
 from actfw_raspberrypi.vc4 import Display
 
@@ -60,8 +60,13 @@ def run(app, preview_window=None):
     # register capture task
     capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
     framerate = 30
-    device = find_csi_camera_device()
-    cap = UnicamIspCapture(unicam=device, size=capture_size, framerate=framerate)
+    if get_actcast_firmware_type() == "raspberrypi-bookworm":
+        import libcamera
+        from actfw_core.libcamera_capture import LibcameraCapture
+        cap = LibcameraCapture(capture_size, libcamera.PixelFormat("BGR888"), framerate=framerate)
+    else:
+        device = find_csi_camera_device()
+        cap = UnicamIspCapture(unicam=device, size=capture_size, framerate=framerate)
     app.register_task(cap)
 
     # register converter task
