@@ -17,7 +17,7 @@
 
 ## カスタムイメージの指定方法
 
-`.actdk/dependencies.json` に `base_image` として `ghcr.io/idein/custom-image-example-bullseye`または`ghcr.io/idein/custom-image-example-bookworm` が指定されており、`actdk build --release` や `actdk upload` ではここでビルドしたイメージが使われます。
+`.actdk/dependencies.json` に `base_image` として `ghcr.io/idein/custom-image-example-bullseye`または`ghcr.io/idein/custom-image-example-bookworm` が指定されており、`actdk build` や `actdk upload` では後述する方法でビルドしたイメージが使われます。
 
 `custom-image-bullseye`にはPython 3.12が、`custom-image-bookworm`にはPython 3.14がインストールされています。
 
