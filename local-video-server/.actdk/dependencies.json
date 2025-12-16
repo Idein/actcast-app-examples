@@ -10,5 +10,11 @@
   "raspberrypi-bullseye": {
     "apt": [],
     "pip": ["actfw-raspberrypi"]
+  },
+  "raspberrypi-bookworm": {
+    "apt": [
+      "python3-libcamera"
+    ],
+    "pip": ["actfw-raspberrypi"]
   }
 }
