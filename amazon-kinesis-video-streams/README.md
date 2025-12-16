@@ -38,7 +38,7 @@ gstreamer 経由で kinesis video stream を使うためには `app/*` に以下
 開発モードを有効にしたデバイスにDockerfile を転送します。
 
 ```bash
-rsync -e='ssh -i /path/to/privkey' ./Dockerfile actcast@<REMOTE>:/home/actcast/Dockerfile
+scp -i /path/to/privkey ./Dockerfile actcast@<REMOTE>:/home/actcast/Dockerfile
 ```
 
 - `<REMOTE>` は開発モードを有効にしたデバイスの IP アドレス、または mdns で`<HOSTNAME>.local` です。
@@ -99,13 +99,13 @@ ssh しているデバイスからログアウトします。
 exit
 ```
 
-デバイスでビルドした .so ファイルを `rsync` 等でホストマシンの `app/*` へコピーします
+デバイスでビルドした .so ファイルを `scp` 等でホストマシンの `app/*` へコピーします
 
 ```bash
-rsync -e='ssh -i /path/to/privkey' actcast@<REMOTE>:/home/actcast/libcproducer.so.1.6.0 ./app/
-rsync -e='ssh -i /path/to/privkey' actcast@<REMOTE>:/home/actcast/libgstkvssink.so ./app/
-rsync -e='ssh -i /path/to/privkey' actcast@<REMOTE>:/home/actcast/libKinesisVideoProducer.so ./app/
-rsync -e='ssh -i /path/to/privkey' actcast@<REMOTE>:/home/actcast/libkvsCommonCurl.so.1.6.0 ./app/
+scp -i /path/to/privkey actcast@<REMOTE>:/home/actcast/libcproducer.so.1.6.0 ./app/
+scp -i /path/to/privkey actcast@<REMOTE>:/home/actcast/libgstkvssink.so ./app/
+scp -i /path/to/privkey actcast@<REMOTE>:/home/actcast/libKinesisVideoProducer.so ./app/
+scp -i /path/to/privkey actcast@<REMOTE>:/home/actcast/libkvsCommonCurl.so.1.6.0 ./app/
 ```
 
 symlink を作成します。
