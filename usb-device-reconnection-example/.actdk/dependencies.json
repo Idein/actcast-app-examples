@@ -1,0 +1,19 @@
+{
+  "apt": [
+    "libv4l-0",
+    "libv4lconvert0",
+    "python3",
+    "python3-pil",
+    "python3-numpy"
+  ],
+  "pip": [],
+  "raspberrypi-bullseye": {
+    "apt": [
+      "libraspberrypi0",
+      "ffmpeg"
+    ],
+    "pip": [
+      "actfw-raspberrypi"
+    ]
+  }
+}
