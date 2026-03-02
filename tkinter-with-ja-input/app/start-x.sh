@@ -56,6 +56,5 @@ exec setpriv --reuid="$uid" --regid="$gid" --init-groups \
     setxkbmap -layout ${KEYLAYOUT}
 
     openbox &
-    xterm &
     exec "$@"
   ' -- "$@"
