@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+export KEYLAYOUT=$(jq -r '.keylayout' ${ACT_SETTINGS_PATH})
+
+if [[ ${KEYLAYOUT} == "us" ]]; then
+  export KEYMODEL="pc105"
+fi
+
+cp main.py /home/idein/main.py
+chown -R idein:idein /home/idein
+
+exec /usr/local/bin/start-x.sh python3 /home/idein/main.py

@@ -1,0 +1,17 @@
+
+{
+  "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
+  "type": "object",
+  "properties": {
+    "keylayout": {
+      "title": "keylayout",
+      "description": "keylayout (jp or us)",
+      "type": "string",
+      "enum": ["jp", "us"],
+      "default": "jp"
+    }
+  },
+  "required": [
+    "keylayout"
+  ]
+}

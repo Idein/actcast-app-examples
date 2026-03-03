@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bookworm",
+  "boards": [
+    "RSPi4B",
+    "RSPi5B"
+  ],
+  "devices": [
+    {
+      "type": "display"
+    },
+    {
+      "type": "hid-input"
+    }
+  ]
+}
