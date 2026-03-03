@@ -1,0 +1,31 @@
+
+{
+  "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
+  "type": "object",
+  "properties": {
+    "keylayout": {
+      "title": "keylayout",
+      "description": "keylayout (jp or us)",
+      "type": "string",
+      "enum": ["jp", "us"],
+      "default": "jp"
+    },
+    "default_url": {
+      "title": "default_url",
+      "description": "default_url",
+      "type": "string",
+      "default": "https://idein.jp"
+    },
+    "kiosk_mode": {
+      "title": "kiosk_mode",
+      "description": "kiosk_mode",
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "keylayout",
+    "default_url",
+    "kiosk_mode"
+  ]
+}

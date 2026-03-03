@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+export KEYLAYOUT=$(jq -r '.keylayout' ${ACT_SETTINGS_PATH})
+
+if [[ ${KEYLAYOUT} == "us" ]]; then
+  export KEYMODEL="pc105"
+fi
+
+DEFAULT_URL=$(jq -r '.default_url' ${ACT_SETTINGS_PATH})
+KIOSK_MODE=$(jq -r '.kiosk_mode' ${ACT_SETTINGS_PATH})
+
+if ${KIOSK_MODE}; then
+  exec /usr/local/bin/start-x.sh chromium --kiosk ${DEFAULT_URL}
+else
+  exec /usr/local/bin/start-x.sh chromium ${DEFAULT_URL}
+fi
