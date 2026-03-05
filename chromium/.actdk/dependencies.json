@@ -1,0 +1,13 @@
+{
+  "apt": [],
+  "pip": [],
+  "raspberrypi-bookworm": {
+    "apt": [
+      "jq",
+      "chromium"
+    ],
+    "pip": [
+    ],
+    "base_image": "idein/actcast-rpi-app-base:gui-bookworm-9"
+  }
+}
