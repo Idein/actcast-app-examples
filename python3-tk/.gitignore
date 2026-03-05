@@ -1,0 +1,6 @@
+.actdk/cache
+app/libmodel.so
+app/libmodel_64bit.so
+app/model.py
+include/model.h
+act_settings.json
