@@ -2,25 +2,17 @@
   "version": 2,
   "target_type": "raspberrypi-bookworm",
   "boards": [
-    "RSPi3B",
     "RSPi3BPlus",
-    "RSPi3APlus",
     "RSPi4B",
     "RSPi5B"
   ],
-  "devices": [
+  "devices": [],
+  "network_mode": "socks",
+  "networks": [
     {
-      "type": "camera"
-    },
-    {
-      "type": "videocore"
-    },
-    {
-      "type": "framebuffer",
-      "device": [
-        "/dev/fb0"
-      ],
-      "required": false
+      "domain": "actcast.io",
+      "port": 443,
+      "protocol": "tcp"
     }
   ]
 }
