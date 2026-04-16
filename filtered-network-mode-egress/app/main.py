@@ -38,6 +38,24 @@ def req_by_allowed_domain(url):
         debug_log(f"req error: {e}")
         act_log("allowed", url, "unexpected")
 
+def req_by_allowed_ip(url):
+    debug_log(f"req_by_allowed_ip: {url}")
+    try:
+        res = requests.get(
+            url,
+            proxies={
+                'http': f'socks5://{os.environ["ACTCAST_SOCKS_SERVER"]}'
+            }
+        )
+        if res.status_code == requests.codes.ok:
+            act_log("allowed", url, "expected")
+        else:
+            debug_log(f"response: {res}")
+            act_log("allowed", url, "unexpected")
+    except Exception as e:
+        debug_log(f"req error: {e}")
+        act_log("allowed", url, "unexpected")
+
 def extract_socks5_reply_code(exc: BaseException) -> int | None:
     visited = set()
     pattern = re.compile(r"0x([0-9a-fA-F]{2})")
@@ -106,10 +124,30 @@ def req_by_denied_domain(url):
             debug_log(f"req error: {e}")
             act_log("denied", url, "unexpected")
 
+def req_by_denied_ip(url):
+    debug_log(f"req_by_denied_ip: {url}")
+    try:
+        res = requests.get(
+            url,
+            proxies={
+                'http': f'socks5://{os.environ["ACTCAST_SOCKS_SERVER"]}'
+            }
+        )
+        debug_log(f"response: {res}")
+        act_log("denied", url, "unexpected")
+    except Exception as e:
+        code = extract_socks5_reply_code(e)
+        if code == 0x02:
+            act_log("denied", url, "expected")
+        else:
+            debug_log(f"req error: {e}")
+            act_log("denied", url, "unexpected")
+
 class ReqChecker(Isolated):
-    def __init__(self):
+    def __init__(self, local_server_ip):
         super().__init__()
 
+        self.local_server_ip = local_server_ip
         self.count = 1
 
     def run(self):
@@ -120,10 +158,17 @@ class ReqChecker(Isolated):
             actfw_core.heartbeat()
 
             req_by_allowed_domain("https://actcast.io")
+            time.sleep(0.5)
             req_by_denied_domain("https://idein.jp")
+            time.sleep(0.5)
+            req_by_allowed_ip(f"http://{self.local_server_ip}:3000")
+            time.sleep(0.5)
+            req_by_allowed_ip(f"http://{self.local_server_ip}:8000")
+            time.sleep(0.5)
+            req_by_denied_ip(f"http://{self.local_server_ip}:9000")
 
             self.count += 1
-            time.sleep(5)
+            time.sleep(3)
 
         debug_log("req checker finished")
 
@@ -132,7 +177,9 @@ def main() -> None:
     debug_log("app init")
     app = actfw_core.Application()
 
-    checker = ReqChecker()
+    settings = app.get_settings({'local_server_ip': "172.17.0.1"})
+    debug_log(f"settings: {settings}")
+    checker = ReqChecker(settings["local_server_ip"])
     app.register_task(checker)
 
     app.run()

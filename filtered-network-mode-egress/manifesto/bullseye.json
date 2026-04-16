@@ -12,6 +12,16 @@
       "domain": "actcast.io",
       "port": 443,
       "protocol": "tcp"
+    },
+    {
+      "local_addr": true,
+      "port": 3000,
+      "protocol": "tcp"
+    },
+    {
+      "local_addr": true,
+      "port": 8000,
+      "protocol": "tcp"
     }
   ]
 }
