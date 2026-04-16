@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import os
+import re
+import socks
 import sys
 import time
 
@@ -27,14 +29,63 @@ def req_by_allowed_domain(url):
                 'https': f'socks5h://{os.environ["ACTCAST_SOCKS_SERVER"]}'
             }
         )
-        debug_log(f"response: {res}")
-        if res.status == 200:
+        if res.status_code == requests.codes.ok:
             act_log("allowed", url, "expected")
         else:
+            debug_log(f"response: {res}")
             act_log("allowed", url, "unexpected")
-    except e:
+    except Exception as e:
         debug_log(f"req error: {e}")
         act_log("allowed", url, "unexpected")
+
+def extract_socks5_reply_code(exc: BaseException) -> int | None:
+    visited = set()
+    pattern = re.compile(r"0x([0-9a-fA-F]{2})")
+
+    def walk(obj) -> int | None:
+        if obj is None:
+            return None
+
+        oid = id(obj)
+        if oid in visited:
+            return None
+        visited.add(oid)
+
+        if isinstance(obj, str):
+            m = pattern.search(obj)
+            if m:
+                return int(m.group(1), 16)
+            return None
+
+        if isinstance(obj, socks.SOCKS5Error):
+            m = pattern.search(str(obj))
+            if m:
+                return int(m.group(1), 16)
+            return None
+
+        if isinstance(obj, BaseException):
+            for arg in obj.args:
+                code = walk(arg)
+                if code is not None:
+                    return code
+
+            for attr in ("__cause__", "__context__"):
+                code = walk(getattr(obj, attr, None))
+                if code is not None:
+                    return code
+
+            return None
+
+        if isinstance(obj, (tuple, list)):
+            for item in obj:
+                code = walk(item)
+                if code is not None:
+                    return code
+            return None
+
+        return None
+
+    return walk(exc)
 
 def req_by_denied_domain(url):
     debug_log(f"req_by_denied_domain: {url}")
@@ -46,14 +97,14 @@ def req_by_denied_domain(url):
             }
         )
         debug_log(f"response: {res}")
-        if res.status == 200:
-            act_log("denied", url, "unexpected")
-        else:
-            # TODO: ちゃんと確認する
+        act_log("denied", url, "unexpected")
+    except Exception as e:
+        code = extract_socks5_reply_code(e)
+        if code == 0x02:
             act_log("denied", url, "expected")
-    except e:
-        debug_log(f"req error: {e}")
-        act_log("denied", url, "expected")
+        else:
+            debug_log(f"req error: {e}")
+            act_log("denied", url, "unexpected")
 
 class ReqChecker(Isolated):
     def __init__(self):
@@ -65,7 +116,7 @@ class ReqChecker(Isolated):
         debug_log("req checker started")
 
         while self.running:
-            debug_log(f"req check {n} -------------")
+            debug_log(f"req check {self.count} -------------")
             actfw_core.heartbeat()
 
             req_by_allowed_domain("https://actcast.io")
