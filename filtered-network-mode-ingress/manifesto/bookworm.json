@@ -12,7 +12,7 @@
     {
       "protocol": "tcp",
       "container_port": 8080,
-      "host_port": 80
+      "host_port": 3000
     }
   ]
 }
