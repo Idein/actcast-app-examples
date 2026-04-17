@@ -8,21 +8,24 @@
   ],
   "devices": [],
   "network_mode": "filtered",
-  "networks": [
-    {
-      "domain": "actcast.io",
-      "port": 443,
-      "protocol": "tcp"
-    },
-    {
-      "local_addr": true,
-      "port": 3000,
-      "protocol": "tcp"
-    },
-    {
-      "local_addr": true,
-      "port": 8000,
-      "protocol": "tcp"
-    }
-  ]
+  "filter_rules": {
+    "egress": [
+      {
+        "dst_domain": "actcast.io",
+        "dst_port": 443,
+        "protocol": "tcp"
+      },
+      {
+        "dst_ip": "172.17.0.1",
+        "dst_port": 3000,
+        "protocol": "tcp"
+      },
+      {
+        "dst_ip": "172.17.0.1",
+        "dst_port": 8000,
+        "protocol": "tcp"
+      }
+    ],
+    "ingress": []
+  }
 }
