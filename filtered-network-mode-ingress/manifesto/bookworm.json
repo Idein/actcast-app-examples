@@ -11,7 +11,7 @@
   "filter_rules": {
     "egress": [],
     "ingress": [
-      { "src_ip": "0.0.0.0/0", "dst_port": 3000, "protocol": "tcp" }
+      { "src_ip": "0.0.0.0/0", "dst_port": 8080, "protocol": "tcp" }
     ]
   },
   "published_ports": [
