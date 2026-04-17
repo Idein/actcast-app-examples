@@ -7,7 +7,7 @@
     "RSPi5B"
   ],
   "devices": [],
-  "network_mode": "socks",
+  "network_mode": "filtered",
   "networks": [
     {
       "domain": "actcast.io",

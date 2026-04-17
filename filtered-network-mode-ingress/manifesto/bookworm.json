@@ -7,7 +7,7 @@
     "RSPi5B"
   ],
   "devices": [],
-  "network_mode": "bridge",
+  "network_mode": "filtered",
   "published_ports": [
     {
       "protocol": "tcp",
