@@ -143,6 +143,16 @@ def req_by_denied_ip(url):
             debug_log(f"req error: {e}")
             act_log("denied", url, "unexpected")
 
+def req_without_proxy(url):
+    debug_log(f"req_without_proxy: {url}")
+    try:
+        res = requests.get(url)
+        debug_log(f"response: {res}")
+        act_log("without_proxy", url, "unexpected")
+    except Exception as e:
+        act_log("without_proxy", url, f"expected {e}")
+
+
 class ReqChecker(Isolated):
     def __init__(self, local_server_ip):
         super().__init__()
@@ -166,6 +176,17 @@ class ReqChecker(Isolated):
             req_by_allowed_ip(f"http://{self.local_server_ip}:8000")
             time.sleep(0.5)
             req_by_denied_ip(f"http://{self.local_server_ip}:9000")
+            time.sleep(0.5)
+
+            req_without_proxy("https://actcast.io")
+            time.sleep(0.5)
+            req_without_proxy("https://idein.jp")
+            time.sleep(0.5)
+            req_without_proxy(f"https://{self.local_server_ip}:3000")
+            time.sleep(0.5)
+            req_without_proxy(f"https://{self.local_server_ip}:8000")
+            time.sleep(0.5)
+            req_without_proxy(f"https://{self.local_server_ip}:9000")
 
             self.count += 1
             time.sleep(3)
