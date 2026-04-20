@@ -25,6 +25,7 @@ def req_by_allowed_domain(url):
     try:
         res = requests.get(
             url,
+            timeout=5,
             proxies={
                 'https': f'socks5h://{os.environ["ACTCAST_SOCKS_SERVER"]}'
             }
@@ -43,6 +44,7 @@ def req_by_allowed_ip(url):
     try:
         res = requests.get(
             url,
+            timeout=5,
             proxies={
                 'http': f'socks5://{os.environ["ACTCAST_SOCKS_SERVER"]}'
             }
@@ -110,6 +112,7 @@ def req_by_denied_domain(url):
     try:
         res = requests.get(
             url,
+            timeout=5,
             proxies={
                 'https': f'socks5h://{os.environ["ACTCAST_SOCKS_SERVER"]}'
             }
@@ -129,6 +132,7 @@ def req_by_denied_ip(url):
     try:
         res = requests.get(
             url,
+            timeout=5,
             proxies={
                 'http': f'socks5://{os.environ["ACTCAST_SOCKS_SERVER"]}'
             }
@@ -146,7 +150,7 @@ def req_by_denied_ip(url):
 def req_without_proxy(url):
     debug_log(f"req_without_proxy: {url}")
     try:
-        res = requests.get(url)
+        res = requests.get(url, timeout=5)
         debug_log(f"response: {res}")
         act_log("without_proxy", url, "unexpected")
     except Exception as e:
