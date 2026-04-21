@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
+  "boards": [
+    "RSPi3BPlus",
+    "RSPi4B"
+  ],
+  "devices": [],
+  "network_mode": "filtered",
+  "filter_rules": {
+    "egress": [
+      {
+        "dst_domain": "actcast.io",
+        "dst_port": 443,
+        "protocol": "tcp"
+      },
+      {
+        "dst_ip": "172.17.0.1",
+        "dst_port": 3000,
+        "protocol": "tcp"
+      },
+      {
+        "dst_ip": "172.17.0.1",
+        "dst_port": 8000,
+        "protocol": "tcp"
+      }
+    ],
+    "ingress": []
+  }
+}

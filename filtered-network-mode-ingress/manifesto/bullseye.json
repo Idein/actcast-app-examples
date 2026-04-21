@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bullseye",
+  "boards": [
+    "RSPi3BPlus",
+    "RSPi4B"
+  ],
+  "devices": [],
+  "network_mode": "filtered",
+  "filter_rules": {
+    "egress": [],
+    "ingress": [
+      { "src_ip": "0.0.0.0/0", "container_port": 8080, "protocol": "tcp" }
+    ]
+  },
+  "published_ports": [
+    {
+      "protocol": "tcp",
+      "container_port": 8080,
+      "host_port": 3000
+    }
+  ]
+}
