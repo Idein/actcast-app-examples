@@ -1,0 +1,18 @@
+{
+  "apt": [
+    "python3"
+  ],
+  "pip": [
+    "actfw-raspberrypi",
+    "requests",
+    "pysocks"
+  ],
+  "raspberrypi-bullseye": {
+    "apt": [],
+    "pip": []
+  },
+  "raspberrypi-bookworm": {
+    "apt": [],
+    "pip": []
+  }
+}
