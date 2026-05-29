@@ -11,10 +11,10 @@
 
 - 許可される通信の例
   - `https://actcast.io:443` へのアクセス
-  - `http://<target_ip>:8000` へのアクセス
+  - `http://<target_ip>:<target_port>` へのアクセス
 - 拒否される通信の例
   - `https://idein.jp:443` へのアクセス
-  - `http://<target_ip>:9000` へのアクセス
+  - `http://<target_ip>:<target_port + 1>` へのアクセス
 - プロキシを使わない通信は失敗する想定
 
 ## 前提
@@ -48,16 +48,16 @@ debug_log| req_by_denied_domain: https://idein.jp
 [{"kind":"denied","result":"expected","url":"https://idein.jp"}]
 debug_log| req_by_allowed_ip: http://172.17.0.1:8000
 [{"kind":"allowed","result":"expected","url":"http://172.17.0.1:8000"}]
-debug_log| req_by_denied_ip: http://172.17.0.1:9000
-[{"kind":"denied","result":"expected","url":"http://172.17.0.1:9000"}]
+debug_log| req_by_denied_ip: http://172.17.0.1:8001
+[{"kind":"denied","result":"expected","url":"http://172.17.0.1:8001"}]
 debug_log| req_without_proxy: https://actcast.io
 [{"kind":"without_proxy","result":"expected HTTPSConnectionPool(host='actcast.io', port=443): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPSConnection(host='actcast.io', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable\"))","url":"https://actcast.io"}]
 debug_log| req_without_proxy: https://idein.jp
 [{"kind":"without_proxy","result":"expected HTTPSConnectionPool(host='idein.jp', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPSConnection(host='idein.jp', port=443) at 0x7fb825a3d0>, 'Connection to idein.jp timed out. (connect timeout=5)'))","url":"https://idein.jp"}]
 debug_log| req_without_proxy: https://172.17.0.1:8000
 [{"kind":"without_proxy","result":"expected HTTPSConnectionPool(host='172.17.0.1', port=8000): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:992)')))","url":"https://172.17.0.1:8000"}]
-debug_log| req_without_proxy: https://172.17.0.1:9000
-[{"kind":"without_proxy","result":"expected HTTPSConnectionPool(host='172.17.0.1', port=9000): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPSConnection(host='172.17.0.1', port=9000): Failed to establish a new connection: [Errno 111] Connection refused\"))","url":"https://172.17.0.1:9000"}]
+debug_log| req_without_proxy: https://172.17.0.1:8001
+[{"kind":"without_proxy","result":"expected HTTPSConnectionPool(host='172.17.0.1', port=8001): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPSConnection(host='172.17.0.1', port=8001): Failed to establish a new connection: [Errno 111] Connection refused\"))","url":"https://172.17.0.1:8001"}]
 ```
 
 `without_proxy` のログは、プロキシ未使用通信が失敗したことを示します。

@@ -158,10 +158,11 @@ def req_without_proxy(url):
 
 
 class ReqChecker(Isolated):
-    def __init__(self, target_ip):
+    def __init__(self, target_ip, target_port):
         super().__init__()
 
         self.target_ip = target_ip
+        self.target_port = target_port
         self.count = 1
 
     def run(self):
@@ -175,18 +176,18 @@ class ReqChecker(Isolated):
             time.sleep(0.5)
             req_by_denied_domain("https://idein.jp")
             time.sleep(0.5)
-            req_by_allowed_ip(f"http://{self.target_ip}:8000")
+            req_by_allowed_ip(f"http://{self.target_ip}:{self.target_port}")
             time.sleep(0.5)
-            req_by_denied_ip(f"http://{self.target_ip}:9000")
+            req_by_denied_ip(f"http://{self.target_ip}:{self.target_port + 1}")
             time.sleep(0.5)
 
             req_without_proxy("https://actcast.io")
             time.sleep(0.5)
             req_without_proxy("https://idein.jp")
             time.sleep(0.5)
-            req_without_proxy(f"https://{self.target_ip}:8000")
+            req_without_proxy(f"https://{self.target_ip}:{self.target_port}")
             time.sleep(0.5)
-            req_without_proxy(f"https://{self.target_ip}:9000")
+            req_without_proxy(f"https://{self.target_ip}:{self.target_port + 1}")
 
             self.count += 1
             time.sleep(3)
@@ -198,9 +199,9 @@ def main() -> None:
     debug_log("app init")
     app = actfw_core.Application()
 
-    settings = app.get_settings({'target_ip': "172.17.0.1"})
+    settings = app.get_settings({'target_ip': "172.17.0.1", 'target_port': 8000})
     debug_log(f"settings: {settings}")
-    checker = ReqChecker(settings["target_ip"])
+    checker = ReqChecker(settings["target_ip"], settings["target_port"])
 
     app.register_task(checker)
 

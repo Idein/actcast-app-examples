@@ -8,6 +8,12 @@
       "description": "ip addr to req by ip",
       "type": "string",
       "default": "172.17.0.1"
+    },
+    "target_port": {
+      "title": "target port",
+      "description": "port to req by ip",
+      "type": "integer",
+      "default": 8000
     }
   },
   "required": []
