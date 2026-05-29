@@ -11,10 +11,10 @@
 
 - 許可される通信の例
   - `https://actcast.io:443` へのアクセス
-  - `http://<local_server_ip>:8000` へのアクセス
+  - `http://<target_ip>:8000` へのアクセス
 - 拒否される通信の例
   - `https://idein.jp:443` へのアクセス
-  - `http://<local_server_ip>:9000` へのアクセス
+  - `http://<target_ip>:9000` へのアクセス
 - プロキシを使わない通信は失敗する想定
 
 ## 前提
