@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+echo "Sleeping indefinitely." >&2
+sleep infinity
