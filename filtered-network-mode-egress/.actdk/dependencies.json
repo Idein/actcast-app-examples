@@ -7,10 +7,6 @@
     "requests",
     "pysocks"
   ],
-  "raspberrypi-bullseye": {
-    "apt": [],
-    "pip": []
-  },
   "raspberrypi-bookworm": {
     "apt": [],
     "pip": []

@@ -4,12 +4,6 @@
     "python3-pil"
   ],
   "pip": [],
-  "raspberrypi-bullseye": {
-    "apt": [],
-    "pip": [
-      "actfw-raspberrypi"
-    ]
-  },
   "raspberrypi-bookworm": {
     "apt": [],
     "pip": [
