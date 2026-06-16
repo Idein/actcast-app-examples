@@ -3,12 +3,17 @@
   "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
   "type": "object",
   "properties": {
-    "target_ip": {
-      "title": "target ip",
-      "description": "ip addr to req by ip",
-      "type": "string",
-      "default": "172.17.0.1"
+    "target_urls": {
+      "title": "target urls (,区切り)",
+      "description": "list to req",
+      "type": "string"
+    },
+    "check_without_proxy": {
+      "title": "check without_proxy",
+      "description": "do req without proxy",
+      "type": "boolean",
+      "default": false
     }
   },
-  "required": []
+  "required": ["target_urls"]
 }
