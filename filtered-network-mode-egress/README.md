@@ -43,13 +43,13 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 
 ```json
 debug_log| req: https://actcast.io
-[{"01_url":"https://actcast.io","02_result":"OK","03_details":"200"}]
+[{"result":"https://actcast.io -> OK | 200"}]
 debug_log| req: https://www.idein.jp
-[{"01_url":"https://www.idein.jp","02_result":"Err","03_details":"SOCKSHTTPSConnectionPool(host='www.idein.jp', port=443): Max retries exceeded with url: / (Caused by NewConnectionError(\"SOCKSHTTPSConnection(host='www.idein.jp', port=443): Failed to establish a new connection: 0x02: Connection not allowed by ruleset\"))"}]
+[{"result":"https://www.idein.jp -> Err | SOCKSHTTPSConnectionPool(host='www.idein.jp', port=443): Max retries exceeded with url: / (Caused by NewConnectionError(\"SOCKSHTTPSConnection(host='www.idein.jp', port=443): Failed to establish a new connection: 0x02: Connection not allowed by ruleset\"))"}]
 debug_log| req: http://172.24.175.1:8000
-[{"01_url":"http://172.24.175.1:8000","02_result":"OK","03_details":"200"}]
+[{"result":"http://172.24.175.1:8000 -> OK | 200"}]
 debug_log| req: http://172.24.175.1:9000
-[{"01_url":"http://172.24.175.1:9000","02_result":"Err","03_details":"SOCKSHTTPConnectionPool(host='172.24.175.1', port=9000): Max retries exceeded with url: / (Caused by NewConnectionError(\"SOCKSConnection(host='172.24.175.1', port=9000): Failed to establish a new connection: 0x02: Connection not allowed by ruleset\"))"}]
+[{"result":"http://172.24.175.1:9000 -> Err | SOCKSHTTPConnectionPool(host='172.24.175.1', port=9000): Max retries exceeded with url: / (Caused by NewConnectionError(\"SOCKSConnection(host='172.24.175.1', port=9000): Failed to establish a new connection: 0x02: Connection not allowed by ruleset\"))"}]
 ```
 
 `without_proxy` のログは、プロキシ未使用通信が失敗したことを示します。
