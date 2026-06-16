@@ -18,7 +18,7 @@ def debug_log(msg, *args, **kwargs):
     print(f"debug_log| {msg}", *args, **kwargs)
 
 def act_log(url, result, details):
-    actfw_core.notify([{"01_url": url, "02_result": result, "03_details": details}])
+    actfw_core.notify([{"result": f"{url} -> {result} | {details}"}])
 
 def req(url):
     debug_log(f"req: {url}")
