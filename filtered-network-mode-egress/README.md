@@ -11,10 +11,10 @@
 
 - 許可される通信の例
   - `https://actcast.io:443` へのアクセス
-  - `http://172.17.0.1:8000` へのアクセス
+  - `http://172.24.175.1:8000` へのアクセス
 - 拒否される通信の例
   - `https://idein.jp:443` へのアクセス
-  - `http://172.17.0.1:9000` へのアクセス
+  - `http://172.24.175.1:9000` へのアクセス
 - プロキシを使わない通信は失敗する想定
 
 ## 前提
@@ -46,10 +46,10 @@ debug_log| req: https://actcast.io
 [{"01_url":"https://actcast.io","02_result":"OK","03_details":"200"}]
 debug_log| req: https://www.idein.jp
 [{"01_url":"https://www.idein.jp","02_result":"Err","03_details":"SOCKSHTTPSConnectionPool(host='www.idein.jp', port=443): Max retries exceeded with url: / (Caused by NewConnectionError(\"SOCKSHTTPSConnection(host='www.idein.jp', port=443): Failed to establish a new connection: 0x02: Connection not allowed by ruleset\"))"}]
-debug_log| req: http://172.17.0.1:8000
-[{"01_url":"http://172.17.0.1:8000","02_result":"OK","03_details":"200"}]
-debug_log| req: http://172.17.0.1:9000
-[{"01_url":"http://172.17.0.1:9000","02_result":"Err","03_details":"SOCKSHTTPConnectionPool(host='172.17.0.1', port=9000): Max retries exceeded with url: / (Caused by NewConnectionError(\"SOCKSConnection(host='172.17.0.1', port=9000): Failed to establish a new connection: 0x02: Connection not allowed by ruleset\"))"}]
+debug_log| req: http://172.24.175.1:8000
+[{"01_url":"http://172.24.175.1:8000","02_result":"OK","03_details":"200"}]
+debug_log| req: http://172.24.175.1:9000
+[{"01_url":"http://172.24.175.1:9000","02_result":"Err","03_details":"SOCKSHTTPConnectionPool(host='172.24.175.1', port=9000): Max retries exceeded with url: / (Caused by NewConnectionError(\"SOCKSConnection(host='172.24.175.1', port=9000): Failed to establish a new connection: 0x02: Connection not allowed by ruleset\"))"}]
 ```
 
 `without_proxy` のログは、プロキシ未使用通信が失敗したことを示します。
@@ -64,7 +64,7 @@ debug_log| req: http://172.17.0.1:9000
 
 ## 設定項目
 
-- `target_urls`: 疎通確認に使う接続先URLのリスト (例: `https://actcast.io,http://172.17.0.1:8000`)
+- `target_urls`: 疎通確認に使う接続先URLのリスト (例: `https://actcast.io,http://172.24.175.1:8000`)
 - `check_without_proxy`: プロキシなしによる通信を試すかどうかのフラグ
 
 

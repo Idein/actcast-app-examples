@@ -15,7 +15,7 @@
         "protocol": "tcp"
       },
       {
-        "dst_ip": "172.17.0.1",
+        "dst_ip": "172.24.175.1",
         "dst_port": 8000,
         "protocol": "tcp"
       }
