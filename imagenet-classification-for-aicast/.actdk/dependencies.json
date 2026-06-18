@@ -3,14 +3,24 @@
     "libv4l-0",
     "libv4lconvert0",
     "python3",
-    "python3-libcamera",
+    "python3-pil",
     "fbset",
     "fonts-dejavu-core",
     "libatomic1"
   ],
   "pip": [],
+  "raspberrypi-bullseye": {
+    "apt": [
+      "libraspberrypi0",
+      "python3-numpy"
+    ],
+    "pip": [
+      "actfw-raspberrypi"
+    ]
+  },
   "raspberrypi-bookworm": {
     "apt": [
+      "python3-libcamera"
     ],
     "pip": [
       "numpy",

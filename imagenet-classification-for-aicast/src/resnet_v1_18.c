@@ -11,6 +11,7 @@ static hailo_configured_network_group network_group = NULL;
 static size_t network_group_size = 1;
 static hailo_input_vstream_params_by_name_t input_vstream_params[MAX_EDGE_LAYERS] = {0};
 static hailo_output_vstream_params_by_name_t output_vstream_params[MAX_EDGE_LAYERS] = {0};
+static hailo_activated_network_group activated_network_group = NULL;
 static size_t vstreams_infos_size = MAX_EDGE_LAYERS;
 static hailo_vstream_info_t vstreams_infos[MAX_EDGE_LAYERS] = {0};
 static hailo_input_vstream input_vstreams[MAX_EDGE_LAYERS] = {NULL};
@@ -74,10 +75,14 @@ int init()
     status = hailo_create_output_vstreams(network_group, output_vstream_params, output_vstreams_size, output_vstreams);
     assert(status == HAILO_SUCCESS);
 
+    status = hailo_activate_network_group(network_group, NULL, &activated_network_group);
+    assert(status == HAILO_SUCCESS);
+
     return status;
 }
 
 void destroy() {
+    (void) hailo_deactivate_network_group(activated_network_group);
     (void) hailo_release_output_vstreams(output_vstreams, output_vstreams_size);
     (void) hailo_release_input_vstreams(input_vstreams, input_vstreams_size);
     (void) hailo_release_hef(hef);

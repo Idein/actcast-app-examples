@@ -5,8 +5,8 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 import actfw_core
 from actfw_core.task import Pipe, Consumer
-from actfw_core.libcamera_capture import LibcameraCapture
-import libcamera as libcam
+from actfw_core.system import get_actcast_firmware_type, find_csi_camera_device
+from actfw_core.unicam_isp_capture import UnicamIspCapture
 from actfw_raspberrypi.vc4 import Display
 import numpy as np
 from model import Model
@@ -182,6 +182,26 @@ class Presenter(Consumer):
         self.prev_time = end_time
 
 
+def setup_camera_capture(settings):
+    firmware_type = get_actcast_firmware_type()
+
+    if firmware_type == "raspberrypi-bookworm":
+        import libcamera as libcam
+        from actfw_core.libcamera_capture import LibcameraCapture
+
+        return LibcameraCapture(
+            (CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888")
+        )
+
+    device = find_csi_camera_device()
+    return UnicamIspCapture(
+        unicam=device,
+        size=(CAPTURE_WIDTH, CAPTURE_HEIGHT),
+        framerate=30,
+        hflip=settings["hflip"],
+    )
+
+
 def main(args):
     # Actcast application
     app = actfw_core.Application()
@@ -222,7 +242,7 @@ def main(args):
     app.register_task(cmd)
 
     # Capture task
-    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"))
+    cap = setup_camera_capture(settings)
     capture_size = cap.capture_size()
 
     app.register_task(cap)

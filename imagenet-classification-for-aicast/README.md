@@ -1,8 +1,6 @@
 # ImageNet Classification for ai cast
 
-**※このサンプルアプリケーションはActcastOS 4 のみに対応しています**
-
-ActcastOS3用のコードは [過去のコミット](https://github.com/Idein/actcast-app-examples/tree/073053e657d81393094461743182927f607beb84/imagenet-classification-for-aicast) を参照。またActcastOS4かつpyhailortを利用するコードは [PR51](https://github.com/Idein/actcast-app-examples/pull/51) を参照。
+**※このサンプルアプリケーションはActcastOS 3 と ActcastOS 4 に対応しています**
 
 ## 概要
 
@@ -22,7 +20,8 @@ make
 ```
 
 これにより `src/resnet_v1_18.c` が ai cast 用にクロスコンパイルされて `app/libresnet_v1_18.so` が生成されます。
-`src/resnet_v1_18.c` は HEF ファイルを扱うための C のプログラムで、コンパイルされた `app/libresnet_v1_18.so` は Python プログラム(`app/model.py`)から利用されます。
+また、ActcastOS4 用の `app/libresnet_v1_18_64bit.so` も生成されます。
+`src/resnet_v1_18.c` は HEF ファイルを扱うための C のプログラムで、コンパイルされた `.so` は Python プログラム(`app/model.py`)から利用されます。
 
 ## Actsim での動作確認
 
@@ -67,4 +66,4 @@ actdk run -a <IDENTIFIER_YOU_LIKE>
 
 ## 補足説明
 
-`root.tar` は Hailo-8 を扱うのに必要なツールチェインが同梱されています。
+`root_bullseye.tar` と `root.tar` は Hailo-8 を扱うのに必要なツールチェインが同梱されています。
