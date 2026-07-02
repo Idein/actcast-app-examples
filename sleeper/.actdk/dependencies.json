@@ -1,0 +1,8 @@
+{
+  "apt": [],
+  "pip": [],
+  "raspberrypi-bookworm": {
+    "apt": [],
+    "pip": []
+  }
+}
