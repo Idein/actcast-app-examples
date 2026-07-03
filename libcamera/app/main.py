@@ -10,7 +10,7 @@ import numpy as np
 from actfw_core.application import Application
 from actfw_core.capture import Frame
 from actfw_core.command_server import CommandServer
-from actfw_core.libcamera_capture import LibcameraCapture
+from actfw_core.libcamera_capture import LibcameraCapture, SensorMode, ScalerCrop
 from actfw_core.task import Consumer, Pipe
 from actfw_raspberrypi.vc4.drm import Display
 from PIL import Image
@@ -87,7 +87,9 @@ class Presenter(Consumer):
 
 def run(app: Application, preview_window=None) -> None:
     cmd = actfw_core.CommandServer()
-    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"))
+    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"), sensor_mode=SensorMode(10, (1640,1232)))
+    # sensor_mode なしと同じ画角にするなら↓
+    # cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"), sensor_mode=SensorMode(10, (1640,1232)), scaler_crop=ScalerCrop(1000,752,1280,960))
 
     conv = Converter((CAPTURE_WIDTH, CAPTURE_HEIGHT))
     fps = FPSCounter()

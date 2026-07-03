@@ -1,5 +1,6 @@
 {
   "apt": [
+    "git",
     "python3",
     "python3-libcamera"
   ],
@@ -8,6 +9,7 @@
     "apt": [
     ],
     "pip": [
+      "git+https://github.com/Idein/actfw-core.git@improve-libcamera-capture",
       "actfw-raspberrypi",
       "numpy"
     ]
