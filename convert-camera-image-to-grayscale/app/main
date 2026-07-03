@@ -9,7 +9,8 @@ from actfw_raspberrypi.vc4 import Display
 
 
 # capture image size
-(CAPTURE_WIDTH, CAPTURE_HEIGHT) = (320, 240)
+# (CAPTURE_WIDTH, CAPTURE_HEIGHT) = (320, 240)
+(CAPTURE_WIDTH, CAPTURE_HEIGHT) = (640, 480)
 
 # display area size
 (DISPLAY_WIDTH, DISPLAY_HEIGHT) = (640, 480)
@@ -26,8 +27,9 @@ class Converter(Pipe):
         rgb_image = Image.frombuffer(
             "RGB", self.capture_size, frame.getvalue(), "raw", "RGB"
         )
-        gray_image = rgb_image.convert("L")
-        return gray_image
+        # gray_image = rgb_image.convert("L")
+        # return gray_image
+        return rgb_image
 
 
 class Presenter(Consumer):
@@ -62,8 +64,9 @@ def run(app, preview_window=None):
     framerate = 30
     if get_actcast_firmware_type() == "raspberrypi-bookworm":
         import libcamera
-        from actfw_core.libcamera_capture import LibcameraCapture
-        cap = LibcameraCapture(capture_size, libcamera.PixelFormat("BGR888"), framerate=framerate)
+        from actfw_core.libcamera_capture import LibcameraCapture, SensorMode
+        # cap = LibcameraCapture(capture_size, libcamera.PixelFormat("BGR888"), framerate=framerate)
+        cap = LibcameraCapture(capture_size, libcamera.PixelFormat("BGR888"), framerate=framerate, sensor_mode=SensorMode(10, (1640,1232)))
     else:
         device = find_csi_camera_device()
         cap = UnicamIspCapture(unicam=device, size=capture_size, framerate=framerate)
