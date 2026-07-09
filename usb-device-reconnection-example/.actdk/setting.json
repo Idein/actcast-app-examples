@@ -1,0 +1,10 @@
+{
+  "app_id": "usb-device-reconnection-example",
+  "app_server_id": 1,
+  "short_description": "Demo application for USB device reconnection",
+  "short_descriptions": {},
+  "target_types": [
+    "raspberrypi-bullseye"
+  ],
+  "apt_repository": "https://archive.raspbian.org/raspbian"
+}
