@@ -1,0 +1,32 @@
+{
+  "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
+  "type": "object",
+  "properties": {
+    "gpio_pin": {
+      "title": "GPIO pin",
+      "description": "BCM GPIO pin number connected to the LED",
+      "descriptions": {
+        "ja": "LED を接続する BCM GPIO 番号"
+      },
+      "type": "integer",
+      "default": 17,
+      "minimum": 0,
+      "maximum": 27
+    },
+    "blink_interval": {
+      "title": "Blink interval",
+      "description": "Interval in seconds between output level changes",
+      "descriptions": {
+        "ja": "出力レベルを切り替える間隔（秒）"
+      },
+      "type": "number",
+      "default": 1.0,
+      "minimum": 0.1,
+      "maximum": 60.0
+    }
+  },
+  "required": [
+    "gpio_pin",
+    "blink_interval"
+  ]
+}

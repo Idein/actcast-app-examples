@@ -1,0 +1,11 @@
+{
+  "app_id": "rpi-lgpio",
+  "app_server_id": 0,
+  "short_description": "Blink an LED with rpi-lgpio",
+  "short_descriptions": {
+    "ja": "rpi-lgpio で LED を点滅させるサンプル"
+  },
+  "target_types": [
+    "raspberrypi-bookworm"
+  ]
+}

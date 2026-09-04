@@ -1,0 +1,13 @@
+{
+  "apt": [],
+  "pip": [],
+  "raspberrypi-bookworm": {
+    "apt": [
+      "python3",
+      "python3-rpi-lgpio"
+    ],
+    "pip": [
+      "actfw-core==2.14.0"
+    ]
+  }
+}

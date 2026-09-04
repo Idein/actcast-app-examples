@@ -1,0 +1,29 @@
+{
+  "$schema": "https://actcast.io/schema/v8/data_schema_schema.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "gpio_pin": {
+        "title": "GPIO pin",
+        "description": "BCM GPIO pin number",
+        "descriptions": {
+          "ja": "BCM GPIO 番号"
+        },
+        "type": "integer"
+      },
+      "level": {
+        "title": "Output level",
+        "description": "Output level of the GPIO pin",
+        "descriptions": {
+          "ja": "GPIO ピンの出力レベル"
+        },
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "gpio_pin",
+      "level"
+    ]
+  }
+}

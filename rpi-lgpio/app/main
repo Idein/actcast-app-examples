@@ -1,0 +1,56 @@
+#!/usr/bin/python3
+import time
+
+import actfw_core
+from actfw_core.task import Isolated
+from RPi import GPIO
+
+
+class Blinker(Isolated):
+    def __init__(self, gpio_pin: int, blink_interval: float) -> None:
+        super().__init__()
+        self.gpio_pin = gpio_pin
+        self.blink_interval = blink_interval
+
+    def _wait(self) -> None:
+        deadline = time.monotonic() + self.blink_interval
+        while self.running:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            time.sleep(min(remaining, 0.1))
+
+    def run(self) -> None:
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.gpio_pin, GPIO.OUT, initial=GPIO.LOW)
+
+        level = GPIO.LOW
+        try:
+            while self.running:
+                level = GPIO.HIGH if level == GPIO.LOW else GPIO.LOW
+                GPIO.output(self.gpio_pin, level)
+                actfw_core.notify(
+                    [{"gpio_pin": self.gpio_pin, "level": bool(level)}]
+                )
+                actfw_core.heartbeat()
+                self._wait()
+        finally:
+            GPIO.output(self.gpio_pin, GPIO.LOW)
+            GPIO.cleanup(self.gpio_pin)
+
+
+def main() -> None:
+    app = actfw_core.Application()
+    settings = app.get_settings({"gpio_pin": 17, "blink_interval": 1.0})
+    app.register_task(
+        Blinker(
+            gpio_pin=settings["gpio_pin"],
+            blink_interval=settings["blink_interval"],
+        )
+    )
+    app.run()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bookworm",
+  "boards": [
+    "RSPi5B"
+  ],
+  "devices": [
+    {
+      "type": "gpio",
+      "device": [
+        "/dev/gpiochip4"
+      ]
+    }
+  ]
+}

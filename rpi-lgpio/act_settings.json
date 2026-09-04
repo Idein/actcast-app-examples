@@ -1,0 +1,4 @@
+{
+  "gpio_pin": 17,
+  "blink_interval": 1.0
+}

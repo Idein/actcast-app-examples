@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bookworm",
+  "boards": [
+    "RSPi3B",
+    "RSPi3APlus",
+    "RSPi3BPlus",
+    "RSPi4B",
+    "RSPiCM4",
+    "RSPiZero2W"
+  ],
+  "devices": [
+    {
+      "type": "gpio",
+      "device": [
+        "/dev/gpiochip0"
+      ]
+    }
+  ]
+}
