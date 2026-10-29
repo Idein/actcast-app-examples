@@ -1,5 +1,9 @@
 # Stage 1: Build Python
-FROM idein/actcast-rpi-app-base:bullseye-3 AS base
+FROM idein/actcast-rpi-app-base:bullseye-4 AS base
+
+# Use the base image's filtered OS bundle, including before the first pip upgrade.
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    PIP_CERT=/etc/ssl/certs/ca-certificates.crt
 
 # このステージのスクリプトは、
 # https://github.com/docker-library/python/blob/ff4d235f6e63f81fdd83d4c93fa33a39638df1bb/3.12/slim-bullseye/Dockerfile
@@ -160,6 +164,7 @@ RUN set -eux; \
     export PYTHONDONTWRITEBYTECODE=1; \
     \
     python get-pip.py \
+        --cert "$PIP_CERT" \
         --disable-pip-version-check \
         --no-cache-dir \
         --no-compile \
@@ -180,7 +185,7 @@ RUN apt update && apt install -y --no-install-recommends \
     # 実行時にも必要なパッケージ
     libjpeg-dev libfreetype6-dev && \
     # pip のアップグレード
-    python -m pip install --upgrade pip && \
+    python -m pip install --upgrade "pip>=26.2.2" && \
     # numpy と pillow のインストール
     python -m pip install numpy 'pillow<11.0.0,>=10.1.0' && \
     # 実行時に不要なパッケージを削除

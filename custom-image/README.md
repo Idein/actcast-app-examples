@@ -39,6 +39,40 @@ docker buildx build --platform linux/arm64 -t ghcr.io/idein/custom-image-example
 docker buildx build --platform linux/arm/v7 -t ghcr.io/idein/custom-image-example-bullseye -f Dockerfile.bullseye --load .
 ```
 
+### CA 対策と公開イメージの更新 (PBI-3365)
+
+ベースは `bookworm-10` / `bullseye-4` を使います。Python と pip は
+`/etc/ssl/certs/ca-certificates.crt` を使用します。bookworm の初回 pip 更新は
+`--use-deprecated=legacy-certs` と `PIP_CERT` を併用し、ensurepip 同梱の古い
+certifi を信頼に追加しません。bullseye の get-pip にも `--cert` を渡します。
+更新先は修正済みcertifiを同梱する pip 26.2.2 以上とします。
+更新後の pip は同梱 certifi も使うため、以下で両方のストアを確認します。
+
+ビルド後、このディレクトリで外部通信なしのチェックを実行します。
+
+```bash
+docker run --rm --network none --platform linux/arm64 \
+  -v "$PWD/tests:/tests:ro" --entrypoint python3 \
+  ghcr.io/idein/custom-image-example-bookworm /tests/check-ca.py
+docker run --rm --network none --platform linux/arm/v7 \
+  -v "$PWD/tests:/tests:ro" --entrypoint python3 \
+  ghcr.io/idein/custom-image-example-bullseye /tests/check-ca.py
+```
+
+対象ルート2個の除外、Amazon Root CA 1 の維持、クロス署名中間CA6個の拒否、
+pip の CA 指定を確認します。通常の Actsim 起動も確認後、レジストリへログイン済みの
+環境で両イメージを公開します。
+
+```bash
+docker push ghcr.io/idein/custom-image-example-bookworm:latest
+docker push ghcr.io/idein/custom-image-example-bullseye:latest
+```
+
+このサンプルは `.actdk/dependencies.json` でカスタムイメージを明示しているため、
+ActDK の標準ベースイメージ更新だけでは反映されません。利用端末で新イメージを
+pull してから Act を再ビルドし、公開した digest と CA チェック結果を記録してください。
+PR のマージだけでは、既存の公開イメージや Act は更新されません。
+
 ## Actsim での動作確認
 
 ### 準備
