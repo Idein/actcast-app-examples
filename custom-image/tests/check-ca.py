@@ -1,4 +1,8 @@
-"""Offline CA checks for a completed custom image (no private keys or network)."""
+"""Offline CA checks for a completed custom image (no private keys or network).
+
+Public intermediate certificates: https://bugzilla.mozilla.org/attachment.cgi?id=9664067
+Fixtures are test-only and are not copied into published images.
+"""
 import hashlib
 import os
 from pathlib import Path
