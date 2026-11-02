@@ -1,4 +1,4 @@
-FROM idein/actcast-rpi-app-base:bookworm-7
+FROM idein/actcast-rpi-app-base:bookworm-10
 ENV DEBIAN_FRONTEND "noninteractive"
 ENV DEBCONF_NOWARNINGS "yes"
 RUN apt-get update -y

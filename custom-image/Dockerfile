@@ -1,5 +1,9 @@
 # Stage 1: Build Python
-FROM idein/actcast-rpi-app-base:bookworm-7 as base
+FROM idein/actcast-rpi-app-base:bookworm-10 as base
+
+# Use the base image's filtered OS bundle, including before the first pip upgrade.
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    PIP_CERT=/etc/ssl/certs/ca-certificates.crt
 
 # このステージのスクリプトは、
 # https://github.com/docker-library/python/blob/2fc7ce5fa65ed3321256f9b45054733a6958aebe/3.14/slim-bookworm/Dockerfile
@@ -159,8 +163,9 @@ RUN apt update && apt install -y --no-install-recommends \
     build-essential cmake ninja-build \
     # 実行時にも必要なパッケージ
     libjpeg-dev libfreetype6-dev && \
+    # ensurepip同梱の古いcertifiを初回HTTPSで使わず、PIP_CERTだけで検証する
     # pip のアップグレード
-    python -m pip install --upgrade pip && \
+    python -m pip install --use-deprecated=legacy-certs --upgrade "pip>=26.2.2" && \
     # numpy と pillow のインストール
     python -m pip install numpy 'pillow<11.0.0,>=10.1.0' && \
     # 実行時に不要なパッケージを削除
