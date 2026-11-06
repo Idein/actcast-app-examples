@@ -9,6 +9,7 @@ import numpy as np
 from actfw_core.application import Application
 from actfw_core.capture import Frame, V4LCameraCapture
 from actfw_core.command_server import CommandServer
+from actfw_core.system import find_usb_camera_device
 from actfw_core.task import Consumer, Pipe
 from actfw_raspberrypi.vc4.drm import Display
 from PIL import Image
@@ -83,9 +84,21 @@ class Presenter(Consumer):
             self.preview_window.update()
 
 
-def run(app: Application, preview_window=None) -> None:
+def select_device(setting: str) -> str:
+    # An explicit setting wins; otherwise look for the USB camera, because
+    # /dev/video0 can be a CSI camera when both are connected.
+    if setting:
+        return setting
+    device = find_usb_camera_device()
+    if device is None:
+        print("USB camera not found; trying /dev/video0", flush=True)
+        return "/dev/video0"
+    return device
+
+
+def run(app: Application, device: str, preview_window=None) -> None:
     cmd = actfw_core.CommandServer()
-    cap = V4LCameraCapture(size=(CAPTURE_WIDTH, CAPTURE_HEIGHT))
+    cap = V4LCameraCapture(device=device, size=(CAPTURE_WIDTH, CAPTURE_HEIGHT))
 
     conv = Converter((CAPTURE_WIDTH, CAPTURE_HEIGHT))
     fps = FPSCounter()
@@ -108,7 +121,9 @@ def main() -> None:
     app = actfw_core.Application()
 
     # Load act setting
-    settings = app.get_settings({'display': False})
+    settings = app.get_settings({'display': False, 'device': ''})
+    device = select_device(settings['device'])
+    print(f"camera device: {device}", flush=True)
 
     if settings['display']:
         with Display() as display:
@@ -116,9 +131,9 @@ def main() -> None:
             capture_size = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
             layer = 16
             with display.open_window(preview_area, capture_size, layer) as preview_window:
-                run(app, preview_window)
+                run(app, device, preview_window)
     else:
-        run(app)
+        run(app, device)
 
 
 if __name__ == "__main__":
