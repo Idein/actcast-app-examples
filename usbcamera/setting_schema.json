@@ -8,6 +8,12 @@
         "description": "output video to HDMI display",
         "type": "boolean",
         "default": false
+    },
+    "device": {
+        "title": "device",
+        "description": "USB camera device file (e.g. /dev/video2). Leave empty to find the USB camera automatically",
+        "type": "string",
+        "default": ""
     }
   },
   "required": ["display"]
