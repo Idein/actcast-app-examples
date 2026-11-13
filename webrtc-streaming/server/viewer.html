@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebRTC viewer (server sample)</title>
+<style>
+  body { font-family: sans-serif; margin: 16px; }
+  video { width: 100%; background: #000; }
+  button { padding: 10px 18px; font-size: 16px; margin: 8px 4px 8px 0; }
+  #state { font-weight: bold; }
+  #log { font-family: monospace; font-size: 11px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>WebRTC viewer</h1>
+<p>
+  <button id="connectBtn">接続</button>
+  <button id="resetBtn">アプリをリセット</button>
+</p>
+<p id="state">待機中</p>
+<video id="v" autoplay playsinline controls></video>
+<p id="log"></p>
+<script>
+const state = (t) => { document.getElementById('state').textContent = t; };
+const log = (t) => {
+  const el = document.getElementById('log');
+  el.textContent += t + '\n';
+};
+let pc = null;
+
+async function postJson(path, body) {
+  const res = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  return res.json();
+}
+
+// ICE 収集が終わるまで待つ（非トリクル: 候補入りの SDP を送る）
+function waitGatheringComplete(target) {
+  if (target.iceGatheringState === 'complete') return Promise.resolve();
+  return new Promise((resolve) => {
+    target.addEventListener('icegatheringstatechange', () => {
+      if (target.iceGatheringState === 'complete') resolve();
+    });
+  });
+}
+
+document.getElementById('connectBtn').onclick = async () => {
+  try {
+    if (pc) { pc.close(); }
+    pc = new RTCPeerConnection({
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    });
+    pc.ontrack = (ev) => {
+      document.getElementById('v').srcObject = ev.streams[0];
+      state('映像トラック受信');
+    };
+    pc.oniceconnectionstatechange = () => {
+      state('ICE: ' + pc.iceConnectionState);
+    };
+
+    state('offer を取得中…');
+    const offer = await postJson('/api/offer');
+    if (!offer.sdp) {
+      state('offer の取得に失敗しました');
+      log('offer response: ' + JSON.stringify(offer));
+      return;
+    }
+    await pc.setRemoteDescription({ type: 'offer', sdp: offer.sdp });
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    state('ICE 収集中…');
+    await waitGatheringComplete(pc);
+
+    const res = await postJson('/api/answer', { sdp: pc.localDescription.sdp });
+    log('answer response: ' + JSON.stringify(res));
+    if (!res.ok) {
+      state('answer が受理されませんでした');
+    }
+  } catch (e) {
+    state('エラー: ' + e.message);
+  }
+};
+
+document.getElementById('resetBtn').onclick = async () => {
+  const res = await postJson('/api/reset');
+  log('reset response: ' + JSON.stringify(res));
+  if (pc) { pc.close(); pc = null; }
+  state('リセットしました');
+};
+</script>
+</body>
+</html>

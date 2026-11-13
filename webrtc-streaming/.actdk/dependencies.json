@@ -1,0 +1,22 @@
+{
+  "apt": [],
+  "pip": [],
+  "raspberrypi-bookworm": {
+    "apt": [
+      "gir1.2-gst-plugins-bad-1.0",
+      "gir1.2-gst-plugins-base-1.0",
+      "gir1.2-gstreamer-1.0",
+      "gstreamer1.0-alsa",
+      "gstreamer1.0-libcamera",
+      "gstreamer1.0-nice",
+      "gstreamer1.0-plugins-bad",
+      "gstreamer1.0-plugins-base",
+      "gstreamer1.0-plugins-good",
+      "gstreamer1.0-plugins-ugly",
+      "libcamera-apps",
+      "python3",
+      "python3-gi"
+    ],
+    "pip": []
+  }
+}

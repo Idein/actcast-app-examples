@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "target_type": "raspberrypi-bookworm",
+  "boards": [
+    "RSPi4B",
+    "RSPiCM4"
+  ],
+  "devices": [
+    {
+      "type": "camera"
+    },
+    {
+      "type": "videocore"
+    },
+    {
+      "type": "sound",
+      "device": [
+        "/dev/snd/controlC2",
+        "/dev/snd/pcmC2D0c"
+      ],
+      "required": false
+    }
+  ],
+  "network_mode": "host"
+}

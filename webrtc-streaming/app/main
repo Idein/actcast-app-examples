@@ -1,0 +1,78 @@
+#!/usr/bin/python3
+"""WebRTC streaming sample: supervisor for publisher.py.
+
+Reads act_settings.json, exports the publisher's environment, and
+keeps publisher.py running. All WebRTC / signaling logic lives in
+publisher.py.
+"""
+
+import json
+import os
+import subprocess
+import sys
+import threading
+import time
+
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def touch_heartbeat():
+    try:
+        with open("/root/heartbeat", "a"):
+            os.utime("/root/heartbeat", None)
+    except OSError:
+        pass
+
+
+def heartbeat(state):
+    # Touch the heartbeat file only while the publisher process is
+    # alive, so the healthchecker can notice a dead publisher.
+    while True:
+        proc = state.get("proc")
+        if proc is not None and proc.poll() is None:
+            touch_heartbeat()
+        time.sleep(30)
+
+
+def log(msg):
+    print("[main] %s" % msg, flush=True)
+
+
+def load_settings():
+    for path in (
+        os.path.join(APP_DIR, "act_settings.json"),
+        os.path.join(os.path.dirname(APP_DIR), "act_settings.json"),
+        "/act_settings.json",
+    ):
+        try:
+            with open(path) as f:
+                return json.load(f)
+        except Exception:
+            continue
+    return {}
+
+
+def main():
+    settings = load_settings()
+    env = dict(os.environ)
+    env["MEDIA_TYPE"] = str(settings.get("media_type") or "both")
+    env["VIDEO_SRC"] = "camera"
+    log("starting publisher media=%s" % env["MEDIA_TYPE"])
+    state = {"proc": None}
+    threading.Thread(target=heartbeat, args=(state,), daemon=True).start()
+    while True:
+        p = subprocess.Popen(
+            [sys.executable, os.path.join(APP_DIR, "publisher.py")], env=env
+        )
+        state["proc"] = p
+        # Do not leave the first heartbeat to the periodic thread:
+        # the healthchecker may look before its first tick.
+        touch_heartbeat()
+        rc = p.wait()
+        state["proc"] = None
+        log("publisher exited rc=%s; restarting in 5s" % rc)
+        time.sleep(5)
+
+
+if __name__ == "__main__":
+    main()

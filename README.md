@@ -20,3 +20,4 @@ Actcast アプリケーションの開発時に参考となるサンプルアプ
 - [カメラの映像をローカルネットワーク内で配信するアプリ](local-video-server/)
 - [Filteredネットワークモードを使用して送信するアプリ](./filtered-network-mode-egress/)
 - [Filteredネットワークモードを使用して受信するアプリ](./filtered-network-mode-ingress/)
+- [カメラの映像を WebRTC で配信するアプリ](webrtc-streaming/)
