@@ -5,7 +5,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 import actfw_core
 from actfw_core.task import Pipe, Consumer
-from actfw_core.libcamera_capture import LibcameraCapture
+from actfw_core.libcamera_capture import LibcameraCapture, ScalerCrop, SensorConfig
 import libcamera as libcam
 from actfw_raspberrypi.vc4 import Display
 import numpy as np
@@ -222,7 +222,22 @@ def main(args):
     app.register_task(cmd)
 
     # Capture task
-    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"))
+    camera_options = {}
+    camera = libcam.CameraManager.singleton().cameras[0]
+    if "imx219" in str(camera.id).lower():
+        capture_width, capture_height = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
+        sensor_width, sensor_height, scale, offset_x, offset_y = 1640, 1232, 2, 0, 0
+        crop_scale = min(sensor_width / capture_width, sensor_height / capture_height)
+        crop_width, crop_height = round(capture_width * crop_scale), round(capture_height * crop_scale)
+        crop_x, crop_y = int((sensor_width - crop_width) / 2), int((sensor_height - crop_height) / 2)
+        # OS3と画角を合わせるため、IMX219のセンサーモードを明示する。
+        sensor_config = SensorConfig(bit_depth=10, output_size=(sensor_width, sensor_height))
+        camera_options.update(sensor_config=sensor_config, scaler_crop=ScalerCrop(
+            x=offset_x + crop_x * scale, y=offset_y + crop_y * scale,
+            width=crop_width * scale, height=crop_height * scale))
+    else:
+        print(f"WARNING: Camera {camera.id!r} is not IMX219; use automatic sensor mode and crop.", flush=True)
+    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"), **camera_options)
     capture_size = cap.capture_size()
 
     app.register_task(cap)
