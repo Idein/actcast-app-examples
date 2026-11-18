@@ -12,21 +12,38 @@ from actfw_core.task import Consumer
 from actfw_core.capture import V4LCameraCapture
 from actfw_core.unicam_isp_capture import UnicamIspCapture
 from actfw_raspberrypi.vc4 import Display
+from awb_settings import AWB_DEFAULTS, get_awb_mode, make_awb_options
+from csi_camera_settings import libcamera_csi_options
 
 
 (CAPTURE_WIDTH, CAPTURE_HEIGHT) = (640, 480)  # capture image size
 FRAMERATE = 30  # frame rate
 
 
-def setup_camera_capture(use_usb_camera):
+def setup_camera_capture(use_usb_camera, settings=None):
+    settings = {} if settings is None else settings
+    mode = get_awb_mode(settings)
+    firmware_type = get_actcast_firmware_type() if not use_usb_camera else None
+    if mode != "auto" and (use_usb_camera or firmware_type != "raspberrypi-bookworm"):
+        raise ValueError("AWB settings other than auto require an ActcastOS 4 CSI camera")
+
     device = find_usb_camera_device() if use_usb_camera else find_csi_camera_device()
 
     if not use_usb_camera:
-        if get_actcast_firmware_type() == "raspberrypi-bookworm":
+        if firmware_type == "raspberrypi-bookworm":
             # Use LibcameraCapture on Raspberry Pi OS Bookworm
             import libcamera
             from actfw_core.libcamera_capture import LibcameraCapture
-            cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcamera.PixelFormat("BGR888"), framerate=FRAMERATE)
+            awb_options = make_awb_options(settings, LibcameraCapture)
+            camera_options = libcamera_csi_options((CAPTURE_WIDTH, CAPTURE_HEIGHT), FRAMERATE)
+            print(f"CSI capture configuration: {camera_options}", flush=True)
+            cap = LibcameraCapture(
+                (CAPTURE_WIDTH, CAPTURE_HEIGHT),
+                libcamera.PixelFormat("BGR888"),
+                framerate=FRAMERATE,
+                **awb_options,
+                **camera_options,
+            )
         else:
             # Use UnicamIspCapture on Raspberry Pi OS Bullseye
             cap = UnicamIspCapture(
@@ -116,6 +133,7 @@ def main():
             "use_usb_camera": False,
             "local_video_server": True,
             "quality": 75,
+            **AWB_DEFAULTS,
         }
     )
 
@@ -129,7 +147,7 @@ def main():
         local_video_server = actfw_core.LocalVideoServer(quality=settings["quality"])
         app.register_task(local_video_server)
 
-    cap = setup_camera_capture(settings["use_usb_camera"])
+    cap = setup_camera_capture(settings["use_usb_camera"], settings)
     capture_size = cap.capture_size()
     app.register_task(cap)
 

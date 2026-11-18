@@ -6,7 +6,7 @@
     "python3-pil",
     "fonts-dejavu-core"
   ],
-  "pip": ["actfw-core>=2.10.0"],
+  "pip": ["actfw-core==2.23.0"],
   "raspberrypi-bullseye": {
     "apt": [],
     "pip": ["actfw-raspberrypi"]

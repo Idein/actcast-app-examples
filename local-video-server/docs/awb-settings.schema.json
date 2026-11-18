@@ -1,0 +1,62 @@
+{
+  "$schema": "https://actcast.io/schema/v8/setting_schema_schema.json",
+  "type": "object",
+  "properties": {
+    "awb_mode": {
+      "title": "AWB Mode",
+      "description": "White balance for ActcastOS 4 CSI cameras. auto preserves the default. Preset availability depends on the camera and libcamera. Changes take effect when the app restarts.",
+      "descriptions": {
+        "ja": "OS4のCSIカメラのホワイトバランス。autoは従来の自動調整、greyworldは画像から調整、manualは固定ゲイン。照明プリセットは環境により対応状況が異なります。アプリ再起動時に反映します。"
+      },
+      "type": "string",
+      "default": "auto",
+      "enum": [
+        "auto",
+        "greyworld",
+        "manual",
+        "incandescent",
+        "tungsten",
+        "fluorescent",
+        "indoor",
+        "daylight",
+        "cloudy",
+        "custom"
+      ]
+    },
+    "awb_gain_r": {
+      "title": "AWB Red Gain",
+      "description": "manual: fixed red gain (positive and within the camera range). greyworld: initial red gain (0.5 to 8.0). Ignored in other modes.",
+      "descriptions": {
+        "ja": "manualでは赤の固定ゲイン（正数かつカメラの対応範囲内）、greyworldでは初期ゲイン（0.5〜8.0）。他のモードでは使用しません。"
+      },
+      "type": "number",
+      "default": 1.6,
+      "minimum": 0,
+      "exclusiveMinimum": 0
+    },
+    "awb_gain_b": {
+      "title": "AWB Blue Gain",
+      "description": "manual: fixed blue gain (positive and within the camera range). greyworld: initial blue gain (0.5 to 8.0). Ignored in other modes.",
+      "descriptions": {
+        "ja": "manualでは青の固定ゲイン（正数かつカメラの対応範囲内）、greyworldでは初期ゲイン（0.5〜8.0）。他のモードでは使用しません。"
+      },
+      "type": "number",
+      "default": 1.6,
+      "minimum": 0,
+      "exclusiveMinimum": 0
+    },
+    "awb_k": {
+      "title": "GreyWorld Correction Strength",
+      "description": "greyworld only: correction strength (greater than 0 and at most 1). Smaller values adjust more gradually.",
+      "descriptions": {
+        "ja": "greyworldのみ使用する補正の強さ（0より大きく1以下）。小さいほど緩やかに調整します。"
+      },
+      "type": "number",
+      "default": 0.45,
+      "minimum": 0,
+      "exclusiveMinimum": 0,
+      "maximum": 1
+    }
+  },
+  "required": []
+}
