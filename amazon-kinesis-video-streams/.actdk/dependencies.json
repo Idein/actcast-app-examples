@@ -16,7 +16,7 @@
       "liblog4cplus-dev"
     ],
     "pip": [
-      "actfw-core==2.14.0",
+      "actfw-core==2.23.0",
       "actfw-raspberrypi==3.3.1"
     ]
   }

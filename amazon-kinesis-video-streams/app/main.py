@@ -75,7 +75,7 @@ def main(_args):
         else:
             # bookworm 64bit libcamera support
             import libcamera
-            from actfw_core.libcamera_capture import LibcameraCapture
+            from actfw_core.libcamera_capture import LibcameraCapture, ScalerCrop, SensorConfig
             # libcamera flip mapping
             if settings["hflip"] and settings["vflip"]:
                 orientation = libcamera.Orientation.Rotate180
@@ -85,11 +85,30 @@ def main(_args):
                 orientation = libcamera.Orientation.Rotate180Mirror
             elif not settings["hflip"] and not settings["vflip"]:
                 orientation = libcamera.Orientation.Rotate0
+            camera_options = {}
+            camera = libcamera.CameraManager.singleton().cameras[0]
+            if "imx219" in str(camera.id).lower():
+                capture_framerate = int(settings["capture_framerate"])
+                if capture_framerate <= 40:
+                    sensor_width, sensor_height, offset_x, offset_y = 1640, 1232, 0, 0
+                else:
+                    sensor_width, sensor_height, offset_x, offset_y = 640, 480, 1000, 752
+                crop_scale = min(sensor_width / CAPTURE_WIDTH, sensor_height / CAPTURE_HEIGHT)
+                crop_width, crop_height = round(CAPTURE_WIDTH * crop_scale), round(CAPTURE_HEIGHT * crop_scale)
+                crop_x, crop_y = int((sensor_width - crop_width) / 2), int((sensor_height - crop_height) / 2)
+                # OS3と画角を合わせるため、IMX219のセンサーモードを明示する。
+                sensor_config = SensorConfig(bit_depth=10, output_size=(sensor_width, sensor_height))
+                camera_options.update(sensor_config=sensor_config, scaler_crop=ScalerCrop(
+                    x=offset_x + crop_x * 2, y=offset_y + crop_y * 2,
+                    width=crop_width * 2, height=crop_height * 2))
+            else:
+                print(f"WARNING: Camera {camera.id!r} is not IMX219; use automatic sensor mode and crop.", flush=True)
             cap = LibcameraCapture(
                 (CAPTURE_WIDTH, CAPTURE_HEIGHT),
                 libcamera.PixelFormat("BGR888"),
                 framerate=int(settings["capture_framerate"]),
-                orientation=orientation
+                orientation=orientation,
+                **camera_options,
             )
 
     except RuntimeError as e:
