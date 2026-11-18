@@ -16,6 +16,7 @@
   "raspberrypi-bookworm": {
     "apt": [ "python3-libcamera" ],
     "pip": [
+      "actfw-core>=2.19.0",
       "actfw-raspberrypi"
     ]
   }
