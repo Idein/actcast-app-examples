@@ -15,6 +15,6 @@
     "apt": [
       "python3-libcamera"
     ],
-    "pip": ["actfw-raspberrypi"]
+    "pip": ["actfw-core>=2.19.0", "actfw-raspberrypi"]
   }
 }

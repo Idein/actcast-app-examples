@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import sys
 import numpy as np
 from PIL import Image
 import actfw_core
@@ -62,8 +63,23 @@ def run(app, preview_window=None):
     framerate = 30
     if get_actcast_firmware_type() == "raspberrypi-bookworm":
         import libcamera
-        from actfw_core.libcamera_capture import LibcameraCapture
-        cap = LibcameraCapture(capture_size, libcamera.PixelFormat("BGR888"), framerate=framerate)
+        from actfw_core.libcamera_capture import LibcameraCapture, ScalerCrop, SensorConfig
+        camera_options = {}
+        camera = libcamera.CameraManager.singleton().cameras[0]
+        if "imx219" in str(camera.id).lower():
+            capture_width, capture_height = capture_size
+            sensor_width, sensor_height, scale, offset_x, offset_y = 1640, 1232, 2, 0, 0
+            crop_scale = min(sensor_width / capture_width, sensor_height / capture_height)
+            crop_width, crop_height = round(capture_width * crop_scale), round(capture_height * crop_scale)
+            crop_x, crop_y = int((sensor_width - crop_width) / 2), int((sensor_height - crop_height) / 2)
+            # OS3と画角を合わせるため、IMX219のセンサーモードを明示する。
+            sensor_config = SensorConfig(bit_depth=10, output_size=(sensor_width, sensor_height))
+            camera_options.update(sensor_config=sensor_config, scaler_crop=ScalerCrop(
+                x=offset_x + crop_x * scale, y=offset_y + crop_y * scale,
+                width=crop_width * scale, height=crop_height * scale))
+        else:
+            print(f"WARNING: Camera {camera.id!r} is not IMX219; use automatic sensor mode and crop.", file=sys.stderr, flush=True)
+        cap = LibcameraCapture(capture_size, libcamera.PixelFormat("BGR888"), framerate=framerate, **camera_options)
     else:
         device = find_csi_camera_device()
         cap = UnicamIspCapture(unicam=device, size=capture_size, framerate=framerate)

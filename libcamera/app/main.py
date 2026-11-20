@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # type: ignore
 import os
+import sys
 import time
 from typing import Tuple
 
@@ -10,7 +11,7 @@ import numpy as np
 from actfw_core.application import Application
 from actfw_core.capture import Frame
 from actfw_core.command_server import CommandServer
-from actfw_core.libcamera_capture import LibcameraCapture
+from actfw_core.libcamera_capture import LibcameraCapture, ScalerCrop, SensorConfig
 from actfw_core.task import Consumer, Pipe
 from actfw_raspberrypi.vc4.drm import Display
 from PIL import Image
@@ -87,7 +88,22 @@ class Presenter(Consumer):
 
 def run(app: Application, preview_window=None) -> None:
     cmd = actfw_core.CommandServer()
-    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"))
+    camera_options = {}
+    camera = libcam.CameraManager.singleton().cameras[0]
+    if "imx219" in str(camera.id).lower():
+        capture_width, capture_height = (CAPTURE_WIDTH, CAPTURE_HEIGHT)
+        sensor_width, sensor_height, scale, offset_x, offset_y = 1640, 1232, 2, 0, 0
+        crop_scale = min(sensor_width / capture_width, sensor_height / capture_height)
+        crop_width, crop_height = round(capture_width * crop_scale), round(capture_height * crop_scale)
+        crop_x, crop_y = int((sensor_width - crop_width) / 2), int((sensor_height - crop_height) / 2)
+        # OS3と画角を合わせるため、IMX219のセンサーモードを明示する。
+        sensor_config = SensorConfig(bit_depth=10, output_size=(sensor_width, sensor_height))
+        camera_options.update(sensor_config=sensor_config, scaler_crop=ScalerCrop(
+            x=offset_x + crop_x * scale, y=offset_y + crop_y * scale,
+            width=crop_width * scale, height=crop_height * scale))
+    else:
+        print(f"WARNING: Camera {camera.id!r} is not IMX219; use automatic sensor mode and crop.", file=sys.stderr, flush=True)
+    cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"), **camera_options)
 
     conv = Converter((CAPTURE_WIDTH, CAPTURE_HEIGHT))
     fps = FPSCounter()
