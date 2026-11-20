@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import argparse
+import sys
 import actfw_core
 from actfw_core.capture import V4LCameraCapture
 from actfw_core.unicam_isp_capture import UnicamIspCapture
@@ -102,7 +103,7 @@ def main(_args):
                     x=offset_x + crop_x * 2, y=offset_y + crop_y * 2,
                     width=crop_width * 2, height=crop_height * 2))
             else:
-                print(f"WARNING: Camera {camera.id!r} is not IMX219; use automatic sensor mode and crop.", flush=True)
+                print(f"WARNING: Camera {camera.id!r} is not IMX219; use automatic sensor mode and crop.", file=sys.stderr, flush=True)
             cap = LibcameraCapture(
                 (CAPTURE_WIDTH, CAPTURE_HEIGHT),
                 libcamera.PixelFormat("BGR888"),

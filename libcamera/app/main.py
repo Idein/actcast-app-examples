@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # type: ignore
 import os
+import sys
 import time
 from typing import Tuple
 
@@ -101,7 +102,7 @@ def run(app: Application, preview_window=None) -> None:
             x=offset_x + crop_x * scale, y=offset_y + crop_y * scale,
             width=crop_width * scale, height=crop_height * scale))
     else:
-        print(f"WARNING: Camera {camera.id!r} is not IMX219; use automatic sensor mode and crop.", flush=True)
+        print(f"WARNING: Camera {camera.id!r} is not IMX219; use automatic sensor mode and crop.", file=sys.stderr, flush=True)
     cap = LibcameraCapture((CAPTURE_WIDTH, CAPTURE_HEIGHT), libcam.PixelFormat("BGR888"), **camera_options)
 
     conv = Converter((CAPTURE_WIDTH, CAPTURE_HEIGHT))
